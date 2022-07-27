@@ -1,10 +1,18 @@
-function openCommitsTab() {
+async function openCommitsTab() {
     var parentObject = document.querySelector('[data-pjax="#js-repo-pjax-container"]').children[0];
+
+    // Contains all the branch objects
+    var branches = [];
+
+    // Keeps the SHAs of only those branches which are 
+    // selected by the user
+    var selectedBranchIds = [];
 
     // Copies the "Issues" tab button, and edit it to commits
     // so that the UI matches even if GitHub choose to change UI
     var newButton = parentObject.children[1];
     var newButtonChild = newButton.children[0];
+
     // Deselect all the tabs except commits tab.
     Array.from(parentObject.children).forEach((child) => {
         if (child.children[0].id != "commits-tab") {
@@ -16,13 +24,16 @@ function openCommitsTab() {
     // Select the commits tab.
     newButtonChild.setAttribute("aria-current", "page");
 
-    var contentView = document.getElementsByClassName("clearfix")[0];
-    var html = chrome.runtime.getURL('html/branchSelection.html');
-    fetch(html).then(response => response.text()).then(text => {
-        contentView.innerHTML = text;
-    });
+    // Add the branches dropdown to select/deselect branches to show.
+    await loadBranchesButton();
 
+    // Fetches the branch data from API.
+    [branches, selectedBranchIds] = await fetchBranches();
+    console.log(branches);
+    console.log(selectedBranchIds);
 
+    // Set the branches to dropdown
+    setBranchOptions(branches, selectedBranchIds);
 
     function main() {
         var currentUrl = window.location.href;
@@ -45,11 +56,9 @@ function openCommitsTab() {
                         .then(commits => {
                             commits.forEach(commit => {
                                 var commitMessage = commit.commit.message;
-                                console.log(commitMessage);
                             }
                             )
                         });
-                    console.log(branchName);
                 });
             }
             );

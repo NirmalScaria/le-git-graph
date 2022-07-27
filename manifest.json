@@ -3,14 +3,28 @@
   "description": "An informative Git Commit graph to your github!",
   "version": "1.0",
   "manifest_version": 3,
-  "content_scripts" : [
+  "content_scripts": [
     {
-      "matches": ["*://*.github.com/*"],
-      "js": ["js/addCommitsButton.js", "js/openCommitsTab.js", "js/main.js"],
+      "matches": [
+        "*://*.github.com/*"
+      ],
+      "js": [
+        "js/setBranchOptions.js",
+        "js/fetchBranches.js",
+        "js/loadBranchesButton.js",
+        "js/addCommitsButton.js",
+        "js/openCommitsTab.js",
+        "js/main.js"
+      ],
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "*://*.github.com/", "storage", "activeTab", "scripting"],
+  "permissions": [
+    "tabs",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
   "action": {
     "default_icon": {
       "16": "/images/github_tree_graph16.png",
@@ -27,8 +41,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["html/branchSelection.html"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "html/branchSelection.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

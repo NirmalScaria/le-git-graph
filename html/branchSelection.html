@@ -1,150 +1,80 @@
 <div class="file-navigation">
-      
-    <div class="position-relative">
-      <details class="details-reset details-overlay mr-0 mb-0 " id="branch-select-menu">
-        <summary class="btn css-truncate" data-hotkey="w" title="Switch branches or tags">
-          <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-branch">
-        <path fill-rule="evenodd" d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"></path>
-    </svg>
-          <span class="css-truncate-target" data-menu-button="">All branches</span>
-          <span class="dropdown-caret"></span>
-        </summary>
-    
-        
-    <div class="SelectMenu">
-      <div class="SelectMenu-modal">
-        <header class="SelectMenu-header">
-          <span class="SelectMenu-title">Select branches to show</span>
-          <button class="SelectMenu-closeButton" type="button" data-toggle-for="branch-select-menu"><svg aria-label="Close menu" aria-hidden="false" role="img" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
-        <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
-    </svg></button>
-        </header>
-    
-        <input-demux data-action="tab-container-change:input-demux#storeInput tab-container-changed:input-demux#updateInput" data-catalyst="">
-          <tab-container class="d-flex flex-column js-branches-tags-tabs" style="min-height: 0;">
-            <div class="SelectMenu-filter">
-              <input data-target="input-demux.source" id="context-commitish-filter-field" class="SelectMenu-input form-control" aria-owns="ref-list-branches" data-controls-ref-menu-id="ref-list-branches" autofocus="" autocomplete="off" aria-label="Find or create a branch…" placeholder="Find or create a branch…" type="text">
-            </div>
-    
-            <div class="SelectMenu-tabs" role="tablist" data-target="input-demux.control">
-              <button class="SelectMenu-tab" type="button" role="tab" aria-selected="true" tabindex="0">Branches</button>
-            </div>
-    
-            <div role="tabpanel" id="ref-list-branches" data-filter-placeholder="Find or create a branch…" tabindex="" class="d-flex flex-column flex-auto overflow-auto">
-              <ref-selector type="branch" data-targets="input-demux.sinks" data-action="
-                  input-entered:ref-selector#inputEntered
-                  tab-selected:ref-selector#tabSelected
-                  focus-list:ref-selector#focusFirstListMember
-                " query-endpoint="/NirmalScaria/commitTest/refs" can-create="" cache-key="v0:1658855174.97134" current-committish="bWFpbg==" default-branch="bWFpbg==" name-with-owner="TmlybWFsU2NhcmlhL2NvbW1pdFRlc3Q=" prefetch-on-mouseover="" data-catalyst="">
-    
+  <div class="position-relative">
+    <details class="details-reset details-overlay mr-0 mb-0 " id="branch-select-menu">
+      <summary class="btn css-truncate" data-hotkey="w" title="Switch branches or tags">
+        <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+          data-view-component="true" class="octicon octicon-git-branch">
+          <path fill-rule="evenodd"
+            d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z">
+          </path>
+        </svg>
+        <span class="css-truncate-target" data-menu-button="">All branches</span>
+        <span class="dropdown-caret"></span>
+      </summary>
+      <div class="SelectMenu">
+        <div class="SelectMenu-modal">
+          <header class="SelectMenu-header">
+            <span class="SelectMenu-title">Select branches to show</span>
+            <button class="SelectMenu-closeButton" type="button" data-toggle-for="branch-select-menu"><svg
+                aria-label="Close menu" aria-hidden="false" role="img" height="16" viewBox="0 0 16 16" version="1.1"
+                width="16" data-view-component="true" class="octicon octicon-x">
+                <path fill-rule="evenodd"
+                  d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z">
+                </path>
+              </svg></button>
+          </header>
+          <input-demux>
+            <div class="d-flex flex-column flex-auto overflow-auto">
+              <ref-selector can-create="" cache-key="v0:1658855174.97134" current-committish="bWFpbg=="
+                default-branch="bWFpbg==" name-with-owner="TmlybWFsU2NhcmlhL2NvbW1pdFRlc3Q=" prefetch-on-mouseover=""
+                data-catalyst="">
+
                 <template data-target="ref-selector.fetchFailedTemplate">
                   <div class="SelectMenu-message" data-index="{{ index }}">Could not load branches</div>
                 </template>
-    
-                  <template data-target="ref-selector.noMatchTemplate">
-        <!-- '"` --><!-- </textarea></xmp> --><form data-turbo="false" action="/NirmalScaria/commitTest/branches" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="EGAdyCxPL7rGy44wG48_1h_NYPFJsgFKvie5DsDeYHIHy10ncvE4oc7geVujNHyr6QtkT9jvOx-aGHWKXIcS6w">
-          <input type="hidden" name="name" value="{{ refName }}">
-          <input type="hidden" name="branch" value="main">
-          <input type="hidden" name="path_binary" value="">
-    
-          <button class="SelectMenu-item wb-break-word" type="submit" role="menuitem" data-index="{{ index }}">
-            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-branch SelectMenu-icon flex-self-baseline">
-        <path fill-rule="evenodd" d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"></path>
-    </svg>
-            <div>
-              <span class="text-bold">Create branch: {{ refName }}</span>
-              <span class="color-fg-muted">from ‘main’</span>
-            </div>
-          </button>
-    </form></template>
-    
-    
-                <div data-target="ref-selector.listContainer" role="menu" class="SelectMenu-list " data-pjax="#repo-content-pjax-container" data-turbo-frame="repo-content-turbo-frame" style="max-height: 330px;"><div style="position: relative; overflow: hidden; width: 100%; min-height: 100%; will-change: transform; height: 99px;"><div style="position:absolute; top:0; left:0; height:100%; width:100%; overflow:visible;">
-      <a href="https://github.com/NirmalScaria/commitTest/commits/main" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="true" data-index="0">
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
-        <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
-    </svg>
-        <span class="flex-1 css-truncate css-truncate-overflow ">main</span>
-        <span class="Label Label--secondary flex-self-start">default</span>
-      </a>
-    
-      <a href="https://github.com/NirmalScaria/commitTest/commits/b2" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="false" data-index="1">
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
-        <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
-    </svg>
-        <span class="flex-1 css-truncate css-truncate-overflow ">b2</span>
-        <span hidden="" class="Label Label--secondary flex-self-start">default</span>
-      </a>
-    
-      <a href="https://github.com/NirmalScaria/commitTest/commits/b3" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="false" data-index="2">
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
-        <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
-    </svg>
-        <span class="flex-1 css-truncate css-truncate-overflow ">b3</span>
-        <span hidden="" class="Label Label--secondary flex-self-start">default</span>
-      </a>
-    <span></span></div></div></div>
-    
-                  <template data-target="ref-selector.itemTemplate">
-      <a href="https://github.com/NirmalScaria/commitTest/commits/{{ urlEncodedRefName }}" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
-        <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
-    </svg>
-        <span class="flex-1 css-truncate css-truncate-overflow {{ isFilteringClass }}">{{ refName }}</span>
-        <span hidden="{{ isNotDefault }}" class="Label Label--secondary flex-self-start">default</span>
-      </a>
-    </template>
-    
-    
-                  <footer class="SelectMenu-footer"><a href="/NirmalScaria/commitTest/branches">View all branches</a></footer>
-              </ref-selector>
-    
-            </div>
-    
-            <div role="tabpanel" id="tags-menu" data-filter-placeholder="Find a tag" tabindex="" hidden="" class="d-flex flex-column flex-auto overflow-auto">
-              <ref-selector type="tag" data-action="
-                  input-entered:ref-selector#inputEntered
-                  tab-selected:ref-selector#tabSelected
-                  focus-list:ref-selector#focusFirstListMember
-                " data-targets="input-demux.sinks" query-endpoint="/NirmalScaria/commitTest/refs" cache-key="v0:1658855174.97134" current-committish="bWFpbg==" default-branch="bWFpbg==" name-with-owner="TmlybWFsU2NhcmlhL2NvbW1pdFRlc3Q=" data-catalyst="">
-    
-                <template data-target="ref-selector.fetchFailedTemplate">
-                  <div class="SelectMenu-message" data-index="{{ index }}">Could not load tags</div>
-                </template>
-    
-                <template data-target="ref-selector.noMatchTemplate">
-                  <div class="SelectMenu-message" data-index="{{ index }}">Nothing to show</div>
-                </template>
-    
-                  <template data-target="ref-selector.itemTemplate">
-      <a href="https://github.com/NirmalScaria/commitTest/commits/{{ urlEncodedRefName }}" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
-        <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
-    </svg>
-        <span class="flex-1 css-truncate css-truncate-overflow {{ isFilteringClass }}">{{ refName }}</span>
-        <span hidden="{{ isNotDefault }}" class="Label Label--secondary flex-self-start">default</span>
-      </a>
-    </template>
-    
-    
-                <div data-target="ref-selector.listContainer" role="menu" class="SelectMenu-list" data-pjax="#repo-content-pjax-container" data-turbo-frame="repo-content-turbo-frame">
-                  <div class="SelectMenu-loading pt-3 pb-0 overflow-hidden" aria-label="Menu is loading">
-                    <svg style="box-sizing: content-box; color: var(--color-icon-primary);" width="32" height="32" viewBox="0 0 16 16" fill="none" data-view-component="true" class="anim-rotate">
-      <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-opacity="0.25" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
-      <path d="M15 8a7.002 7.002 0 00-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
-    </svg>
+                <div data-target="ref-selector.listContainer" role="menu" class="SelectMenu-list "
+                  data-pjax="#repo-content-pjax-container" data-turbo-frame="repo-content-turbo-frame"
+                  style="max-height: 330px;">
+                  <div id="branches-sized-container"
+                    style="position: relative; overflow: hidden; width: 100%; min-height: 100%; will-change: transform; height: 99px;">
+                    <div style="position:absolute; top:0; left:0; height:100%; width:100%; overflow:visible;" id = "branches-list-parent">
+                      <a class="SelectMenu-item"
+                        role="menuitemradio" rel="nofollow" aria-checked="true" data-index="0">
+                        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                          data-view-component="true"
+                          class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
+                          <path fill-rule="evenodd"
+                            d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                          </path>
+                        </svg>
+                        <span class="flex-1 css-truncate css-truncate-overflow ">All branches</span>
+                      </a>
+                      <span></span>
+                    </div>
                   </div>
                 </div>
-                  <footer class="SelectMenu-footer"><a href="/NirmalScaria/commitTest/tags">View all tags</a></footer>
+                <template data-target="ref-selector.itemTemplate">
+                  <a href="https://github.com/NirmalScaria/commitTest/commits/{{ urlEncodedRefName }}"
+                    class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}"
+                    data-index="{{ index }}">
+                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                      data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
+                      <path fill-rule="evenodd"
+                        d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z">
+                      </path>
+                    </svg>
+                    <span class="flex-1 css-truncate css-truncate-overflow {{ isFilteringClass }}">{{ refName
+                      }}</span>
+                    <span hidden="{{ isNotDefault }}" class="Label Label--secondary flex-self-start">default</span>
+                  </a>
+                </template>
+                <footer class="SelectMenu-footer"><a aria-disabled="true">Show selected branches</a>
+                </footer>
               </ref-selector>
             </div>
-          </tab-container>
-        </input-demux>
-      </div>
-    </div>
-    
-      </details>
-    
-    </div>
-    
+          </input-demux>
         </div>
+      </div>
+    </details>
+  </div>
+</div>
