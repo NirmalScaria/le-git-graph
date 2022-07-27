@@ -17,7 +17,7 @@ async function fetchBranches() {
             });
 
             var sizedContainer = document.getElementById("branches-sized-container");
-            sizedContainer.style.height = (35 * branches.length + 20) + "px";
+            sizedContainer.style.height = (35 * branches.length + 45) + "px";
 
         });
     return ([branches, selectedBranchIds]);
