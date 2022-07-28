@@ -6,7 +6,7 @@ async function openCommitsTab() {
 
     // Keeps the SHAs of only those branches which are 
     // selected by the user
-    var selectedBranchIds = [];
+    var selectedBranchNames = [];
 
     // Copies the "Issues" tab button, and edit it to commits
     // so that the UI matches even if GitHub choose to change UI
@@ -28,12 +28,12 @@ async function openCommitsTab() {
     await loadBranchesButton();
 
     // Fetches the branch data from API.
-    [branches, selectedBranchIds] = await fetchBranches();
+    [branches, selectedBranchNames] = await fetchBranches();
     console.log(branches);
-    console.log(selectedBranchIds);
+    console.log(selectedBranchNames);
 
     // Set the branches to dropdown
-    setBranchOptions(branches, selectedBranchIds);
+    setBranchOptions(branches, selectedBranchNames);
 
     function main() {
         var currentUrl = window.location.href;
@@ -63,5 +63,4 @@ async function openCommitsTab() {
             }
             );
     }
-    // main();
 }
