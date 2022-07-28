@@ -5,17 +5,17 @@ function setBranchOptions(branches, selectedBranchNames) {
     // Add each branch to the dropdown list.
     Array.from(branches).forEach((branch) => {
         var newChild = existingChild.cloneNode(true);
-        newChild.children[1].innerHTML = branch.name;
-        newChild.setAttribute("branch-name", branch.name);
+        newChild.children[1].innerHTML = branch;
+        newChild.setAttribute("branch-name", branch);
         newChild.addEventListener("click", () => {
-            var thisItem = document.querySelector(`[branch-name="${branch.name}"]`);
+            var thisItem = document.querySelector(`[branch-name="${branch}"]`);
 
-            if (selectedBranchNames.includes(branch.name)) {
-                selectedBranchNames = selectedBranchNames.filter(id => id != branch.name);
+            if (selectedBranchNames.includes(branch)) {
+                selectedBranchNames = selectedBranchNames.filter(id => id != branch);
                 thisItem.setAttribute("aria-checked", "false");
             }
             else {
-                selectedBranchNames.push(branch.name);
+                selectedBranchNames.push(branch);
                 thisItem.setAttribute("aria-checked", "true");
             }
             if (branches.length == selectedBranchNames.length) {

@@ -29,6 +29,7 @@ async function openCommitsTab() {
 
     // Fetches the branch data from API.
     [branches, selectedBranchNames] = await fetchBranches();
+
     console.log(branches);
     console.log(selectedBranchNames);
 

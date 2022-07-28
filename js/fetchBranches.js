@@ -3,48 +3,45 @@ async function fetchBranches() {
     var splitUrl = currentUrl.split('/');
     var repoOwner = splitUrl[3]
     var repoName = splitUrl[4];
-    var branchesAPI = `https://api.github.com/repos/${repoOwner}/${repoName}/branches?per_page=100`;
+    var branchesAPI = `https://github.com/${repoOwner}/${repoName}/branches`;
     var branches = [];
     var selectedBranchNames = [];
-    var mainBranch, masterBranch, devBranch, developBranch, stableBranch;
-    async function fetchBrachesPage(pageNo) {
-        console.log("Fetching page " + pageNo);
-        await fetch(branchesAPI + `&page=${pageNo}`).then(response => response.json()).then(async fbranches => {
-            fbranches.forEach(branch => {
-                if (branch.name == "main") {
-                    mainBranch = branch;
-                }
-                else if (branch.name == "master") {
-                    masterBranch = branch;
-                }
-                else if (branch.name == "dev") {
-                    devBranch = branch;
-                }
-                else if (branch.name == "stable") {
-                    stableBranch = branch;
-                }
-                else if (branch.name == "develop") {
-                    developBranch = branch;
-                }
-                else {
-                    branches.push(branch);
-                    selectedBranchNames.push(branch.name);
+    async function fetchRecentBranches() {
+        await fetch(branchesAPI).then(response => response.text()).then(async fbranches => {
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = fbranches;
+            var branchesUI = tempDiv.getElementsByClassName("branch-name");
+            Array.from(branchesUI).forEach(branchUI => {
+                if (!branches.includes(branchUI.innerText)) {
+                    branches.push(branchUI.innerText);
+                    selectedBranchNames.push(branchUI.innerText);
                 }
             });
-            if (fbranches.length >= 100) {
+        });
+    }
+    async function fetchBrachesPage(pageNo) {
+        var thisPageUrl = `https://github.com/${repoOwner}/${repoName}/branches/active?page=` + pageNo;
+        var nextPageUrl = `https://github.com/${repoOwner}/${repoName}/branches/active?page=` + (pageNo + 1);
+        await fetch(thisPageUrl).then(response => response.text()).then(async fbranches => {
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = fbranches;
+            var branchesUI = tempDiv.getElementsByClassName("branch-name");
+            Array.from(branchesUI).forEach(branchUI => {
+                if (!branches.includes(branchUI.innerText)) {
+                    branches.push(branchUI.innerText);
+                    selectedBranchNames.push(branchUI.innerText);
+                }
+            });
+            var nextElement = tempDiv.querySelector(`[href="${nextPageUrl}"]`);
+            if (nextElement != null) {
                 await fetchBrachesPage(pageNo + 1);
             }
         });
     }
+    await fetchRecentBranches();
     await fetchBrachesPage(1);
 
-    // Add the special branches (main, master, dev, etc) to the beginning
-    [devBranch, developBranch, stableBranch, mainBranch, masterBranch].forEach(specialBranch => {
-        if (specialBranch != undefined) {
-            branches.unshift(specialBranch);
-            selectedBranchNames.unshift(specialBranch.name);
-        }
-    });
+
     var sizedContainer = document.getElementById("branches-sized-container");
     sizedContainer.style.height = (35 * branches.length + 45) + "px";
 
