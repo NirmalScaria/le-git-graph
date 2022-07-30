@@ -25,16 +25,18 @@ async function openCommitsTab() {
     newButtonChild.setAttribute("aria-current", "page");
 
     // Add the branches dropdown to select/deselect branches to show.
-    await loadBranchesButton();
+    // await loadBranchesButton();
+
+    await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
 
     // Fetches the branch data from API.
-    [branches, selectedBranchNames] = await fetchBranches();
-
-    console.log(branches);
-    console.log(selectedBranchNames);
+    [branches, selectedBranchNames] = await fetchActiveBranches();
 
     // Set the branches to dropdown
     setBranchOptions(branches, selectedBranchNames);
+
+    // Fetch the commits from API.
+    // await fetchCommits(branches);
 
     function main() {
         var currentUrl = window.location.href;

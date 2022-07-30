@@ -9,12 +9,24 @@
         "*://*.github.com/*"
       ],
       "js": [
+        "js/addAuthorizationPrompt.js",
+        "js/authorisation/oauth2.js",
+        "js/fetchCommits.js",
         "js/setBranchOptions.js",
         "js/fetchBranches.js",
         "js/loadBranchesButton.js",
         "js/addCommitsButton.js",
         "js/openCommitsTab.js",
         "js/main.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://*.scaria.dev/github-tree-graph/success/*"
+      ],
+      "js": [
+        "js/authProcess.js"
       ],
       "run_at": "document_end"
     }
@@ -42,7 +54,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "html/branchSelection.html"
+        "html/branchSelection.html",
+        "html/authorizationPrompt.html"
       ],
       "matches": [
         "<all_urls>"

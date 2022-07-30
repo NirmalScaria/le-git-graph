@@ -1,4 +1,4 @@
-async function fetchBranches() {
+async function fetchActiveBranches() {
     var currentUrl = window.location.href;
     var splitUrl = currentUrl.split('/');
     var repoOwner = splitUrl[3]
