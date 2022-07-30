@@ -30,10 +30,10 @@ async function openCommitsTab() {
     await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
 
     // Fetches the branch data from API.
-    [branches, selectedBranchNames] = await fetchActiveBranches();
+    // [branches, selectedBranchNames] = await fetchActiveBranches();
 
     // Set the branches to dropdown
-    setBranchOptions(branches, selectedBranchNames);
+    // setBranchOptions(branches, selectedBranchNames);
 
     // Fetch the commits from API.
     // await fetchCommits(branches);

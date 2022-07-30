@@ -23,7 +23,7 @@
     },
     {
       "matches": [
-        "*://*.scaria.dev/github-tree-graph/success/*"
+        "*://*.scaria.dev/github-tree-graph/authorize/"
       ],
       "js": [
         "js/authProcess.js"
@@ -50,6 +50,9 @@
     "32": "/images/github_tree_graph32.png",
     "48": "/images/github_tree_graph48.png",
     "128": "/images/github_tree_graph128.png"
+  },
+  "background": {
+    "service_worker": "js/serviceWorker.js"
   },
   "web_accessible_resources": [
     {
