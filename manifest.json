@@ -9,10 +9,12 @@
         "*://*.github.com/*"
       ],
       "js": [
+        "js/showCommitsLoading.js",
         "js/getLocalToken.js",
         "js/addAuthorizationPrompt.js",
         "js/authorisation/oauth2.js",
         "js/fetchCommits.js",
+        "js/showCommits.js",
         "js/setBranchOptions.js",
         "js/fetchBranches.js",
         "js/loadBranchesButton.js",
@@ -59,7 +61,8 @@
     {
       "resources": [
         "html/branchSelection.html",
-        "html/authorizationPrompt.html"
+        "html/authorizationPrompt.html",
+        "html/commitsLoading.html"
       ],
       "matches": [
         "<all_urls>"

@@ -1,5 +1,5 @@
 async function fetchCommits() {
-    var commits = [];
+    var branches = [];
     // Recurcively call this function unti all the branches are fetched
     // (GitHub API has a limit of 100 branches per request)
     async function fetchCommitsPage(repoOwner, repoName, lastFetched) {
@@ -91,29 +91,33 @@ async function fetchCommits() {
         if ((response.status != 200 && response.status != 201)) {
             console.log("ERROR FETCHING GRAPHQL");
             addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
-            return;
+            return(false);
         }
         var data = await response.json();
         if (data.error) {
             console.log("ERROR FETCHING GRAPHQL");
             addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
-            return;
+            return(false);
         }
         var fetchedBranches = data.data.repository.refs.edges;
         console.log(data);
         fetchedBranches.forEach(branch => {
             var commit = branch.node;
-            commits.push(commit);
+            branches.push(commit);
         });
         if (fetchedBranches.length >= 100) {
             var lastFetchedCursor = fetchedBranches[fetchedBranches.length - 1].cursor;
             await fetchCommitsPage(repoOwner, repoName, lastFetchedCursor);
         }
+        return(true);
     }
     var currentUrl = window.location.href;
     var splitUrl = currentUrl.split('/');
     var repoOwner = splitUrl[3]
     var repoName = splitUrl[4];
-    await fetchCommitsPage(repoOwner, repoName, "NONE")
-    console.log(commits);
+    // fetchCommitsPage returns true only if the fetch was successful
+    if(await fetchCommitsPage(repoOwner, repoName, "NONE")){
+        console.log(branches);
+        await showCommits(branches);
+    }
 }

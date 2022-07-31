@@ -1,4 +1,12 @@
 async function openCommitsTab() {
+
+    // Get the commits tab button
+    var commitsTabButton = document.getElementById("commits-tab");
+    commitsTabButton.removeEventListener("click", openCommitsTab);
+
+    showCommitsLoading();
+
+
     var parentObject = document.querySelector('[data-pjax="#js-repo-pjax-container"]').children[0];
 
     // Contains all the branch objects
@@ -13,6 +21,9 @@ async function openCommitsTab() {
     var newButton = parentObject.children[1];
     var newButtonChild = newButton.children[0];
 
+    // Select the commits tab.
+    newButtonChild.setAttribute("aria-current", "page");
+
     // Deselect all the tabs except commits tab.
     Array.from(parentObject.children).forEach((child) => {
         if (child.children[0].id != "commits-tab") {
@@ -20,9 +31,6 @@ async function openCommitsTab() {
             child.children[0].classList.remove("selected");
         }
     });
-
-    // Select the commits tab.
-    newButtonChild.setAttribute("aria-current", "page");
 
     // Try to fetch stored authorization token
     var authorizationToken = getLocalToken();
@@ -33,15 +41,12 @@ async function openCommitsTab() {
     else {
         console.log("Authorization token found: " + authorizationToken);
 
-
         // Load the commits of all branches and show the default view
         await fetchCommits();
-
-        // Add the branches dropdown to select/deselect branches to show.
-        await loadBranchesButton();
-        // Then add the branch selection options
     }
 
+    // TODO : Move all the below code (with necessary modifications)
+    //  to showCommits() function.
 
     // await loadBranchesButton();
 
