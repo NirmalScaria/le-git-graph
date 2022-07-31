@@ -9,6 +9,7 @@
         "*://*.github.com/*"
       ],
       "js": [
+        "js/getLocalToken.js",
         "js/addAuthorizationPrompt.js",
         "js/authorisation/oauth2.js",
         "js/fetchCommits.js",

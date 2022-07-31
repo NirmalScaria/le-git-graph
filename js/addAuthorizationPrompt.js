@@ -43,7 +43,9 @@ function openAuthorization() {
             if (request.status == "SUCCESS" || request.status == "FAIL") {
                 console.log(request);
                 if (request.status == "SUCCESS") {
+                    var githubToken = request.value;
                     changeAuthorizationStatus("SUCCESS");
+                    storeLocalToken(githubToken);
                 }
                 else {
                     changeAuthorizationStatus("FAIL");

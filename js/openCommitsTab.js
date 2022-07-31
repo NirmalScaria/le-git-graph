@@ -24,10 +24,19 @@ async function openCommitsTab() {
     // Select the commits tab.
     newButtonChild.setAttribute("aria-current", "page");
 
+    // Try to fetch stored authorization token
+    var authorizationToken = getLocalToken();
+    if(authorizationToken == null){
+        // Prompt the user to authorize with GitHub
+        await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
+    }
+    else{
+        // TODO: Open the commit tab UI
+        console.log("Authorization token found: " + authorizationToken);
+    }
+
     // Add the branches dropdown to select/deselect branches to show.
     // await loadBranchesButton();
-
-    await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
 
     // Fetches the branch data from API.
     // [branches, selectedBranchNames] = await fetchActiveBranches();
@@ -38,32 +47,5 @@ async function openCommitsTab() {
     // Fetch the commits from API.
     // await fetchCommits(branches);
 
-    function main() {
-        var currentUrl = window.location.href;
-        var splitUrl = currentUrl.split('/');
-        var repoOwner = splitUrl[3]
-        var repoName = splitUrl[4];
-        var commitsAPI = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?`;
-        var branchesAPI = `https://api.github.com/repos/${repoOwner}/${repoName}/branches`;
-        var allCommits = [];
-        fetch(branchesAPI)
-            .then(response => response.json())
-            .then(branches => {
-                branches.forEach(branch => {
-                    var branchName = branch.name;
-                    // fetch commitsapi
-                    fetch(commitsAPI + new URLSearchParams({
-                        sha: branchName,
-                    }))
-                        .then(response => response.json())
-                        .then(commits => {
-                            commits.forEach(commit => {
-                                var commitMessage = commit.commit.message;
-                            }
-                            )
-                        });
-                });
-            }
-            );
-    }
+    
 }
