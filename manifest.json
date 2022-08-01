@@ -15,6 +15,7 @@
         "js/authorisation/oauth2.js",
         "js/fetchCommits.js",
         "js/showCommits.js",
+        "js/sortCommits.js",
         "js/setBranchOptions.js",
         "js/loadBranchesButton.js",
         "js/addCommitsButton.js",
@@ -61,7 +62,9 @@
       "resources": [
         "html/branchSelection.html",
         "html/authorizationPrompt.html",
-        "html/commitsLoading.html"
+        "html/commitsLoading.html",
+        "html/commitsContainer.html",
+        "html/commitItem.html"
       ],
       "matches": [
         "<all_urls>"

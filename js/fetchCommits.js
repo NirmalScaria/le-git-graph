@@ -35,7 +35,7 @@ async function fetchCommits() {
                                                         ... on Commit {
                                                             oid
                                                             authoredDate
-                                                            message
+                                                            messageHeadlineHTML
                                                             committedDate
                                                         }  
                                                     }
@@ -74,7 +74,7 @@ async function fetchCommits() {
                                                         ... on Commit {
                                                             oid
                                                             authoredDate
-                                                            message
+                                                            messageHeadlineHTML
                                                             committedDate
                                                         }  
                                                     }
@@ -143,6 +143,6 @@ async function fetchCommits() {
         console.log("--FETCHED BRANCHES--");
         console.log("--COST : '" + APIcost + "'--");
         console.log(branches);
-        await showCommits(branches);
+        await sortCommits(branches);
     }
 }
