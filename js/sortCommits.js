@@ -15,13 +15,10 @@ async function fetchCommitDetails(commits) {
 
 async function sortCommits(branches) {
 
-    // Display the branches filter dropdown button with default value only (All branches)
-    await loadBranchesButton();
+
 
     var branchNames = [];
     var commitsObject = {};
-
-    console.log("--SORTING STARTED--");
 
     for (var branch of branches) {
         var branchname = branch.name;
@@ -34,6 +31,7 @@ async function sortCommits(branches) {
             else {
                 commitsObject[commit.oid] = commit
                 commit.branches = [branchname];
+                commit.committedDate = parseDate(commit.committedDate);
             }
         }
     }
@@ -44,7 +42,7 @@ async function sortCommits(branches) {
     }
     commitsObject = commits;
     commits.sort(function (a, b) {
-        return parseDate(b.authoredDate) - parseDate(a.authoredDate);
+        return b.committedDate - a.committedDate;
     });
 
     commits.forEach(commit => {
@@ -56,9 +54,7 @@ async function sortCommits(branches) {
         });
     });
 
-    setBranchOptions(branchNames, branchNames);
-    console.log("--SORTED FINISHED--");
     console.log("--COMMITS FOR FIRST PAGE ARE--");
     console.log(commitsObject.slice(0, 10));
-    showCommits(commitsObject.slice(0, 10));
+    showCommits(commitsObject.slice(0, 10), branchNames);
 }

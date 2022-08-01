@@ -8,25 +8,25 @@
         <div class="d-flex flex-items-center mt-1">
 
             <div class="AvatarStack flex-self-start  ">
-                <div class="AvatarStack-body" aria-label="NirmalScaria">
+                <div class="AvatarStack-body" id="avatarBody" aria-label="">
                     <a class="avatar avatar-user" style="width:20px;height:20px;" data-skip-pjax="true"
-                        data-test-selector="commits-avatar-stack-avatar-link" data-hovercard-type="user"
-                        data-hovercard-url="/users/NirmalScaria/hovercard" data-octo-click="hovercard-link-click"
-                        data-octo-dimensions="link_type:self" href="/NirmalScaria">
-                        <img data-test-selector="commits-avatar-stack-avatar-image"
-                            src="https://avatars.githubusercontent.com/u/46727865?s=40&amp;v=4" width="20" height="20"
-                            alt="@NirmalScaria" class=" avatar-user">
+                        data-test-selector="commits-avatar-stack-avatar-link" data-hovercard-type="user" id="hoverCard"
+                        data-hovercard-url="" data-octo-click="hovercard-link-click"
+                        data-octo-dimensions="link_type:self" href="">
+                        <img data-test-selector="commits-avatar-stack-avatar-image" width="20" height="20" alt=""
+                            class=" avatar-user" id="avatarImage"
+                            src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
                     </a>
                 </div>
             </div>
 
             <div class="f6 color-fg-muted min-width-0">
-                <a class="commit-author user-mention" title="View all commits by NirmalScaria"
-                    href="/NirmalScaria/commitTest/commits?author=NirmalScaria">NirmalScaria</a>
+                <a class="commit-author user-mention" title="View all commits by ..." id="viewAllCommits">Loading</a>
 
                 committed
-                <relative-time datetime="2022-07-26T17:08:20Z" class="no-wrap" title="26 Jul 2022, 22:38 GMT+5:30">6
-                    days ago</relative-time>
+                <relativetime id="relativeTime" datetime="2022-07-26T17:08:20Z" class="no-wrap"
+                    title="26 Jul 2022, 22:38 GMT+5:30">...
+                    days ago</relativetime>
 
             </div>
             <div class="ml-1">
@@ -34,7 +34,7 @@
 
                 <details
                     class="commit-build-statuses details-overlay details-reset js-dropdown-details hx_dropdown-fullscreen"
-                    data-deferred-details-content-url="/NirmalScaria/commitTest/commit/3155d88b8b15d1f7ddb9030d174991d862dbaf38/status-details">
+                    data-deferred-details-content-url="#" id="statusDetails">
                     <summary class="color-fg-success">
                         <svg aria-label="1 / 1 checks OK" role="img" height="16" viewBox="0 0 16 16" version="1.1"
                             width="16" data-view-component="true" class="octicon octicon-check">
@@ -72,7 +72,7 @@
             <button aria-label="Copy the full SHA" type="button" data-view-component="true"
                 class="tooltipped tooltipped-sw btn-outline btn BtnGroup-item px-0">
                 <clipboard-copy aria-label="Copy the full SHA" value="3155d88b8b15d1f7ddb9030d174991d862dbaf38"
-                    data-view-component="true" class="px-3 py-2" tabindex="0" role="button">
+                    data-view-component="true" class="px-3 py-2" tabindex="0" role="button" id="copyFullSHA">
                     <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
                         data-view-component="true" class="octicon octicon-copy">
                         <path fill-rule="evenodd"
@@ -91,18 +91,16 @@
                 </clipboard-copy>
 
             </button>
-            <a href="/NirmalScaria/commitTest/commit/3155d88b8b15d1f7ddb9030d174991d862dbaf38"
-                aria-label="View commit details" data-view-component="true"
-                class="tooltipped tooltipped-sw btn-outline btn BtnGroup-item text-mono f6"> 3155d88
+            <a href="" aria-label="View commit details" data-view-component="true"
+                class="tooltipped tooltipped-sw btn-outline btn BtnGroup-item text-mono f6" id="commitLink"> .......
 
             </a>
         </div>
         <div data-view-component="true" class="BtnGroup">
-            <a href="/NirmalScaria/commitTest/tree/3155d88b8b15d1f7ddb9030d174991d862dbaf38"
-                aria-label="Browse the repository at this point in the history" data-view-component="true"
-                class="tooltipped tooltipped-sw btn-outline btn BtnGroup-item"> <svg aria-hidden="true" height="16"
-                    viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true"
-                    class="octicon octicon-code">
+            <a href="" aria-label="Browse the repository at this point in the history" data-view-component="true"
+                class="tooltipped tooltipped-sw btn-outline btn BtnGroup-item" id="commitTreeLink"> <svg
+                    aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                    data-view-component="true" class="octicon octicon-code">
                     <path fill-rule="evenodd"
                         d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z">
                     </path>

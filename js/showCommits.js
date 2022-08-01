@@ -1,5 +1,7 @@
+// Get the required commit details from api
+// commits parameter contains the commit shas
 async function getCommitDetails(repoOwner, repoName, commits) {
-    var queryBeginning = `
+  var queryBeginning = `
     query { 
         rateLimit {
             limit
@@ -8,9 +10,9 @@ async function getCommitDetails(repoOwner, repoName, commits) {
             resetAt
           }
         repository(owner:"`+ repoOwner + `", name: "` + repoName + `") {`;
-    var queryContent = queryBeginning;
-    for (var i = 0; i < commits.length; i++) {
-        queryContent += `
+  var queryContent = queryBeginning;
+  for (var i = 0; i < commits.length; i++) {
+    queryContent += `
         commit`+ i + `: object(oid: "` + commits[i].oid + `") {
             ... on Commit{
                 parents(first:100) {
@@ -31,71 +33,126 @@ async function getCommitDetails(repoOwner, repoName, commits) {
                 }
               }
             }`;
+  }
+  queryContent += ` } } `;
+  var endpoint = "https://api.github.com/graphql";
+  var headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getLocalToken()
+  };
+  var body = {
+    query: queryContent
+  };
+  var response = await fetch(endpoint, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(body)
+  });
+  if ((response.status != 200 && response.status != 201)) {
+    console.log("--ERROR FETCHING GRAPHQL--");
+    addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
+    return (false);
+  }
+  var data = await response.json();
+  console.log(data);
+  if (data.error) {
+    console.log("--ERROR FETCHING GRAPHQL--");
+    addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
+    return (false);
+  }
+  var commitDetails = data.data.repository;
+  for (var i = 0; i < commits.length; i++) {
+    commits[i].author = commitDetails['commit' + i].author.name;
+    if (commitDetails['commit' + i].author.user != null) {
+      commits[i].authorAvatar = commitDetails['commit' + i].author.user.avatarUrl;
+      commits[i].authorLogin = commitDetails['commit' + i].author.user.login;
+      commits[i].hasUserData = true;
     }
-    queryContent += ` } } `;
-    var endpoint = "https://api.github.com/graphql";
-    var headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + getLocalToken()
-    };
-    var body = {
-        query: queryContent
-    };
-    var response = await fetch(endpoint, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(body)
-    });
-    if ((response.status != 200 && response.status != 201)) {
-        console.log("--ERROR FETCHING GRAPHQL--");
-        addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
-        return (false);
+    else {
+      commits[i].authorAvatar = "";
+      commits[i].authorLogin = commitDetails['commit' + i].author.name;
+      commits[i].hasUserData = false;
     }
-    var data = await response.json();
-    console.log(data);
-    if (data.error) {
-        console.log("--ERROR FETCHING GRAPHQL--");
-        addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
-        return (false);
-    }
-    var commitDetails = data.data.repository;
-    for (var i = 0; i < commits.length; i++) {
-        commits[i].author = commitDetails['commit' + i].author.name;
-        commits[i].authorAvatar = commitDetails['commit' + i].author.user.avatarUrl;
-        commits[i].authorLogin = commitDetails['commit' + i].author.user.login;
-        commits[i].parents = commitDetails['commit' + i].parents.edges;
-    }
-    console.log(commits);
+    commits[i].parents = commitDetails['commit' + i].parents.edges;
+  }
+  return (commits);
 }
 
-async function showCommits(commits) {
-    var presentUrl = window.location.href;
-    var repoOwner = presentUrl.split('/')[3];
-    var repoName = presentUrl.split('/')[4];
-    getCommitDetails(repoOwner, repoName, commits);
-    // return;
-    var contentView = document.getElementsByClassName("clearfix")[0];
-    var commitsLoadingHtml = chrome.runtime.getURL('html/commitsContainer.html');
-    var commitsContainer;
-    await fetch(commitsLoadingHtml).then(response => response.text()).then(commitsContainerHtmlText => {
-        var tempDiv = document.createElement('div');
-        tempDiv.innerHTML = commitsContainerHtmlText;
-        commitsContainer = tempDiv.firstChild;
-        contentView.appendChild(commitsContainer);
-    });
-    var commitItemHtml = chrome.runtime.getURL('html/commitItem.html');
-    await fetch(commitItemHtml).then(response => response.text()).then(commitItemHtmlText => {
-        var tempDiv = document.createElement('div');
-        tempDiv.innerHTML = commitItemHtmlText;
-        var commitItem = tempDiv.firstChild;
-        for (var commit of commits) {
-            var newCommitItem = commitItem.cloneNode(true);
-            newCommitItem.setAttribute("data-url", "/" + repoOwner + "/" + repoName + "/commits/" + commit.oid + "/commits_list_item");
-            newCommitItem.setAttribute("commitSha", commit.oid);
-            newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML;
-            newCommitItem.querySelector("#commitMessage").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid);
-            commitsContainer.appendChild(newCommitItem);
-        }
-    });
-    return;
+async function showCommits(commits, branchNames) {
+  var presentUrl = window.location.href;
+  var repoOwner = presentUrl.split('/')[3];
+  var repoName = presentUrl.split('/')[4];
+  commits = await getCommitDetails(repoOwner, repoName, commits);
+  var contentView = document.getElementsByClassName("clearfix")[0];
+
+  var commitsContainerDummy = document.createElement("div");
+
+  var commitItemHtml = chrome.runtime.getURL('html/commitItem.html');
+  await fetch(commitItemHtml).then(response => response.text()).then(commitItemHtmlText => {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = commitItemHtmlText;
+    var commitItem = tempDiv.firstChild;
+    for (var commit of commits) {
+      var newCommitItem = commitItem.cloneNode(true);
+      newCommitItem.setAttribute("data-url", "/" + repoOwner + "/" + repoName + "/commits/" + commit.oid + "/commits_list_item");
+      newCommitItem.setAttribute("commitSha", commit.oid);
+      newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML;
+      newCommitItem.querySelector("#commitMessage").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid);
+      newCommitItem.querySelector("#avatarBody").setAttribute("aria-label", commit.authorLogin);
+      newCommitItem.querySelector("#hoverCard").setAttribute("data-hovercard-url", "/users/" + commit.authorLogin + "/hovercard");
+      newCommitItem.querySelector("#hoverCard").setAttribute("href", "/" + commit.authorLogin);
+      newCommitItem.querySelector("#avatarImage").setAttribute("alt", "@" + commit.authorLogin);
+      newCommitItem.querySelector("#copyFullSHA").setAttribute("value", commit.oid);
+      newCommitItem.querySelector("#commitLink").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid);
+      newCommitItem.querySelector("#commitTreeLink").setAttribute("href", "/" + repoOwner + "/" + repoName + "/tree/" + commit.oid);
+      newCommitItem.querySelector("#commitLink").innerHTML = commit.oid.substring(0, 7);
+      newCommitItem.querySelector("#statusDetails").setAttribute("data-deferred-details-content-url", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid + "/status-details");
+      newCommitItem.querySelector("#viewAllCommits").innerHTML = commit.authorLogin;
+      newCommitItem.querySelector("#relativeTime").innerText = relativeTime(commit.committedDate);
+      if (commit.hasUserData) {
+        newCommitItem.querySelector("#avatarImage").setAttribute("src", commit.authorAvatar + "&s=40");
+        newCommitItem.querySelector("#viewAllCommits").setAttribute("title", "View all commits by " + commit.authorLogin);
+        newCommitItem.querySelector("#viewAllCommits").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commits?author=" + commit.authorLogin);
+      }
+      commitsContainerDummy.appendChild(newCommitItem);
+    }
+
+
+  });
+  var commitsLoadingHtml = chrome.runtime.getURL('html/commitsContainer.html');
+  await fetch(commitsLoadingHtml).then(response => response.text()).then(commitsContainerHtmlText => {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = commitsContainerHtmlText;
+    commitsContainer = tempDiv.firstChild;
+  });
+  commitsContainer.appendChild(commitsContainerDummy);
+  console.log("DONE EVERYTHING. PUTTING TO UI");
+
+  // Display the branches filter dropdown button with default value only (All branches)
+  await loadBranchesButton();
+  setBranchOptions(branchNames, branchNames);
+  contentView.appendChild(commitsContainer);
+  return;
+}
+
+// Format the date to a human friendly format
+// Like "1 day ago", "2 weeks ago", "3 months ago"
+function relativeTime(date) {
+  var now = new Date().getTime();
+  const difference = (now - date.getTime()) / 1000;
+  let output = ``;
+  if (difference < 60) {
+    output = `${difference} seconds ago`;
+  } else if (difference < 3600) {
+    output = `${Math.floor(difference / 60)} minutes ago`;
+  } else if (difference < 86400) {
+    output = `${Math.floor(difference / 3600)} hours ago`;
+  } else if (difference < 2620800) {
+    output = `${Math.floor(difference / 86400)} days ago`;
+  } else if (difference < 31449600) {
+    output = `${Math.floor(difference / 2620800)} months ago`;
+  } else {
+    output = `${Math.floor(difference / 31449600)} years ago`;
+  }
+  return (output);
 }

@@ -34,7 +34,6 @@ async function fetchCommits() {
                                                     node {
                                                         ... on Commit {
                                                             oid
-                                                            authoredDate
                                                             messageHeadlineHTML
                                                             committedDate
                                                         }  
@@ -73,7 +72,6 @@ async function fetchCommits() {
                                                     node {
                                                         ... on Commit {
                                                             oid
-                                                            authoredDate
                                                             messageHeadlineHTML
                                                             committedDate
                                                         }  
