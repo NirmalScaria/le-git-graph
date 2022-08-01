@@ -50,4 +50,6 @@ function setBranchOptions(branches, selectedBranchNames) {
             });
         }
     });
+    var sizedContainer = document.getElementById("branches-sized-container");
+    sizedContainer.style.height = (35 * branches.length + 45) + "px";
 }

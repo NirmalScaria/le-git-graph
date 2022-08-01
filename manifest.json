@@ -16,7 +16,6 @@
         "js/fetchCommits.js",
         "js/showCommits.js",
         "js/setBranchOptions.js",
-        "js/fetchBranches.js",
         "js/loadBranchesButton.js",
         "js/addCommitsButton.js",
         "js/openCommitsTab.js",
