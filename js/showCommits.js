@@ -1,3 +1,36 @@
+function assignColors(commits) {
+  var commitDict = {}
+  for (var commit of commits) {
+    commitDict[commit.oid] = commit
+  }
+  // TODO : Define good colours properly
+  var colors = ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"]
+
+  var commitIndex = 0;
+  // For each commit, assign a colour
+  // If the commit has a parent, assign the same colour to the parent
+  // If the commit has no parent, assign a random colour
+  // If the commit has two parents, assign the original colour to first parent (merge target branch)
+  // and a random colour to the second parent (merge source branch)
+  for (var commit of commits) {
+    var commitsha = commit.oid
+    commit = commitDict[commitsha];
+    if (commit.color == null) {
+      commit.color = colors[commitIndex % colors.length];
+      commit.lineIndex = commitIndex;
+      commitIndex += 1;
+    }
+    if (commit.parents.length > 0) {
+      if (commit.parents[0].node.oid in commitDict && commitDict[commit.parents[0].node.oid].color == null) {
+        commitDict[commit.parents[0].node.oid].color = commit.color;
+        commitDict[commit.parents[0].node.oid].lineIndex = commit.lineIndex;
+      }
+    }
+  }
+  return ([commits, commitDict]);
+}
+
+
 // Get the required commit details from api
 // commits parameter contains the commit shas
 async function getCommitDetails(repoOwner, repoName, commits) {
@@ -87,16 +120,35 @@ async function showCommits(commits, branchNames) {
 
   var commitsContainerDummy = document.createElement("div");
 
+  var commitsOutsideContainer;
+  var commitsLoadingHtml = chrome.runtime.getURL('html/commitsContainer.html');
+  var commitsGraphContainer;
+
+  var commitDict;
+  [commits, commitDict] = assignColors(commits);
+  await fetch(commitsLoadingHtml).then(response => response.text()).then(commitsContainerHtmlText => {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = commitsContainerHtmlText;
+    commitsOutsideContainer = tempDiv.querySelector("#commits-outside-container");
+    commitsContainer = tempDiv.querySelector("#commits-container");
+
+  });
+
   var commitItemHtml = chrome.runtime.getURL('html/commitItem.html');
   await fetch(commitItemHtml).then(response => response.text()).then(commitItemHtmlText => {
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = commitItemHtmlText;
     var commitItem = tempDiv.firstChild;
+    
     for (var commit of commits) {
       var newCommitItem = commitItem.cloneNode(true);
       newCommitItem.setAttribute("data-url", "/" + repoOwner + "/" + repoName + "/commits/" + commit.oid + "/commits_list_item");
       newCommitItem.setAttribute("commitSha", commit.oid);
-      newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML;
+      var parents = []
+      for (var parent of commit.parents) {
+        parents.push(parent.node.oid.substring(0, 7));
+      }
+      newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML + " branches : " + commit.branches + ' parents : ' + parents;
       newCommitItem.querySelector("#commitMessage").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid);
       newCommitItem.querySelector("#avatarBody").setAttribute("aria-label", commit.authorLogin);
       newCommitItem.querySelector("#hoverCard").setAttribute("data-hovercard-url", "/users/" + commit.authorLogin + "/hovercard");
@@ -116,22 +168,25 @@ async function showCommits(commits, branchNames) {
       }
       commitsContainerDummy.appendChild(newCommitItem);
     }
-
-
   });
-  var commitsLoadingHtml = chrome.runtime.getURL('html/commitsContainer.html');
-  await fetch(commitsLoadingHtml).then(response => response.text()).then(commitsContainerHtmlText => {
-    var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = commitsContainerHtmlText;
-    commitsContainer = tempDiv.firstChild;
-  });
+
   commitsContainer.appendChild(commitsContainerDummy);
   console.log("DONE EVERYTHING. PUTTING TO UI");
 
   // Display the branches filter dropdown button with default value only (All branches)
   await loadBranchesButton();
   setBranchOptions(branchNames, branchNames);
-  contentView.appendChild(commitsContainer);
+  contentView.appendChild(commitsOutsideContainer);
+
+  drawGraph(commits, commitDict);
+
+  // Redraw the graph each time the height of the commits container changes.
+  // This is necessary because the dots have to align even if the user
+  // resizes the window and wrapping commit message increases the commit item height.
+  const resizeObserver = new ResizeObserver(entries =>
+    drawGraph(commits, commitDict)
+  )
+  resizeObserver.observe(commitsContainer);
   return;
 }
 
