@@ -13,7 +13,7 @@ async function fetchCommitDetails(commits) {
     });
 }
 
-async function sortCommits(branches) {
+async function sortCommits(branches, heads) {
 
 
 
@@ -56,5 +56,6 @@ async function sortCommits(branches) {
 
     console.log("--COMMITS FOR FIRST PAGE ARE--");
     console.log(commitsObject.slice(0, 10));
-    showCommits(commitsObject.slice(0, 10), branchNames);
+    await showCommits(commitsObject.slice(0, 10), branchNames, heads);
+    showLegend(heads);
 }

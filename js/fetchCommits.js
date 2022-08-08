@@ -136,11 +136,20 @@ async function fetchCommits() {
     var repoOwner = splitUrl[3]
     var repoName = splitUrl[4];
 
+    var heads = [];
+
     // fetchCommitsPage returns true only if the fetch was successful
     if (await fetchCommitsPage(repoOwner, repoName, "NONE")) {
         console.log("--FETCHED BRANCHES--");
         console.log("--COST : '" + APIcost + "'--");
-        console.log(branches);
-        await sortCommits(branches);
+        branches = branches.map(branch => {
+            heads.push({
+                name: branch.name,
+                oid: branch.target.history.edges[0].node.oid,
+            });
+            branch.target.history.edges[0].node.isHead = true;
+            return branch;
+        })
+        await sortCommits(branches, heads);
     }
 }

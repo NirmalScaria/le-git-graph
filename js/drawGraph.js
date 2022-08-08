@@ -35,8 +35,7 @@ async function drawGraph(commits, commitDict) {
       var parentx = (parentCommitItem.getAttribute("cx"));
       var parenty = (parentCommitItem.getAttribute("cy"));
       // Line between commits
-      // TODO: Make this curved and beautiful.
-      commitsGraphContainer.innerHTML += '<line x1="' + (30 + (commit.lineIndex * 20)) + '" y1="' + yPos + '" x2="' + parentx + '" y2="' + parenty + '" stroke="' + parentObject.color + '" stroke-width="1" />';
+      commitsGraphContainer.innerHTML += '<path d = "M ' + (30 + (commit.lineIndex * 20)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 20)) + ' ' + (parenty - 40) + ', ' + parentx + ' ' + (yPos + 40) + ', ' + parentx + ' ' + parenty + '" stroke="' + parentObject.color + '" stroke-width="1" />';
     }
     yPos += thisCommitItem.offsetHeight / 2;
   }
@@ -44,6 +43,9 @@ async function drawGraph(commits, commitDict) {
   // Redrawing actual commit dots which will be visible
   for (var commit of commits) {
     var thisCommitItem = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0];
+    if (commit.isHead) {
+      commitsGraphContainer.innerHTML += '<circle cx="' + thisCommitItem.getAttribute("cx") + '" cy="' + thisCommitItem.getAttribute("cy") + '" r="7" stroke="' + commit.color + '" fill = "#00000000" circlesha = "' + commit.oid + '"/>';
+    }
     commitsGraphContainer.innerHTML += '<circle cx="' + thisCommitItem.getAttribute("cx") + '" cy="' + thisCommitItem.getAttribute("cy") + '" r="4" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
   }
 }

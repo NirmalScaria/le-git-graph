@@ -9,6 +9,7 @@
         "*://*.github.com/*"
       ],
       "js": [
+        "js/showLegend.js",
         "js/drawGraph.js",
         "js/showCommitsLoading.js",
         "js/getLocalToken.js",
