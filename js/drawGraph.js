@@ -35,7 +35,7 @@ async function drawGraph(commits, commitDict) {
       var parentx = (parentCommitItem.getAttribute("cx"));
       var parenty = (parentCommitItem.getAttribute("cy"));
       // Line between commits
-      commitsGraphContainer.innerHTML += '<path d = "M ' + (30 + (commit.lineIndex * 20)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 20)) + ' ' + (parenty - 40) + ', ' + parentx + ' ' + (yPos + 40) + ', ' + parentx + ' ' + parenty + '" stroke="' + parentObject.color + '" stroke-width="1" />';
+      commitsGraphContainer.innerHTML += '<path d = "M ' + (30 + (commit.lineIndex * 20)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 20)) + ' ' + (yPos + 30) + ', ' + parentx + ' ' + (yPos+20 ) + ', ' + parentx + ' ' + (yPos + 50) + ' L '+ parentx + ' ' + parenty  + ' " stroke="' + parentObject.color + '" stroke-width="1" fill = "#00000000"/>';
     }
     yPos += thisCommitItem.offsetHeight / 2;
   }
