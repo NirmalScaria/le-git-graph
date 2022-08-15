@@ -1,3 +1,8 @@
+// Draws a curve between two given [commit] points
+async function drawCurve(container, startx, starty, endx, endy, color) {
+  container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' C ' + startx + ' ' + (parseInt(starty) + 20) + ' , ' + endx + ' ' + (parseInt(starty) + 20) + ' , ' + endx + ' ' + (parseInt(starty) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
+}
+
 // Draws the graph into the graphSvg element. (Where the graph is supposed to be drawn)
 async function drawGraph(commits, commitDict) {
   // Taking  the heights of the actual commit listings, so that the
@@ -11,15 +16,6 @@ async function drawGraph(commits, commitDict) {
   commitsGraphContainer.innerHTML = "";
   commitsGraphContainer.style.height = commitsContainerHeight;
   var yPos = 0;
-  for (var commit of commits) {
-    var thisCommitItem = document.querySelectorAll('[commitsha="' + commit.oid + '"]')[0];
-    yPos += thisCommitItem.offsetHeight / 2;
-    // Drawing the commits dots. (This is more of a dummy and will be redrawn so that lines appear below circles)
-    // The purpose of this first set of circles is to easily query the position of the commit dot.
-    commitsGraphContainer.innerHTML += '<circle cx="' + (30 + (commit.lineIndex * 14)) + '" cy="' + yPos + '" r="1" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
-    yPos += thisCommitItem.offsetHeight / 2;
-  }
-  yPos = 0;
   var indexArray = Array.from(Array(commits.length), () => new Array(0));
   var lineColors = Array.from('#000000', () => undefined);
   for (var commit of commits) {
@@ -46,48 +42,57 @@ async function drawGraph(commits, commitDict) {
       }
     }
     for (var i = lineBeginning; i < lineEnding; i++) {
-      indexArray[i].push(line);
+      indexArray[i + 1].push(line);
     }
   }
-  console.log(indexArray);
-  console.log(lineColors);
+  // Now indexArray is an array of arrays, where the ith array
+  // contains all the lines that are there on the ith row
 
-  for (var commit of commits) {
+  // Dummy points
+  for (var i = 0; i < commits.length; i++) {
+    var commit = commits[i];
+    var commitXIndex = indexArray[i].indexOf(commit.lineIndex);
+    if (commitXIndex == -1) {
+      commitXIndex = commit.lineIndex;
+    }
     var thisCommitItem = document.querySelectorAll('[commitsha="' + commit.oid + '"]')[0];
     yPos += thisCommitItem.offsetHeight / 2;
-    for (var parent in commit.parents) {
-      var parentSha = (commit.parents[parent].node.oid);
-      var parentObject = (commitDict[parentSha]);
-      var parentCommitItem = document.querySelectorAll('[circlesha="' + parentSha + '"]')[0];
-      var thisCommitDot = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0];
-      if (parentCommitItem == undefined) {
-        // Only if the parent is not in the shown commit list
-        // Shwoing a dotted indicator.
-        if (parent == 0) {
-          commitsGraphContainer.innerHTML += '<path stroke-dasharray="2,2" d = "M ' + (30 + (commit.lineIndex * 14)) + ',' + yPos + ' l 0 50" stroke="' + commit.color + '" stroke-width="1" fill="none" />';
-          commitsGraphContainer.innerHTML += '<path d = "M ' + (30 + (commit.lineIndex * 14)) + ',' + (yPos + 50) + ' l 10 10 l -20 0" stroke="' + commit.color + '" stroke-width="1" fill="none" />';
-
-        }
-        else {
-          commitsGraphContainer.innerHTML += '<path  stroke-dasharray="2,2" d = "M ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos + 20) + ', ' + (30 + (commit.lineIndex * 14) + 14) + ' ' + (yPos + 10) + ', ' + (30 + (commit.lineIndex * 14) + 14) + ' ' + (yPos + 30) + ' " stroke="' + commit.color + '" stroke-width="1" fill = "#00000000"/>';
-          commitsGraphContainer.innerHTML += '<path  stroke-dasharray="2,2" d = "M ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos + 20) + ', ' + (30 + (commit.lineIndex * 14) + 14) + ' ' + (yPos + 10) + ', ' + (30 + (commit.lineIndex * 14) + 14) + ' ' + (yPos + 30) + ' " stroke="' + commit.color + '" stroke-width="1" fill = "#00000000"/>';
-        }
-        continue;
-      }
-      var parentx = (parentCommitItem.getAttribute("cx"));
-      var parenty = (parentCommitItem.getAttribute("cy"));
-      // Line between commits
-      // commitsGraphContainer.innerHTML += '<path d = "M ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos) + ' C ' + (30 + (commit.lineIndex * 14)) + ' ' + (yPos + 30) + ', ' + parentx + ' ' + (yPos+20 ) + ', ' + parentx + ' ' + (yPos + 50) + ' L '+ parentx + ' ' + parenty  + ' " stroke="' + parentObject.color + '" stroke-width="1" fill = "#00000000"/>';
-    }
+    // Drawing the commits dots. (This is more of a dummy and will be redrawn so that lines appear below circles)
+    // The purpose of this first set of circles is to easily query the position of the commit dot.
+    commitsGraphContainer.innerHTML += '<circle cx="' + (30 + (commitXIndex * 14)) + '" cy="' + yPos + '" r="1" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
     yPos += thisCommitItem.offsetHeight / 2;
   }
-  for (var line = 0; line < 20; line++) {
-    for (var commitIndex = 0; commitIndex < commits.length - 1; commitIndex++) {
-      if(indexArray[commitIndex].includes(line) && indexArray[commitIndex+1].includes(line)){
-       // TODO Draw the lines according to the indexArray.
+
+
+  // Curve for connecting existing commits
+  for (var i = 0; i < (commits.length - 1); i++) {
+    var commit = commits[i];
+    for (parentItem of commit.parents) {
+      var parent = commitDict[parentItem.node.oid];
+      var thisx = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cx.baseVal.value;
+      var thisy = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cy.baseVal.value;
+      if (parent != undefined) {
+        var nextx = 30 + (14 * (indexArray[i + 1].indexOf(parent.lineIndex)));
+        var nexty = document.querySelectorAll('[circlesha="' + commits[i + 1].oid + '"]')[0].cy.baseVal.value;
+        drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[parent.lineIndex]);
       }
     }
   }
+
+  // Curve for maintaining continuity of lines
+  for (var thisLineIndex = 0; thisLineIndex < 20; thisLineIndex++) {
+    for (var i = 0; i < (commits.length - 1); i++) {
+      var commit = commits[i];
+      if (indexArray[i].includes(thisLineIndex) && indexArray[i + 1].includes(thisLineIndex)) {
+        var thisx = 30 + (14 * (indexArray[i].indexOf(thisLineIndex)));
+        var thisy = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cy.baseVal.value;
+        var nextx = 30 + (14 * (indexArray[i + 1].indexOf(thisLineIndex)));
+        var nexty = document.querySelectorAll('[circlesha="' + commits[i + 1].oid + '"]')[0].cy.baseVal.value;
+        drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[thisLineIndex]);
+      }
+    }
+  }
+
   var yPos = 0;
   // Redrawing actual commit dots which will be visible
   for (var commit of commits) {
