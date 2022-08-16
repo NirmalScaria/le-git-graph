@@ -1,6 +1,10 @@
 // Draws a curve between two given [commit] points
 async function drawCurve(container, startx, starty, endx, endy, color) {
-  container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' C ' + startx + ' ' + (parseInt(starty) + 20) + ' , ' + endx + ' ' + (parseInt(starty) + 20) + ' , ' + endx + ' ' + (parseInt(starty) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
+  var firstLineEndY = starty + ((endy-starty-40) / 2);
+  console.log("firstlinenedy");
+  console.log(firstLineEndY);
+  var secondLineStartY = firstLineEndY + 40;
+  container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + firstLineEndY + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
 }
 
 // Draws the graph into the graphSvg element. (Where the graph is supposed to be drawn)
