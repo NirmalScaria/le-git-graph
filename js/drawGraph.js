@@ -57,7 +57,7 @@ async function drawGraph(commits, commitDict) {
     var commit = commits[i];
     var commitXIndex = indexArray[i].indexOf(commit.lineIndex);
     if (commitXIndex == -1) {
-      commitXIndex = commit.lineIndex;
+      commitXIndex = indexArray[i].length;
     }
     var thisCommitItem = document.querySelectorAll('[commitsha="' + commit.oid + '"]')[0];
     yPos += thisCommitItem.offsetHeight / 2;
