@@ -8,6 +8,17 @@
 async function fetchFurther(commits, allCommits, heads, pageNo, branchNames) {
   // commits array just contains the last 10 commits so that their 
   // 10 levels of history can be fetched.
+
+  // Adding the loader to the UI
+  var commitsOl = document.getElementById("commitsOl");
+  var loadingIcon = chrome.runtime.getURL('html/commitsLoading.html');
+  fetch(loadingIcon).then(response => response.text()).then(loadingIconText => {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = loadingIconText;
+    var newContent = tempDiv.firstChild;
+    commitsOl.appendChild(newContent);
+  });
+
   var presentUrl = window.location.href;
   var repoOwner = presentUrl.split('/')[3];
   var repoName = presentUrl.split('/')[4];
