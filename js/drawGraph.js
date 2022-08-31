@@ -1,8 +1,6 @@
 // Draws a curve between two given [commit] points
 async function drawCurve(container, startx, starty, endx, endy, color) {
-  var firstLineEndY = starty + ((endy-starty-40) / 2);
-  console.log("firstlinenedy");
-  console.log(firstLineEndY);
+  var firstLineEndY = starty + ((endy - starty - 40) / 2);
   var secondLineStartY = firstLineEndY + 40;
   container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + firstLineEndY + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
 }

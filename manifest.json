@@ -11,6 +11,7 @@
       "js": [
         "js/showLegend.js",
         "js/drawGraph.js",
+        "js/fetchFurther.js",
         "js/showCommitsLoading.js",
         "js/getLocalToken.js",
         "js/addAuthorizationPrompt.js",

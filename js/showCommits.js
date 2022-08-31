@@ -33,7 +33,7 @@ function assignColors(commits) {
 
 // Get the required commit details from api
 // commits parameter contains the commit shas
-async function getCommitDetails(repoOwner, repoName, commits) {
+async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
   var queryBeginning = `
     query { 
         rateLimit {
@@ -44,7 +44,7 @@ async function getCommitDetails(repoOwner, repoName, commits) {
           }
         repository(owner:"`+ repoOwner + `", name: "` + repoName + `") {`;
   var queryContent = queryBeginning;
-  for (var i = 0; i < commits.length; i++) {
+  for (var i = Math.max(0, commits.length - 11); i < commits.length; i++) {
     queryContent += `
         commit`+ i + `: object(oid: "` + commits[i].oid + `") {
             ... on Commit{
@@ -95,6 +95,9 @@ async function getCommitDetails(repoOwner, repoName, commits) {
   }
   var commitDetails = data.data.repository;
   for (var i = 0; i < commits.length; i++) {
+    if (commitDetails['commit' + i] == undefined) {
+      continue;
+    }
     commits[i].author = commitDetails['commit' + i].author.name;
     if (commitDetails['commit' + i].author.user != null) {
       commits[i].authorAvatar = commitDetails['commit' + i].author.user.avatarUrl;
@@ -108,14 +111,25 @@ async function getCommitDetails(repoOwner, repoName, commits) {
     }
     commits[i].parents = commitDetails['commit' + i].parents.edges;
   }
-  return (commits);
+  for (var commit of commits) {
+    for (var target of allCommits) {
+      if (commit.oid == target.oid) {
+        target.author = commit.author;
+        target.authorAvatar = commit.authorAvatar;
+        target.authorLogin = commit.authorLogin;
+        target.hasUserData = commit.hasUserData;
+        target.parents = commit.parents;
+      }
+    }
+  }
+  return ([commits, allCommits]);
 }
 
-async function showCommits(commits, branchNames) {
+async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
   var presentUrl = window.location.href;
   var repoOwner = presentUrl.split('/')[3];
   var repoName = presentUrl.split('/')[4];
-  commits = await getCommitDetails(repoOwner, repoName, commits);
+  [commits, allCommits] = await getCommitDetails(repoOwner, repoName, commits, allCommits);
   var contentView = document.getElementsByClassName("clearfix")[0];
 
   var commitsContainerDummy = document.createElement("div");
@@ -131,7 +145,6 @@ async function showCommits(commits, branchNames) {
     tempDiv.innerHTML = commitsContainerHtmlText;
     commitsOutsideContainer = tempDiv.querySelector("#commits-outside-container");
     commitsContainer = tempDiv.querySelector("#commits-container");
-
   });
 
   var commitItemHtml = chrome.runtime.getURL('html/commitItem.html');
@@ -139,7 +152,7 @@ async function showCommits(commits, branchNames) {
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = commitItemHtmlText;
     var commitItem = tempDiv.firstChild;
-    
+
     for (var commit of commits) {
       var newCommitItem = commitItem.cloneNode(true);
       newCommitItem.setAttribute("data-url", "/" + repoOwner + "/" + repoName + "/commits/" + commit.oid + "/commits_list_item");
@@ -178,6 +191,8 @@ async function showCommits(commits, branchNames) {
   setBranchOptions(branchNames, branchNames);
   contentView.appendChild(commitsOutsideContainer);
 
+  addNextPageButton(commits, branchNames, allCommits, heads, pageNo);
+
   drawGraph(commits, commitDict);
 
   // Redraw the graph each time the height of the commits container changes.
@@ -210,4 +225,16 @@ function relativeTime(date) {
     output = `${Math.floor(difference / 31449600)} years ago`;
   }
   return (output);
+}
+
+function addNextPageButton(commits, branchNames, allCommits, heads, pageNo) {
+  var newerButton = document.getElementById("newerButton");
+  var olderButton = document.getElementById("olderButton");
+  if (commits.length >= 10) {
+    olderButton.setAttribute("aria-disabled", "false");
+    olderButton.addEventListener("click", function () {
+      // fetchFurther(commits, branchNames, allCommits, branches, heads, pageNo);
+      fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames);
+    });
+  }
 }
