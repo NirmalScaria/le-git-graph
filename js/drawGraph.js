@@ -18,6 +18,10 @@ async function drawGraph(commits, commitDict) {
   commitsGraphContainer.innerHTML = "";
   commitsGraphContainer.style.height = commitsContainerHeight;
   var yPos = 0;
+
+  // indexArray acts as a two dimensional array, which represents the structure of 
+  // the whole graph. indexArray[i][j] represents which line should occupy the 
+  // jth horizontal position on the ith line (next to the ith commit)
   var indexArray = Array.from(Array(commits.length), () => new Array(0));
   var lineColors = Array.from('#000000', () => undefined);
   for (var commit of commits) {

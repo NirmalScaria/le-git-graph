@@ -1,13 +1,13 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://drive.google.com/uc?export=download&id=1brZLKMazyQXd7jznNX-sPfKsZ9uUfJTh">
   <source media="(prefers-color-scheme: light)" srcset="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
-  <img alt="Logo" src="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
+  <img alt="Github Tree Graph" src="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
 </picture>
-
-[![Version](https://img.shields.io/badge/Version-0.0-yellowgreen)](https://opensource.org/licenses/)
 
 
 A browser extension that displays the git graph for any GitHub repository.
+
+[![Version](https://img.shields.io/badge/Version-0.0-yellowgreen)](https://opensource.org/licenses/)
 
 ## Demo
 ![Demo image](https://drive.google.com/uc?export=download&id=12plJnQgqAvSecLz5jrLajojtuRX2aPyZ)

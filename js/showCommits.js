@@ -18,8 +18,8 @@ function assignColors(commits) {
     if (commit.color == null) {
       commit.color = colors[commitIndex % colors.length];
       commit.lineIndex = commitIndex;
-      commitIndex += 1;
     }
+    commitIndex += 1;
     if (commit.parents.length > 0) {
       if (commit.parents[0].node.oid in commitDict && commitDict[commit.parents[0].node.oid].color == null) {
         commitDict[commit.parents[0].node.oid].color = commit.color;
