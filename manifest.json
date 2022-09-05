@@ -1,7 +1,7 @@
 {
   "name": "GitHub Tree Graph",
-  "description": "An informative Git Commit graph to your github!",
-  "version": "1.0",
+  "description": "A browser extension that displays the git graph for any GitHub repository.",
+  "version": "0.0.0.1",
   "manifest_version": 3,
   "content_scripts": [
     {
@@ -39,9 +39,7 @@
   ],
   "permissions": [
     "tabs",
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
   ],
   "action": {
     "default_icon": {
