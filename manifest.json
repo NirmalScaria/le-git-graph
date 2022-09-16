@@ -38,8 +38,7 @@
     }
   ],
   "permissions": [
-    "tabs",
-    "storage"
+    "tabs"
   ],
   "action": {
     "default_icon": {
