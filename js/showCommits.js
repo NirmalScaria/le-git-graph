@@ -161,7 +161,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
       for (var parent of commit.parents) {
         parents.push(parent.node.oid.substring(0, 7));
       }
-      newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML + " branches : " + commit.branches + ' parents : ' + parents;
+      newCommitItem.querySelector("#commitMessage").innerHTML = commit.messageHeadlineHTML;
       newCommitItem.querySelector("#commitMessage").setAttribute("href", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid);
       newCommitItem.querySelector("#avatarBody").setAttribute("aria-label", commit.authorLogin);
       newCommitItem.querySelector("#hoverCard").setAttribute("data-hovercard-url", "/users/" + commit.authorLogin + "/hovercard");

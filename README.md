@@ -1,15 +1,15 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://drive.google.com/uc?export=download&id=1brZLKMazyQXd7jznNX-sPfKsZ9uUfJTh">
   <source media="(prefers-color-scheme: light)" srcset="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
-  <img alt="Github Tree Graph" src="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
+  <img alt="Le Git Graph" src="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
 </picture>
 
 
 A browser extension that displays the git graph for any GitHub repository.
 
-[![Status](https://img.shields.io/badge/Status-Beta-yellowgreen)]()
+[![Status](https://img.shields.io/badge/Status-Stable-green)]()
 [![Manifest](https://img.shields.io/badge/Manifest-V3-green)]()
-[![Version](https://img.shields.io/badge/Version-0.0.0.1-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Version-1.0-green)]()
 
 ## Demo
 ![Demo image](https://drive.google.com/uc?export=download&id=12plJnQgqAvSecLz5jrLajojtuRX2aPyZ)
@@ -35,7 +35,7 @@ Open the commits tab and follow the prompt to authenticate with your GitHub acco
 ## Features
 
 - Authentication with GitHub OAuth  ✓
-- Migrate OAuth backend from Heroku to Firebase Functions - Pending
+- Migrate OAuth backend from Heroku to Firebase Functions - ✓
 - Connection to GitHub GraphQL ✓
 - Fetch the commits data from API ✓
 - Fetch further commits on demand ✓
