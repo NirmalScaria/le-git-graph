@@ -16,7 +16,7 @@ A browser extension that displays the git graph for any GitHub repository.
 
 Install the extension from Chrome Web store
 
-[https://chrome.google.com/webstore/detail/github-tree-graph/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/github-tree-graph/joggkdfebigddmaagckekihhfncdobff)
+[https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff)
 
 
 After installation, open any GitHub repository and a new 'Commits' tab will be visible.
