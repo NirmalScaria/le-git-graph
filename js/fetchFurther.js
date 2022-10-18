@@ -119,5 +119,6 @@ async function fetchFurther(commits, allCommits, heads, pageNo, branchNames) {
   });
   pageNo += 1;
   var commitsToShow = (allCommits.slice(0, 10 * pageNo));
-  showCommits(commitsToShow, branchNames, allCommits, heads, pageNo);
+  await showCommits(commitsToShow, branchNames, allCommits, heads, pageNo);
+  showLegend(heads);
 }
