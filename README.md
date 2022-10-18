@@ -1,9 +1,6 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://drive.google.com/uc?export=download&id=1brZLKMazyQXd7jznNX-sPfKsZ9uUfJTh">
-  <source media="(prefers-color-scheme: light)" srcset="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
-  <img alt="Le Git Graph" src="https://drive.google.com/uc?export=download&id=1OqQqmJdKCEJzxz8rDo7OhnAxVyNYl1eA">
-</picture>
+## Le Git Graph - Commits Graph for GitHub
 
+<img src = "https://drive.google.com/uc?export=download&id=12bnQqy4cm2vQcZSKWo2INBv-69iqkF_p" width = "150">
 
 A browser extension that displays the git graph for any GitHub repository.
 
@@ -19,7 +16,7 @@ A browser extension that displays the git graph for any GitHub repository.
 
 Install the extension from Chrome Web store
 
-[https://chrome.google.com/webstore/detail/github-tree-graph/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/github-tree-graph/joggkdfebigddmaagckekihhfncdobff)
+[https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff)
 
 
 After installation, open any GitHub repository and a new 'Commits' tab will be visible.
