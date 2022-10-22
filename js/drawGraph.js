@@ -5,6 +5,13 @@ async function drawCurve(container, startx, starty, endx, endy, color) {
   container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + firstLineEndY + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
 }
 
+// Draws an indication that there are parent commits, but not
+// shown on this page, because the parents are too old.
+async function drawDottedLine(container, startx, starty, color) {
+  container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + (starty + 10) + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
+  container.innerHTML += '<path d = "M ' + startx + ' ' + (starty + 10) + ' L ' + startx + ' ' + (starty + 30) + '" stroke="' + color + '" stroke-width="1" stroke-dasharray="2,2" fill = "#00000000"/>';
+}
+
 // Draws the graph into the graphSvg element. (Where the graph is supposed to be drawn)
 async function drawGraph(commits, commitDict) {
   // Taking  the heights of the actual commit listings, so that the
@@ -73,15 +80,22 @@ async function drawGraph(commits, commitDict) {
   // Curve for connecting existing commits
   for (var i = 0; i < (commits.length - 1); i++) {
     var commit = commits[i];
+    var hasVisibleParents = false;
     for (parentItem of commit.parents) {
       var parent = commitDict[parentItem.node.oid];
       var thisx = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cx.baseVal.value;
       var thisy = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cy.baseVal.value;
       if (parent != undefined) {
+        hasVisibleParents = true;
         var nextx = 30 + (14 * (indexArray[i + 1].indexOf(parent.lineIndex)));
         var nexty = document.querySelectorAll('[circlesha="' + commits[i + 1].oid + '"]')[0].cy.baseVal.value;
         drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[parent.lineIndex]);
       }
+    }
+    if (!hasVisibleParents) {
+      var thisx = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cx.baseVal.value;
+      var thisy = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0].cy.baseVal.value;
+      drawDottedLine(commitsGraphContainer, thisx, thisy, lineColors[commit.lineIndex]);
     }
   }
 
