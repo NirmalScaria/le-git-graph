@@ -6,7 +6,7 @@ A browser extension that displays the git graph for any GitHub repository.
 
 [![Status](https://img.shields.io/badge/Status-Stable-green)]()
 [![Manifest](https://img.shields.io/badge/Manifest-V3-green)]()
-[![Version](https://img.shields.io/badge/Version-1.0-green)]()
+[![Version](https://img.shields.io/badge/Version-1.0.1-green)]()
 
 ## Demo
 ![Demo image](https://drive.google.com/uc?export=download&id=12plJnQgqAvSecLz5jrLajojtuRX2aPyZ)
@@ -32,12 +32,10 @@ Open the commits tab and follow the prompt to authenticate with your GitHub acco
 ## Features
 
 - Authentication with GitHub OAuth  ✓
-- Migrate OAuth backend from Heroku to Firebase Functions - ✓
 - Connection to GitHub GraphQL ✓
 - Fetch the commits data from API ✓
 - Fetch further commits on demand ✓
 - Filter the commits based on branch - Pending
-- Upload to chrome webstore - ✓
 
 ## Contact
 
