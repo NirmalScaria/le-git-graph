@@ -46,7 +46,9 @@
       "32": "/images/le_git_graph32.png",
       "48": "/images/le_git_graph48.png",
       "128": "/images/le_git_graph128.png"
-    }
+    },
+    "default_title": "Le Git Graph",
+    "default_popup": "/html/popup.html"
   },
   "icons": {
     "16": "/images/le_git_graph16.png",
@@ -60,6 +62,7 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "images/popup.png",
         "html/branchSelection.html",
         "html/authorizationPrompt.html",
         "html/commitsLoading.html",
