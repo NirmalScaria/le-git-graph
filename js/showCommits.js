@@ -247,9 +247,11 @@ function relativeTime(date) {
   const pluralize = (count, noun, suffix = "s", inclusive = true) => {
     // Format the date to a human friendly format Like "1 day ago", "2 weeks ago", "3 months ago"
     count = Math.floor(count);
-    return `${inclusive ? count : ""} ${count !== 1 && noun.at(-1) == "y" ? noun.substring(0, noun.length - 1) : noun}${
-      count !== 1 ? suffix : ""
-    }`;
+    num = inclusive ? count : "";
+    word = count !== 1 && (noun.at(-1) == "y" && noun !== "day") ? noun.substring(0, noun.length - 1) : noun;
+    ending = count !== 1 ? suffix : "";
+
+    return `${num} ${word}${ending}`;
   };
 
   const difference = (currentDate - commitDate) / millisecondPerSecond;
@@ -281,7 +283,7 @@ function relativeTime(date) {
     : LT_MILLENNIUM
     ? formatOutput(pluralize(difference / secondsPerCentury, "century", "ies"))
     : "Too old";
-  return output;
+  return output.endsWith("1 day ago") ? output.replace("1 day ago", "yesterday") : output;
 }
 
 function addNextPageButton(commits, branchNames, allCommits, heads, pageNo) {
