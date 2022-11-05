@@ -35,7 +35,7 @@ function assignColors(commits) {
 // commits parameter contains the commit shas
 async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
   var queryBeginning = `
-    query { 
+    query {
         rateLimit {
             limit
             cost
@@ -205,26 +205,83 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
   return;
 }
 
-// Format the date to a human friendly format
-// Like "1 day ago", "2 weeks ago", "3 months ago"
+/*
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+
+Date.prototype.
+  - toLocaleString()        * Preferred
+  - toLocaleDateString()
+  - toLocaleTimeString()
+
+  - toISOString()
+  - toDateString()
+*/
 function relativeTime(date) {
-  var now = new Date().getTime();
-  const difference = (now - date.getTime()) / 1000;
-  let output = ``;
-  if (difference < 60) {
-    output = `${difference} seconds ago`;
-  } else if (difference < 3600) {
-    output = `${Math.floor(difference / 60)} minutes ago`;
-  } else if (difference < 86400) {
-    output = `${Math.floor(difference / 3600)} hours ago`;
-  } else if (difference < 2620800) {
-    output = `${Math.floor(difference / 86400)} days ago`;
-  } else if (difference < 31449600) {
-    output = `${Math.floor(difference / 2620800)} months ago`;
-  } else {
-    output = `${Math.floor(difference / 31449600)} years ago`;
-  }
-  return (output);
+  date = new Date(date);
+  const commitDate = date.getTime();
+  const commitLocal = date.toLocaleString();
+  const currentDate = new Date().getTime();
+  const [
+    millisecondPerSecond,
+    secondsPerMinute,
+    secondsPerHour,
+    secondsPerDay,
+    SecondsPerMonth,
+    secondsPerYear,
+    SecondsPerDecade,
+    secondsPerCentury,
+    secondsPerMillennium,
+  ] = [
+    1_000,
+    60,
+    60 * 60, //                     3,600  seconds per hour
+    3_600 * 24, //                 86,400          per day
+    31_556_952 / 12, //         2,629,746          per month
+    86_400 * 365.2425, //      31,556,952          per year
+    31_556_952 * 10, //       315,569,520          per decade
+    31_556_952 * 100, //    3,155,695,200          per century
+    31_556_952 * 1_000, // 31,556,952,000          per millennium
+  ];
+
+  const formatOutput = (relativeDate) => (output += ` - i.e. ${relativeDate} ago`);
+  const pluralize = (count, noun, suffix = "s", inclusive = true) => {
+    // Format the date to a human friendly format Like "1 day ago", "2 weeks ago", "3 months ago"
+    count = Math.floor(count);
+    return `${inclusive ? count : ""} ${count !== 1 && noun.at(-1) == "y" ? noun.substring(0, noun.length - 1) : noun}${
+      count !== 1 ? suffix : ""
+    }`;
+  };
+
+  const difference = (currentDate - commitDate) / millisecondPerSecond;
+
+  LT_MINUTE = difference < secondsPerMinute;
+  LT_HOUR = difference < secondsPerHour;
+  LT_DAY = difference < secondsPerDay;
+  LT_MONTH = difference < SecondsPerMonth;
+  LT_YEAR = difference < secondsPerYear;
+  LT_DECADE = difference < SecondsPerDecade;
+  LT_CENTURY = difference < secondsPerCentury;
+  LT_MILLENNIUM = difference < secondsPerMillennium;
+
+  let output = `${commitLocal}`;
+  LT_MINUTE
+    ? formatOutput(pluralize(difference, "second"))
+    : LT_HOUR
+    ? formatOutput(pluralize(difference / secondsPerMinute, "minute"))
+    : LT_DAY
+    ? formatOutput(pluralize(difference / secondsPerHour, "hour"))
+    : LT_MONTH
+    ? formatOutput(pluralize(difference / secondsPerDay, "day"))
+    : LT_YEAR
+    ? formatOutput(pluralize(difference / SecondsPerMonth, "month"))
+    : LT_DECADE
+    ? formatOutput(pluralize(difference / secondsPerYear, "year"))
+    : LT_CENTURY
+    ? formatOutput(pluralize(difference / SecondsPerDecade, "decade"))
+    : LT_MILLENNIUM
+    ? formatOutput(pluralize(difference / secondsPerCentury, "century", "ies"))
+    : "Too old";
+  return output;
 }
 
 function addNextPageButton(commits, branchNames, allCommits, heads, pageNo) {
