@@ -34,7 +34,7 @@ async function drawGraph(commits, commitDict) {
   for (var commit of commits) {
     lineColors[commit.lineIndex] = commit.color;
   }
-  for (var line = 0; line < 20; line++) {
+  for (var line = 0; line < commits.length; line++) {
     // loops through all possible line indices
     var lineBeginning = 100;
     var lineEnding = 0;
@@ -100,7 +100,7 @@ async function drawGraph(commits, commitDict) {
   }
 
   // Curve for maintaining continuity of lines
-  for (var thisLineIndex = 0; thisLineIndex < 20; thisLineIndex++) {
+  for (var thisLineIndex = 0; thisLineIndex < commits.length; thisLineIndex++) {
     for (var i = 0; i < (commits.length - 1); i++) {
       var commit = commits[i];
       if (indexArray[i].includes(thisLineIndex) && indexArray[i + 1].includes(thisLineIndex)) {
