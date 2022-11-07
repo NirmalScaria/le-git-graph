@@ -69,7 +69,7 @@ async function drawGraph(commits, commitDict) {
       commitXIndex = indexArray[i].length;
     }
     var thisCommitItem = document.querySelectorAll('[commitsha="' + commit.oid + '"]')[0];
-    yPos += thisCommitItem.offsetHeight / 2;
+    yPos += (thisCommitItem.offsetHeight - 1) / 2;
     // Drawing the commits dots. (This is more of a dummy and will be redrawn so that lines appear below circles)
     // The purpose of this first set of circles is to easily query the position of the commit dot.
     commitsGraphContainer.innerHTML += '<circle cx="' + (30 + (commitXIndex * 14)) + '" cy="' + yPos + '" r="1" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
