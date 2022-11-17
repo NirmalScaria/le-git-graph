@@ -1,0 +1,28 @@
+name: CI/CD Pipeline - Chrome Web Store
+on:
+  push:
+    branches:
+    - chrome-release
+  workflow_dispatch:
+jobs:
+  publish-chrome-web-store:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout the repository
+      - run: zip chrome-release.zip *
+        name: Zip the extension
+      - uses: actions/upload-artifact@v3
+        name: Store the zip artifact
+        with:
+          name: chrome-release
+          path: chrome-release.zip
+      - name: Upload and Release
+        uses: mnao305/chrome-extension-upload@3.0.0
+        with:
+          file-path: chrome-release.zip
+          extension-id: ${{ secrets.CWS_EXTENSION_ID }}
+          client-id: ${{ secrets.CWS_CLIENT_ID }}
+          client-secret: ${{ secrets.CWS_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CWS_REFRESH_TOKEN }}
+          publish: false
