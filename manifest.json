@@ -1,7 +1,7 @@
 {
   "name": "Le Git Graph - Commits Graph for GitHub",
   "description": "A browser extension that displays the git graph for any GitHub repository.",
-  "version": "1.0.3",
+  "version": "1.0.31",
   "manifest_version": 3,
   "content_scripts": [
     {
