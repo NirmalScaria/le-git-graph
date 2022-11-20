@@ -8,7 +8,8 @@ async function loadBranchesButton() {
         contentView.innerHTML = "";
         contentView.appendChild(newContent);
         var token = getLocalToken();
-        var url = "https://us-central1-github-tree-graph.cloudfunctions.net/prompt?token=" + token;
+        var userName = getLocalUserName();
+        var url = "https://us-central1-github-tree-graph.cloudfunctions.net/prompt?userName=" + userName;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {

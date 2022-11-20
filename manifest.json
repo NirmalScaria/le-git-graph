@@ -29,7 +29,7 @@
     },
     {
       "matches": [
-        "*://*.scaria.dev/github-tree-graph/authorize/"
+        "*://*.scaria.dev/github-tree-graph/authorize/*"
       ],
       "js": [
         "js/authProcess.js"
@@ -62,6 +62,7 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "js/authInject.js",
         "images/popup.png",
         "html/branchSelection.html",
         "html/authorizationPrompt.html",
