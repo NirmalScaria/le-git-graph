@@ -32,20 +32,20 @@ function reloadThisPage() {
 function openAuthorization() {
     var authorization_url = "https://github.com/login/oauth/authorize";
     var client_id = "91ddd618eba025e4104e";
-    var randomToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var redirect_url = "https://scaria.dev/github-tree-graph/authorize?browsertoken=" + randomToken;
+    var redirect_url = "https://scaria.dev/github-tree-graph/authorize?version=2";
     var scope = "repo";
     var url = authorization_url + "?client_id=" + client_id + "&redirect_uri=" + redirect_url + "&scope=" + scope;
     changeAuthorizationStatus("WAITING");
-    chrome.runtime.sendMessage({ action: "startListening", browserToken: randomToken });
+    chrome.runtime.sendMessage({ action: "startListening" });
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
             if (request.status == "SUCCESS" || request.status == "FAIL") {
-                console.log(request);
                 if (request.status == "SUCCESS") {
-                    var githubToken = request.value;
+                    var githubToken = request.value.token;
+                    var userName = request.value.userName;
                     changeAuthorizationStatus("SUCCESS");
                     storeLocalToken(githubToken);
+                    storeLocalUserName(userName);
                 }
                 else {
                     changeAuthorizationStatus("FAIL");
