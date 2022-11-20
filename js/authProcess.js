@@ -1,46 +1,23 @@
-console.log("Injection success");
-var url = window.location.href;
-var accessTokenUrl = "https://scaria.herokuapp.com/github-tree-graph-server/authorize";
-console.log("url is " + url);
-function removeTab() {
-    chrome.tabs.getCurrent(function (tab) {
-        chrome.tabs.remove(tab.id);
-    });
-};
+// This will be injected to the authorization callback page.
+// authInject.js will be added as content script to the page.
+// It will call a window dispatchevent, which will be catched in this file
+// and sent to the extension as a chrome.runtime.sendMessage.
 
-if (url.match(/\?error=(.+)/)) {
-    console.log("Found error in url. Removing tab.");
-    removeTab();
-} else {
-    var urlParsed = new URL(url);
-    var code = urlParsed.searchParams.get("code");
-    accessTokenUrl = accessTokenUrl + "?code=" + code;
+// This is necessary due to the restrictions on what is accessible
+// to the content scripts (they cannot access chrome. variables)
+// and what is accessible to the background script (they cannot access
+// the page variables. (token is needed))
 
-    var that = this;
-
-    var xhr = new XMLHttpRequest();
-
-    xhr.addEventListener('readystatechange', function (event) {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                var jsonResponse = JSON.parse(xhr.responseText);
-                if (jsonResponse.access_token) {
-                    var token = jsonResponse.access_token;
-                    console.log("Setting token");
-                    console.log(token);
-                    window.localStorage.setItem(that.key, token);
-                }
-                else {
-                    console.log("No token found in response");
-                    removeTab();
-                }
-            } else {
-                console.log("Request failed");
-                removeTab();
-            }
-        }
-    });
-    xhr.open('GET', accessTokenUrl, true);
-    xhr.withCredentials = false;
-    xhr.send();
+function injectScript(file_path, tag) {
+    var node = document.getElementsByTagName(tag)[0];
+    var script = document.createElement('script');
+    script.setAttribute('type', 'text/javascript');
+    script.setAttribute('src', file_path);
+    node.appendChild(script);
 }
+
+injectScript(chrome.runtime.getURL('js/authInject.js'), 'body');
+
+window.addEventListener("PassToBackground", function (evt) {
+    chrome.runtime.sendMessage(evt.detail);
+}, false);
