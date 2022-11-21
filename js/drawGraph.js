@@ -23,7 +23,7 @@ async function drawGraph(commits, commitDict) {
 
   // Clearing the graph container, so that the graph can be redrawn.
   commitsGraphContainer.innerHTML = "";
-  commitsGraphContainer.style.height = commitsContainerHeight;
+  commitsGraphContainer.style.height = commitsContainerHeight + 'px';
   var yPos = 0;
 
   // indexArray acts as a two dimensional array, which represents the structure of 
