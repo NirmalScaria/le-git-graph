@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: chrome-release
         name: Checkout the repository
       - run: zip chrome-release.zip *
         name: Zip the extension
