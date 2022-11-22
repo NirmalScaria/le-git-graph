@@ -37,9 +37,6 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": [
-    "tabs"
-  ],
   "action": {
     "default_icon": {
       "16": "/images/le_git_graph16.png",
