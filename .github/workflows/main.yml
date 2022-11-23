@@ -12,7 +12,7 @@ jobs:
         with:
           ref: chrome-release
         name: Checkout the repository
-      - run: zip chrome-release.zip *
+      - run: zip -r chrome-release.zip *
         name: Zip the extension
       - uses: actions/upload-artifact@v3
         name: Store the zip artifact
