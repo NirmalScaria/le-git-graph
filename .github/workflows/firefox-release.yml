@@ -1,0 +1,18 @@
+name: CI/CD Pipeline - Firefox Release
+on:
+  push:
+    branches:
+    - firefox-release
+  workflow_dispatch:
+jobs:
+  publish-firefox-add-on:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: firefox-release
+        name: Checkout the repository
+      - name: Install node package
+        run: npm install web-ext-submit
+      - name: Upload and Release
+        run: npx web-ext-submit@7 --api-key=${{ secrets.FIREFOX_API_KEY }} --api-secret=${{ secrets.FIREFOX_API_SECRET }}
