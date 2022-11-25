@@ -4,9 +4,10 @@
 
 A browser extension that displays the git graph for any GitHub repository.
 
-[![Status](https://img.shields.io/badge/Status-Stable-green)]()
-[![Manifest](https://img.shields.io/badge/Manifest-V3-green)]()
-[![Version](https://img.shields.io/badge/Version-1.0.4-green)]()
+[![Version](https://img.shields.io/badge/License-MIT-yellow)]()
+[![Version](https://img.shields.io/badge/Version-1.0.42-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Chrome_CI/CD-Success-green)]()
+[![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
 ## Demo
 ![Demo image](https://drive.google.com/uc?export=download&id=12plJnQgqAvSecLz5jrLajojtuRX2aPyZ)
@@ -14,9 +15,15 @@ A browser extension that displays the git graph for any GitHub repository.
 
 ## Installation
 
-Install the extension from Chrome Web store
+Install the extension from the link -
+
+For Google Chrome, Opera, Vivaldi, Brave, and Microsoft Edge:
 
 [https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff)
+
+For Mozilla Firefox:
+
+[https://addons.mozilla.org/firefox/addon/le-git-graph-github-git-graph/](https://addons.mozilla.org/firefox/addon/le-git-graph-github-git-graph/)
 
 
 After installation, open any GitHub repository and a new 'Commits' tab will be visible.
