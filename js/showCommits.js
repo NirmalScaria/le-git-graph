@@ -1,22 +1,37 @@
-function assignColors(commits) {
+function assignColors(commits, heads) {
+  var headOids = new Set();
+  for (var head of heads) {
+    headOids.add(head.oid);
+  }
   var commitDict = {}
   for (var commit of commits) {
+    commit.color = undefined;
     commitDict[commit.oid] = commit
   }
-  // TODO : Define good colours properly
-  var colors = ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"]
+
+  // Keep assigning from unassignedColors.
+  // Whenever a color is assigned, remove it from unassignedColors
+  // When unassignedColors become empty, copy colors to unassignedColors
+  const colors = ["#fd7f6f", "#beb9db", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#fdcce5", "#8bd3c7"]
+  var unassignedColors = colors;
 
   var commitIndex = 0;
   // For each commit, assign a colour
   // If the commit has a parent, assign the same colour to the parent
-  // If the commit has no parent, assign a random colour
+  // If the commit has no parent or if commit is a head, assign a random colour
   // If the commit has two parents, assign the original colour to first parent (merge target branch)
   // and a random colour to the second parent (merge source branch)
   for (var commit of commits) {
     var commitsha = commit.oid
     commit = commitDict[commitsha];
-    if (commit.color == null) {
-      commit.color = colors[commitIndex % colors.length];
+    if (commit.color == null | headOids.has(commitsha)) {
+      commit.color = unassignedColors[commitIndex % unassignedColors.length];
+      unassignedColors = unassignedColors.filter(function (color) {
+        return color != commit.color;
+      });
+      if (unassignedColors.length == 0) {
+        unassignedColors = colors;
+      }
       commit.lineIndex = commitIndex;
     }
     commitIndex += 1;
@@ -139,7 +154,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
   var commitsGraphContainer;
 
   var commitDict;
-  [commits, commitDict] = assignColors(commits);
+  [commits, commitDict] = assignColors(commits, heads);
   await fetch(commitsLoadingHtml).then(response => response.text()).then(commitsContainerHtmlText => {
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = commitsContainerHtmlText;
