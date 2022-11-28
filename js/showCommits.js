@@ -226,18 +226,18 @@ function relativeTime(date) {
   var now = new Date().getTime();
   const difference = (now - date.getTime()) / 1000;
   let output = ``;
-  if (difference < 60) {
-    output = `${difference} seconds ago`;
+  if (difference < 10) {
+    output = `just now`;
+  } else if (difference < 60) {
+    output = `${Math.floor(difference)} seconds ago`;
   } else if (difference < 3600) {
-    output = `${Math.floor(difference / 60)} minutes ago`;
+    output = `${Math.floor(difference / 60)} minute${Math.floor(difference/60) > 1 ? 's' : ''} ago`;
   } else if (difference < 86400) {
-    output = `${Math.floor(difference / 3600)} hours ago`;
+    output = `${Math.floor(difference / 3600)} hour${Math.floor(difference/3600) > 1 ? 's' : ''} ago`;
   } else if (difference < 2620800) {
-    output = `${Math.floor(difference / 86400)} days ago`;
-  } else if (difference < 31449600) {
-    output = `${Math.floor(difference / 2620800)} months ago`;
+    output = `${Math.floor(difference/86400) > 1 ? (Math.floor(difference / 86400) + ' days ago') : 'yesterday'}`;
   } else {
-    output = `${Math.floor(difference / 31449600)} years ago`;
+    output = 'on ' + date.toLocaleDateString();
   }
   return (output);
 }

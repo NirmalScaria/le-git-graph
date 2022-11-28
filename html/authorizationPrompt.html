@@ -1,16 +1,24 @@
 <div class="Box Box--responsive text-center rounded-2 border color-border-muted">
-    <div class="position-relative">
-        <div class="col-9 mx-auto py-4">
-            <h1 class="mt-9 h4" id="authorizationTitle">
-                Authorize Tree Graph extension to continue
-            </h1>
-            <p class="mb-3 authorizationReason" style="margin-bottom:10px;" id="authorizationDescription">
-                GitHub repo access is required to fetch the commits information.
-            </p>
-            <button class="btn btn-primary mb-9 authorizationButton" id="authorizationButton"
-                value="Authorize with GitHub">
-                Authorize with GitHub
-            </button>
-        </div>
+  <div class="position-relative">
+    <div class="col-9 mx-auto py-4">
+      <h1 class="mt-9 h4" id="authorizationTitle">
+        Authorize Tree Graph extension to continue
+      </h1>
+      <p class="mb-3 authorizationReason" style="margin-bottom:10px;" id="authorizationDescription">
+        GitHub repo access is required to fetch the commits information.
+      </p>
+      <button class="btn btn-primary mb-9 authorizationButton" style="display: none;" id="authorizationStatusButton"
+        value="Authorize with GitHub">
+        Authorize with GitHub
+      </button>
+      <div class="splitbutton mb-9 authorizationButton" id="authorizationButton">
+        <input type="button" value="Authorize with GitHub" class="authorizeButton" />
+        <select id="authorizationTypeButton">
+          <option value="privateAndPublic" hidden>---Authorize with GitHub-</option>
+          <option value="privateAndPublic">Private and public repositories</option>
+          <option value="privateOnly">Public repositories only</option>
+        </select>
+      </div>
     </div>
+  </div>
 </div>

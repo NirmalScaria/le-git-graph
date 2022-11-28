@@ -1,0 +1,61 @@
+.splitbutton {
+  position: relative; 
+  display: inline-block;
+  cursor: pointer;
+  border-color: var(--color-btn-primary-border);
+  box-shadow: var(--color-btn-primary-shadow),var(--color-btn-primary-inset-shadow);
+}
+.splitbutton::before,
+.splitbutton::after {
+  content: "";
+  position: absolute;
+  right: 0.7rem;
+  top: 1.1rem;
+  width: 0;
+  height: 0;
+  border-top: 0.35rem solid white;
+  border-left: 0.35rem solid transparent;
+  border-right: 0.35rem solid transparent;
+  pointer-events: none;
+}
+.splitbutton::before {
+  border-top-color: var(--color-btn-primary-bg);
+  top: calc(1rem + 1px);
+}
+.splitbutton input, .splitbutton select {
+  font-size: 14px;
+  font-weight: var(--base-text-weight-medium, 500);
+  background: var(--color-btn-primary-bg); 
+  color: white;
+  border: 0;
+  height: 2.1rem;
+  line-height: 2.1rem;
+  font-family: inherit;
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+}
+.splitbutton input {
+  width: calc(100% - 2rem);
+  position: absolute;
+  border-right: 1px solid #9fb5df;
+  text-shadow: 0 1px 0 var(--color-btn-primary-hover-bg);
+}
+.splitbutton input:hover,
+.splitbutton select:hover {
+  background: var(--color-btn-primary-hover-bg);
+}
+.splitbutton input:active,
+.splitbutton select:active {
+  background: var(--color-btn-primary-hover-bg)
+}
+.splitbutton select {
+  padding-right: 2rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
+}
+.authorizeButton {
+  cursor: pointer;
+}
