@@ -111,7 +111,7 @@ async function fetchCommits() {
             return (false);
         }
         var data = await response.json();
-        if (data.error) {
+        if (data.error || data.errors) {
             console.log("--ERROR FETCHING GRAPHQL--");
             addAuthorizationPrompt("Failed to fetch commits. Make sure your GitHub account has access to the repository.");
             return (false);

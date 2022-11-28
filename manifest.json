@@ -8,6 +8,9 @@
       "matches": [
         "*://*.github.com/*"
       ],
+      "css": [
+        "css/background.css"
+      ],
       "js": [
         "js/showLegend.js",
         "js/drawGraph.js",

@@ -1,8 +1,11 @@
 async function changeAuthorizationStatus(status) {
     var authorizationTItle = document.getElementById("authorizationTitle");
     var authorizationDescription = document.getElementById("authorizationDescription");
-    var authorizationButton = document.getElementById("authorizationButton");
+    var authorizationButton = document.getElementById("authorizationStatusButton");
+    var authorizationDropdownButton = document.getElementById('authorizationButton');
     if (status == "WAITING") {
+        authorizationDropdownButton.style.display = 'none';
+        authorizationButton.style.display = 'inline-block';
         authorizationTItle.innerHTML = "Waiting for authorization";
         authorizationDescription.innerHTML = "Please complete the authorization process in the popup window.";
         authorizationButton.innerHTML = 'Waiting...';
@@ -17,6 +20,8 @@ async function changeAuthorizationStatus(status) {
         authorizationButton.addEventListener("click", reloadThisPage);
     }
     if (status == "FAIL") {
+        authorizationButton.style.display = 'none';
+        authorizationDropdownButton.style.display = 'inline-block';
         authorizationTItle.innerHTML = "Authorization failed";
         authorizationDescription.innerHTML = "Please try again.";
         authorizationButton.innerHTML = 'Try Again';
@@ -30,10 +35,14 @@ function reloadThisPage() {
 }
 
 function openAuthorization() {
+    var authorizationButton = document.getElementById("authorizationTypeButton");
     var authorization_url = "https://github.com/login/oauth/authorize";
     var client_id = "91ddd618eba025e4104e";
     var redirect_url = "https://scaria.dev/github-tree-graph/authorize?version=2";
-    var scope = "repo";
+    var scope = "public_repo";
+    if (authorizationButton.value == "privateAndPublic") {
+        scope = "repo"
+    }
     var url = authorization_url + "?client_id=" + client_id + "&redirect_uri=" + redirect_url + "&scope=" + scope;
     changeAuthorizationStatus("WAITING");
     chrome.runtime.sendMessage({ action: "startListening" });
@@ -64,7 +73,7 @@ async function addAuthorizationPrompt(reason) {
         tempDiv.innerHTML = branchSelectionHtmlText;
         var newContent = tempDiv.firstChild;
         contentView.innerHTML = "";
-        var authorizationButton = newContent.getElementsByClassName("authorizationButton")[0];
+        var authorizationButton = newContent.getElementsByClassName("authorizeButton")[0];
         var authorizationReason = newContent.getElementsByClassName("authorizationReason")[0];
         authorizationButton.addEventListener("click", openAuthorization);
         authorizationReason.innerHTML = reason;
