@@ -34,7 +34,8 @@ async function openCommitsTab() {
 
     // Try to fetch stored authorization token
     var authorizationToken = getLocalToken();
-    if (authorizationToken == null) {
+    var storedUserName = getLocalUserName();
+    if (authorizationToken == null || storedUserName == null) {
         // Prompt the user to authorize with GitHub
         await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
     }
