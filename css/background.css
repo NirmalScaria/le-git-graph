@@ -1,10 +1,11 @@
 .splitbutton {
-  position: relative; 
+  position: relative;
   display: inline-block;
   cursor: pointer;
   border-color: var(--color-btn-primary-border);
-  box-shadow: var(--color-btn-primary-shadow),var(--color-btn-primary-inset-shadow);
+  box-shadow: var(--color-btn-primary-shadow), var(--color-btn-primary-inset-shadow);
 }
+
 .splitbutton::before,
 .splitbutton::after {
   content: "";
@@ -18,14 +19,17 @@
   border-right: 0.35rem solid transparent;
   pointer-events: none;
 }
+
 .splitbutton::before {
   border-top-color: var(--color-btn-primary-bg);
   top: calc(1rem + 1px);
 }
-.splitbutton input, .splitbutton select {
+
+.splitbutton input,
+.splitbutton select {
   font-size: 14px;
   font-weight: var(--base-text-weight-medium, 500);
-  background: var(--color-btn-primary-bg); 
+  background: var(--color-btn-primary-bg);
   color: white;
   border: 0;
   height: 2.1rem;
@@ -34,20 +38,24 @@
   border-top-left-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
 }
+
 .splitbutton input {
   width: calc(100% - 2rem);
   position: absolute;
   border-right: 1px solid #9fb5df;
   text-shadow: 0 1px 0 var(--color-btn-primary-hover-bg);
 }
+
 .splitbutton input:hover,
 .splitbutton select:hover {
   background: var(--color-btn-primary-hover-bg);
 }
+
 .splitbutton input:active,
 .splitbutton select:active {
   background: var(--color-btn-primary-hover-bg)
 }
+
 .splitbutton select {
   padding-right: 2rem;
   -webkit-appearance: none;
@@ -56,6 +64,21 @@
   border-top-right-radius: 0.3rem;
   border-bottom-right-radius: 0.3rem;
 }
+
 .authorizeButton {
   cursor: pointer;
+}
+
+.commitDot {
+  r: 4;
+  transition: all 0.3s ease-in-out;
+}
+
+.commitDotHovered {
+  r: 8;
+  transition: all 0.3s ease-in-out;
+}
+
+.commitDotHidden {
+  pointer-events: all;
 }
