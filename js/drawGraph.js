@@ -12,6 +12,29 @@ async function drawDottedLine(container, startx, starty, color) {
   container.innerHTML += '<path d = "M ' + startx + ' ' + (starty + 10) + ' L ' + startx + ' ' + (starty + 30) + '" stroke="' + color + '" stroke-width="1" stroke-dasharray="2,2" fill = "#00000000"/>';
 }
 
+// Show commit card for the commit dot (point) that is hovered
+// KNOWN ISSUES WITH THIS PART:
+// 1. The card is not hidden when hover is removed
+// 2. The card content needs to be added
+// 3. Weird effect with the hoverCard arrows when hovering avatar after commit
+// Sure there will be more.
+async function showCard(commitId, commitDot) {
+  var hoverCardParent;
+  var hoverCardHtml = chrome.runtime.getURL('html/hoverCard.html');
+  await fetch(hoverCardHtml).then(response => response.text()).then(hoverCardHtmlText => {
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = hoverCardHtmlText;
+    hoverCardParent = tempDiv;
+  });
+  var commitDotX = getOffset(commitDot).x + 20;
+  var commitDotY = getOffset(commitDot).y - 25;
+  var hoverCard = hoverCardParent.firstChild;
+  hoverCard.style.left = commitDotX + "px";
+  hoverCard.style.top = commitDotY + "px";
+  var hoverCardContainer = document.getElementById("hoverCardContainer");
+  hoverCardContainer.innerHTML = hoverCardParent.innerHTML;
+}
+
 // Draws a commit dot (point) on the graph
 // Also the hidden commit dots for hover effect
 async function drawCommit(container, commit) {
@@ -40,6 +63,7 @@ async function drawCommit(container, commit) {
     if (commitDot == undefined) {
       return;
     }
+    showCard(hoveredsha, commitDot);
     commitDot.classList.add("commitDotHovered");
     commitDot.classList.remove("commitDot");
   }
@@ -161,4 +185,14 @@ async function drawGraph(commits, commitDict) {
   for (var commit of commits) {
     await drawCommit(commitsGraphContainer, commit);
   }
+}
+
+// Get the vertical and horizontal position (center)
+// of any given element
+function getOffset(el) {
+  const rect = el.getBoundingClientRect();
+  return {
+    x: (rect.left + rect.right) / 2 + window.scrollX,
+    y: (rect.top + rect.bottom) / 2 + window.scrollY
+  };
 }

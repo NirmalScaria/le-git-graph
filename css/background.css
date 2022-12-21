@@ -81,4 +81,5 @@
 
 .commitDotHidden {
   pointer-events: all;
+  cursor: pointer;
 }
