@@ -12,6 +12,12 @@ async function drawDottedLine(container, startx, starty, color) {
   container.innerHTML += '<path d = "M ' + startx + ' ' + (starty + 10) + ' L ' + startx + ' ' + (starty + 30) + '" stroke="' + color + '" stroke-width="1" stroke-dasharray="2,2" fill = "#00000000"/>';
 }
 
+// Used to keep track of which commit is hovered presently (if any)
+// This is used to not execute "hideCard" function when the hover is removed
+// from the commit dot, but the hover is moved to another commit.
+// (User moved cursor faster than the hoverCard takes to hide)
+var hoveredCommitSha = "";
+
 // Show commit card for the commit dot (point) that is hovered
 // KNOWN ISSUES WITH THIS PART:
 // 1. The card is not hidden when hover is removed
@@ -19,6 +25,7 @@ async function drawDottedLine(container, startx, starty, color) {
 // 3. Weird effect with the hoverCard arrows when hovering avatar after commit
 // Sure there will be more.
 async function showCard(commitId, commitDot) {
+  hoveredCommitSha = commitId;
   var hoverCardParent;
   var hoverCardHtml = chrome.runtime.getURL('html/hoverCard.html');
   await fetch(hoverCardHtml).then(response => response.text()).then(hoverCardHtmlText => {
@@ -33,6 +40,15 @@ async function showCard(commitId, commitDot) {
   hoverCard.style.top = commitDotY + "px";
   var hoverCardContainer = document.getElementById("hoverCardContainer");
   hoverCardContainer.innerHTML = hoverCardParent.innerHTML;
+}
+
+// TODO: This is not the right way to hide the hoverCard
+// This is presently deleting the hoverCard altogether
+// Native GitHub components which need hoverCard fails to access
+// it if it is hidden this way.
+async function hideCard() {
+  var hoverCardContainer = document.getElementById("hoverCardContainer");
+  hoverCardContainer.innerHTML = "";
 }
 
 // Draws a commit dot (point) on the graph
@@ -50,8 +66,6 @@ async function drawCommit(container, commit) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       let commitDotHidden = document.querySelectorAll('[circlesha="' + commit.oid + '"][class="commitDotHidden"]')[0];
-      console.log("Adding event listener to");
-      console.log(commitDotHidden);
       commitDotHidden.addEventListener("mouseover", onHoveringCommit);
       commitDotHidden.addEventListener("mouseout", onHoverRemove);
     });
@@ -68,14 +82,50 @@ async function drawCommit(container, commit) {
     commitDot.classList.remove("commitDot");
   }
 
-  function onHoverRemove(e) {
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  async function onHoverRemove(e) {
     var hoveredsha = e.target.attributes.circlesha.value;
     var commitDot = document.querySelectorAll('[circlesha="' + hoveredsha + '"][class="commitDotHovered"]')[0];
     if (commitDot == undefined) {
       return;
     }
-    commitDot.classList.add("commitDot");
+    await delay(100);
+    if (!isHoverCardHovered()) {
+      removeHoverFrom(commitDot);
+    }
+    else {
+      var hoverCard = document.getElementById("hovercard");
+      hoverCard.addEventListener("mouseleave", function () {
+        removeHoverFrom(commitDot);
+      }, false);
+    }
+  }
+
+  // This will be triggered when the user moves the cursor away from
+  // either the commitDot or the hoverCard.  
+  async function removeHoverFrom(commitDot) {
+    await delay(100);
+    var thisHiddenDot = document.querySelectorAll('[circlesha="' + commitDot.attributes.circlesha.value + '"][class="commitDotHidden"]')[0];
+    if (thisHiddenDot != undefined && thisHiddenDot.matches(":hover")) {
+      // The cursor moved from hoverCard, back to the original commitDot.
+      // This should not hide the card.
+      return;
+    }
     commitDot.classList.remove("commitDotHovered");
+    commitDot.classList.add("commitDot");
+    if (commitDot.attributes.circlesha.value == hoveredCommitSha) {
+      // Checks if the user has moved hover to another commitDot.
+      // In that case, don't hide the card.
+      hideCard();
+    }
+  }
+
+  function isHoverCardHovered() {
+    var hoverCard = document.getElementById("hovercard");
+    return(hoverCard != undefined && hoverCard.matches(":hover"));
   }
 }
 
