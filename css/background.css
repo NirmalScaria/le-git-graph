@@ -83,3 +83,27 @@
   pointer-events: all;
   cursor: pointer;
 }
+
+.tag-container {
+  display: inline-block;
+  padding: 0.2rem 0.3rem;
+  margin: 0 0.1rem;
+  margin-bottom: 0.05rem;
+  margin-top: 0.05rem;
+  background-color: #ffffff10;
+  border-radius: 0.2rem;
+  border : 1px solid #ffffff30;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.branch-name-container {
+  margin: 0 0.1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+}
+
+.commit-id-container {
+  margin: 0 0.2rem;
+  color: #6BA4F8;
+}

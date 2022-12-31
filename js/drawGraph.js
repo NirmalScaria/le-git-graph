@@ -20,8 +20,8 @@ var hoveredCommitSha = "";
 
 // Show commit card for the commit dot (point) that is hovered
 // KNOWN ISSUES WITH THIS PART:
-// 1. The card is not hidden when hover is removed
-// 2. The card content needs to be added
+// 1. The card is not hidden when hover is removed : FIXED
+// 2. The card content needs to be added : FIXED
 // 3. Weird effect with the hoverCard arrows when hovering avatar after commit
 // Sure there will be more.
 async function showCard(commitId, commitDot) {
@@ -38,6 +38,82 @@ async function showCard(commitId, commitDot) {
   var hoverCard = hoverCardParent.firstChild;
   hoverCard.style.left = commitDotX + "px";
   hoverCard.style.top = commitDotY + "px";
+  addCardContent(commitId, commitDot, hoverCardParent);
+}
+
+async function addCardContent(commitId, commitDot, hoverCardParent) {
+  var colorDict = {};
+  var legendContainer = document.getElementById("legendContainer");
+  for (var i = 0; i < legendContainer.children.length; i++) {
+    var branchName = legendContainer.children[i].getAttribute("branchName");
+    var branchColor = legendContainer.children[i].getAttribute("branchColor");
+    colorDict[branchName] = branchColor;
+  }
+  var commit = commitDictGlobal[commitId];
+  var commitDate = commit.committedDate;
+  var parents = []
+  for (var i = 0; i < commit.parents.length; i++) {
+    parents.push(commit.parents[i].node.oid.substring(0, 7));
+  }
+  var commitDateFormatted = new Date(commitDate).toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  var commitTimeFormatted = new Date(commitDate).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true
+  });
+  var commitDateAndTimeFormatted = "Committed on " + commitDateFormatted + " at " + commitTimeFormatted;
+  hoverCardParent.querySelector("#commit-time-message").innerHTML = commitDateAndTimeFormatted;
+  var legendContainer = document.getElementById("legendContainer");
+  var headsOf = [];
+  for (var i = 0; i < legendContainer.children.length; i++) {
+    var thisBranch = legendContainer.children[i];
+    if (thisBranch.getAttribute("commitId") == commitId) {
+      headsOf.push([thisBranch.getAttribute("branchname"), thisBranch.getAttribute("branchColor")]);
+    }
+  }
+  var headIndicationSection = hoverCardParent.querySelector("#head-indication-section");
+  if (headsOf.length < 1) {
+    headIndicationSection.style.display = "none";
+  }
+  else {
+    var headIndicationContent = headIndicationSection.querySelector("#head-indication-content");
+    var headIndicationItem = headIndicationContent.children[0].cloneNode(true);
+    headIndicationContent.innerHTML = "Head of ";
+    for (var i = 0; i < headsOf.length; i++) {
+      var thisHeadIndicationItem = headIndicationItem.cloneNode(true);
+      var branchIcon = thisHeadIndicationItem.querySelector(".branch-icon-svg");
+      branchIcon.style.fill = headsOf[i][1];
+      thisHeadIndicationItem.innerHTML += headsOf[i][0];
+      headIndicationContent.appendChild(thisHeadIndicationItem);
+    }
+  }
+  var parentIndicationContent = hoverCardParent.querySelector("#parent-indication-content");
+  var parentIndicationItem = parentIndicationContent.children[0].cloneNode(true);
+  parentIndicationContent.innerHTML = parents.length < 2 ? "Parent: " : "Parents: ";
+  for (var i = 0; i < parents.length; i++) {
+    var thisParentIndicationItem = parentIndicationItem.cloneNode(true);
+    thisParentIndicationItem.innerHTML += parents[i];
+    parentIndicationContent.appendChild(thisParentIndicationItem);
+  }
+  var branchesIndicationContent = hoverCardParent.querySelector("#branches-indication-content");
+  var branchesIndicationItem = branchesIndicationContent.children[0].cloneNode(true);
+  branchesIndicationContent.innerHTML = "";
+  for (var i = 0; i < commit.branches.length; i++) {
+    var thisBranchIndicationItem = branchesIndicationItem.cloneNode(true);
+    var branchIcon = thisBranchIndicationItem.querySelector(".branch-icon-svg");
+    branchIcon.style.fill = colorDict[commit.branches[i]];
+    thisBranchIndicationItem.innerHTML += commit.branches[i];
+    branchesIndicationContent.appendChild(thisBranchIndicationItem);
+  }
+  var additionCountWrapper = hoverCardParent.querySelector("#addition-count");
+  var deletionCountWrapper = hoverCardParent.querySelector("#deletion-count");
+  additionCountWrapper.innerHTML = commit.additions;
+  deletionCountWrapper.innerHTML = commit.deletions;
   var hoverCardContainer = document.getElementById("hoverCardContainer");
   hoverCardContainer.innerHTML = hoverCardParent.innerHTML;
 }
@@ -129,8 +205,11 @@ async function drawCommit(container, commit) {
   }
 }
 
+var commitDictGlobal;
+
 // Draws the graph into the graphSvg element. (Where the graph is supposed to be drawn)
 async function drawGraph(commits, commitDict) {
+  commitDictGlobal = commitDict;
   // Taking  the heights of the actual commit listings, so that the
   // commit dots (points) can be placed in the correct vertical position.
   var commitsContainer = document.getElementById("commits-container");
