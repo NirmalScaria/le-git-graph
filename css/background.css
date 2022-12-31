@@ -70,12 +70,12 @@
 }
 
 .commitDot {
-  r: 4;
+  r: 4px;
   transition: all 0.3s ease-in-out;
 }
 
 .commitDotHovered {
-  r: 8;
+  r: 8px;
   transition: all 0.3s ease-in-out;
 }
 

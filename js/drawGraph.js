@@ -125,7 +125,7 @@ async function drawCommit(container, commit) {
 
   function isHoverCardHovered() {
     var hoverCard = document.getElementById("hovercard");
-    return(hoverCard != undefined && hoverCard.matches(":hover"));
+    return (hoverCard != undefined && hoverCard.matches(":hover"));
   }
 }
 
