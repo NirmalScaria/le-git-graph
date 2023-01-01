@@ -1,5 +1,5 @@
 {
-  "version": "1.0.51",
+  "version": "1.1.0",
   "name": "Le Git Graph - Commits Graph for GitHub",
   "description": "A browser extension that displays the git graph for any GitHub repository.",
   "manifest_version": 3,
@@ -73,7 +73,8 @@
         "html/authorizationPrompt.html",
         "html/commitsLoading.html",
         "html/commitsContainer.html",
-        "html/commitItem.html"
+        "html/commitItem.html",
+        "html/hoverCard.html"
       ],
       "matches": [
         "<all_urls>"

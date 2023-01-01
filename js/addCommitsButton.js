@@ -12,6 +12,7 @@ function addCommitsButton() {
     newButtonChild.setAttribute("data-tab-item", "commits-tab");
     newButtonChild.removeAttribute("aria-current");
     newButtonChild.classList.remove("selected");
+    newButtonChild.setAttribute("data-selected-links", "repo_commits repo_milestones /NirmalScaria/le-git-graph/commits")
 
     // Remove the href. We wont navigate anywhere.
     newButtonChild.removeAttribute("href");
