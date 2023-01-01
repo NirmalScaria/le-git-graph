@@ -63,6 +63,8 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
     queryContent += `
         commit`+ i + `: object(oid: "` + commits[i].oid + `") {
             ... on Commit{
+                additions
+                deletions
                 parents(first:100) {
                     edges {
                       node {
@@ -113,6 +115,8 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
     if (commitDetails['commit' + i] == undefined) {
       continue;
     }
+    commits[i].additions = commitDetails['commit' + i].additions;
+    commits[i].deletions = commitDetails['commit' + i].deletions;
     commits[i].author = commitDetails['commit' + i].author.name;
     if (commitDetails['commit' + i].author.user != null) {
       commits[i].authorAvatar = commitDetails['commit' + i].author.user.avatarUrl;
@@ -231,11 +235,11 @@ function relativeTime(date) {
   } else if (difference < 60) {
     output = `${Math.floor(difference)} seconds ago`;
   } else if (difference < 3600) {
-    output = `${Math.floor(difference / 60)} minute${Math.floor(difference/60) > 1 ? 's' : ''} ago`;
+    output = `${Math.floor(difference / 60)} minute${Math.floor(difference / 60) > 1 ? 's' : ''} ago`;
   } else if (difference < 86400) {
-    output = `${Math.floor(difference / 3600)} hour${Math.floor(difference/3600) > 1 ? 's' : ''} ago`;
+    output = `${Math.floor(difference / 3600)} hour${Math.floor(difference / 3600) > 1 ? 's' : ''} ago`;
   } else if (difference < 2620800) {
-    output = `${Math.floor(difference/86400) > 1 ? (Math.floor(difference / 86400) + ' days ago') : 'yesterday'}`;
+    output = `${Math.floor(difference / 86400) > 1 ? (Math.floor(difference / 86400) + ' days ago') : 'yesterday'}`;
   } else {
     output = 'on ' + date.toLocaleDateString();
   }
