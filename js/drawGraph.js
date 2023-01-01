@@ -19,11 +19,6 @@ async function drawDottedLine(container, startx, starty, color) {
 var hoveredCommitSha = "";
 
 // Show commit card for the commit dot (point) that is hovered
-// KNOWN ISSUES WITH THIS PART:
-// 1. The card is not hidden when hover is removed : FIXED
-// 2. The card content needs to be added : FIXED
-// 3. Weird effect with the hoverCard arrows when hovering avatar after commit
-// Sure there will be more.
 async function showCard(commitId, commitDot) {
   hoveredCommitSha = commitId;
   var hoverCardParent;
@@ -103,6 +98,8 @@ async function addCardContent(commitId, commitDot, hoverCardParent) {
   var branchesIndicationContent = hoverCardParent.querySelector("#branches-indication-content");
   var branchesIndicationItem = branchesIndicationContent.children[0].cloneNode(true);
   branchesIndicationContent.innerHTML = "";
+  // TODO: Sometimes "branches" attribute are not present in commit.
+  // Check where branches are added. Do the needful.
   for (var i = 0; i < commit.branches.length; i++) {
     var thisBranchIndicationItem = branchesIndicationItem.cloneNode(true);
     var branchIcon = thisBranchIndicationItem.querySelector(".branch-icon-svg");
@@ -116,6 +113,7 @@ async function addCardContent(commitId, commitDot, hoverCardParent) {
   deletionCountWrapper.innerHTML = commit.deletions;
   var hoverCardContainer = document.getElementById("hoverCardContainer");
   hoverCardContainer.innerHTML = hoverCardParent.innerHTML;
+  hoverCardContainer.children[0].style.display = 'block';
 }
 
 // TODO: This is not the right way to hide the hoverCard
@@ -124,7 +122,8 @@ async function addCardContent(commitId, commitDot, hoverCardParent) {
 // it if it is hidden this way.
 async function hideCard() {
   var hoverCardContainer = document.getElementById("hoverCardContainer");
-  hoverCardContainer.innerHTML = "";
+  hoverCardContainer.children[0].children[0].classList.remove("Popover-message--left-top");
+  hoverCardContainer.children[0].style.display = 'none';
 }
 
 // Draws a commit dot (point) on the graph
