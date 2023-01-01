@@ -5,7 +5,7 @@
 A browser extension that displays the git graph for any GitHub repository.
 
 [![Version](https://img.shields.io/badge/License-MIT-yellow)]()
-[![Version](https://img.shields.io/badge/Version-1.0.51-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Version-1.1.0-yellowgreen)]()
 [![Version](https://img.shields.io/badge/Chrome_CI/CD-Success-green)]()
 [![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
@@ -43,6 +43,7 @@ Open the commits tab and follow the prompt to authenticate with your GitHub acco
 - Fetch the commits data from API ✓
 - Fetch further commits on demand ✓
 - Option to specify access level (public only or private too) ✓
+- Hover on the commit dot to see details ✓
 - Filter the commits based on branch - Pending
 
 ## Contact
