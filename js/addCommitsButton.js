@@ -1,3 +1,4 @@
+var isCommitsTabOpen = false;
 function addCommitsButton() {
     // parentObject is the bar which contains all the
     // tab buttons, (code, issues, pull requests,..)
@@ -49,6 +50,7 @@ function addCommitsButton() {
     function closeCommitsTab() {
         // Deselect the commits tab.
         // Navigation would be handled automatically by the original GitHub code.
+        isCommitsTabOpen = false;
         var commitsTabButton = document.getElementById("commits-tab");
         commitsTabButton.addEventListener("click", openCommitsTab);
         newButtonChild.removeAttribute("aria-current");
