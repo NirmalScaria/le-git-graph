@@ -26,7 +26,11 @@
         "js/loadBranchesButton.js",
         "js/addCommitsButton.js",
         "js/openCommitsTab.js",
-        "js/main.js"
+        "js/main.js",
+        "js/fre/helper.js",
+        "js/fre/updateFre.js",
+        "js/fre/installFre.js",
+        "js/fre/handler.js"
       ],
       "run_at": "document_end"
     },
@@ -74,7 +78,8 @@
         "html/commitsLoading.html",
         "html/commitsContainer.html",
         "html/commitItem.html",
-        "html/hoverCard.html"
+        "html/hoverCard.html",
+        "html/tooltip.html"
       ],
       "matches": [
         "<all_urls>"

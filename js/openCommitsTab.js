@@ -1,5 +1,5 @@
 async function openCommitsTab() {
-
+    isCommitsTabOpen = true;
     // Get the commits tab button
     var commitsTabButton = document.getElementById("commits-tab");
     commitsTabButton.removeEventListener("click", openCommitsTab);
@@ -22,15 +22,29 @@ async function openCommitsTab() {
     var newButtonChild = newButton.children[0];
 
     // Select the commits tab.
-    newButtonChild.setAttribute("aria-current", "page");
-
-    // Deselect all the tabs except commits tab.
-    Array.from(parentObject.children).forEach((child) => {
-        if (child.children[0].id != "commits-tab") {
-            child.children[0].removeAttribute("aria-current");
-            child.children[0].classList.remove("selected");
+    function setCommitsButtonAsActive() {
+        if (isCommitsTabOpen == false) {
+            return;
         }
-    });
+        newButtonChild.setAttribute("aria-current", "page");
+
+        // Deselect all the tabs except commits tab.
+        Array.from(parentObject.children).forEach((child) => {
+            if (child.children[0].id != "commits-tab") {
+                child.children[0].removeAttribute("aria-current");
+                child.children[0].classList.remove("selected");
+            }
+        });
+    }
+    setCommitsButtonAsActive();
+    var i = 0;
+    var interval = setInterval(() => {
+        setCommitsButtonAsActive();
+        i++;
+        if (i == 10) {
+            clearInterval(interval);
+        }
+    }, 1000);
 
     // Try to fetch stored authorization token
     var authorizationToken = getLocalToken();
@@ -59,6 +73,4 @@ async function openCommitsTab() {
 
     // Fetch the commits from API.
     // await fetchCommits(branches);
-
-
 }

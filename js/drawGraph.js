@@ -145,64 +145,69 @@ async function drawCommit(container, commit) {
       commitDotHidden.addEventListener("mouseout", onHoverRemove);
     });
   });
+}
 
-  function onHoveringCommit(e) {
-    var hoveredsha = e.target.attributes.circlesha.value;
-    var commitDot = document.querySelectorAll('[circlesha="' + hoveredsha + '"][class="commitDot"]')[0];
-    if (commitDot == undefined) {
-      return;
-    }
-    showCard(hoveredsha, commitDot);
-    commitDot.classList.add("commitDotHovered");
-    commitDot.classList.remove("commitDot");
+function onHoveringCommit(e) {
+  var hoveredsha = e.target.attributes.circlesha.value;
+  hoverOnCommit(hoveredsha);
+}
+
+async function hoverOnCommit(hoveredsha) {
+  var commitDot = document.querySelectorAll('[circlesha="' + hoveredsha + '"][class="commitDot"]')[0];
+  if (commitDot == undefined) {
+    return;
   }
+  await showCard(hoveredsha, commitDot);
+  commitDot.classList.add("commitDotHovered");
+  commitDot.classList.remove("commitDot");
+}
 
-  function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+async function onHoverRemove(e) {
+  var hoveredsha = e.target.attributes.circlesha.value;
+  var commitDot = document.querySelectorAll('[circlesha="' + hoveredsha + '"][class="commitDotHovered"]')[0];
+  if (commitDot == undefined) {
+    return;
   }
-
-  async function onHoverRemove(e) {
-    var hoveredsha = e.target.attributes.circlesha.value;
-    var commitDot = document.querySelectorAll('[circlesha="' + hoveredsha + '"][class="commitDotHovered"]')[0];
-    if (commitDot == undefined) {
-      return;
-    }
-    await delay(100);
-    if (!isHoverCardHovered()) {
-      removeHoverFrom(commitDot);
-    }
-    else {
-      var hoverCard = document.getElementById("hovercard");
-      hoverCard.addEventListener("mouseleave", function () {
-        removeHoverFrom(commitDot);
-      }, false);
-    }
+  await delay(100);
+  if (!isHoverCardHovered()) {
+    removeHoverFrom(commitDot);
   }
-
-  // This will be triggered when the user moves the cursor away from
-  // either the commitDot or the hoverCard.  
-  async function removeHoverFrom(commitDot) {
-    await delay(100);
-    var thisHiddenDot = document.querySelectorAll('[circlesha="' + commitDot.attributes.circlesha.value + '"][class="commitDotHidden"]')[0];
-    if (thisHiddenDot != undefined && thisHiddenDot.matches(":hover")) {
-      // The cursor moved from hoverCard, back to the original commitDot.
-      // This should not hide the card.
-      return;
-    }
-    commitDot.classList.remove("commitDotHovered");
-    commitDot.classList.add("commitDot");
-    if (commitDot.attributes.circlesha.value == hoveredCommitSha) {
-      // Checks if the user has moved hover to another commitDot.
-      // In that case, don't hide the card.
-      hideCard();
-    }
-  }
-
-  function isHoverCardHovered() {
+  else {
     var hoverCard = document.getElementById("hovercard");
-    return (hoverCard != undefined && hoverCard.matches(":hover"));
+    hoverCard.addEventListener("mouseleave", function () {
+      removeHoverFrom(commitDot);
+    }, false);
   }
 }
+
+// This will be triggered when the user moves the cursor away from
+// either the commitDot or the hoverCard.
+async function removeHoverFrom(commitDot) {
+  await delay(100);
+  var thisHiddenDot = document.querySelectorAll('[circlesha="' + commitDot.attributes.circlesha.value + '"][class="commitDotHidden"]')[0];
+  if (thisHiddenDot != undefined && thisHiddenDot.matches(":hover")) {
+    // The cursor moved from hoverCard, back to the original commitDot.
+    // This should not hide the card.
+    return;
+  }
+  commitDot.classList.remove("commitDotHovered");
+  commitDot.classList.add("commitDot");
+  if (commitDot.attributes.circlesha.value == hoveredCommitSha) {
+    // Checks if the user has moved hover to another commitDot.
+    // In that case, don't hide the card.
+    hideCard();
+  }
+}
+
+function isHoverCardHovered() {
+  var hoverCard = document.getElementById("hovercard");
+  return (hoverCard != undefined && hoverCard.matches(":hover"));
+}
+
 
 var commitDictGlobal;
 
@@ -321,6 +326,10 @@ function getOffset(el) {
   const rect = el.getBoundingClientRect();
   return {
     x: (rect.left + rect.right) / 2 + window.scrollX,
-    y: (rect.top + rect.bottom) / 2 + window.scrollY
+    y: (rect.top + rect.bottom) / 2 + window.scrollY,
+    width: rect.right - rect.left,
+    height: rect.bottom - rect.top,
+    startx: rect.left + window.scrollX,
+    starty: rect.top + window.scrollY,
   };
 }
