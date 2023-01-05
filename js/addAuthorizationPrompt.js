@@ -52,9 +52,23 @@ function openAuthorization() {
                 if (request.status == "SUCCESS") {
                     var githubToken = request.value.token;
                     var userName = request.value.userName;
-                    changeAuthorizationStatus("SUCCESS");
                     storeLocalToken(githubToken);
                     storeLocalUserName(userName);
+                    var url = window.location.href;
+                    var paramsObj = {};
+                    if (url.indexOf("?") > -1) {
+                        var params = url.split("?")[1].split("&");
+                        for (var i = 0; i < params.length; i++) {
+                            var param = params[i].split("=");
+                            paramsObj[param[0]] = param[1];
+                        }
+                    }
+                    if (paramsObj['fre'] == "true") {
+                        window.location.href = url + "&resume=true";
+                    }
+                    else {
+                        changeAuthorizationStatus("SUCCESS");
+                    }
                 }
                 else {
                     changeAuthorizationStatus("FAIL");

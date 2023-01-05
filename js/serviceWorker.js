@@ -1,5 +1,6 @@
 try {
     var githubTab;
+    var freTab;
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // startListening action will be sent by the GitHub commits page,
         // which is actually attempting the authentication.
@@ -20,6 +21,19 @@ try {
                     chrome.tabs.sendMessage(githubTab.id, { status: "SUCCESS", value: { token: githubToken, userName: userName } });
                 });
             }
+        }
+        else if (request.action == "freDone") {
+            chrome.tabs.remove(freTab.id);
+        }
+    });
+    chrome.runtime.onInstalled.addListener(async function (details) {
+        if (details.reason == "install") {
+            freTab = await chrome.tabs.create({ url: "https://www.github.com/NirmalScaria/le-git-graph/?fre=true&reason=" + details.reason });
+        }
+        else if (details.reason == "update") {
+            // TODO: [URGENT] Remove this part with next version release.
+            // Else every version update will trigger an FRE.
+            freTab = await chrome.tabs.create({ url: "https://www.github.com/NirmalScaria/le-git-graph/?fre=true&reason=" + details.reason });
         }
     });
 }
