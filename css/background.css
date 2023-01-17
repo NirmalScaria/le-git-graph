@@ -90,9 +90,9 @@
   margin: 0 0.1rem;
   margin-bottom: 0.05rem;
   margin-top: 0.05rem;
-  background-color: #ffffff10;
+  background-color: var(--color-btn-bg);
   border-radius: 0.2rem;
-  border : 1px solid #ffffff30;
+  border: 1px solid var(--color-btn-border);
   font-weight: 600;
   font-size: 13px;
 }
