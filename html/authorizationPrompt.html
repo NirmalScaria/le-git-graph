@@ -7,16 +7,19 @@
       <p class="mb-3 authorizationReason" style="margin-bottom:10px;" id="authorizationDescription">
         GitHub repo access is required to fetch the commits information.
       </p>
-      <button class="btn btn-primary mb-9 authorizationButton" style="display: none;" id="authorizationStatusButton"
-        value="Authorize with GitHub">
+      <input type="text" class="custom-pat-input form-control input-monospace input color-bg-subtle mb-4" data-autoselect=""
+        value="" aria-label="" placeholder="Enter PAT" style="display:none; width: 100%;">
+      <button class="btn btn-primary mb-9 authorizationButton authorizationButtonText" style="display: none;"
+        id="authorizationStatusButton" value="Authorize with GitHub">
         Authorize with GitHub
       </button>
       <div class="splitbutton mb-9 authorizationButton" id="authorizationButton">
         <input type="button" value="Authorize with GitHub" class="authorizeButton" />
-        <select id="authorizationTypeButton">
+        <select id="authorizationTypeButton" class="authorizationTypeButton">
           <option value="privateAndPublic" hidden>---Authorize with GitHub-</option>
           <option value="privateAndPublic">Private and public repositories</option>
           <option value="privateOnly">Public repositories only</option>
+          <option value="customPAT">Custom Personal Access Token</option>
         </select>
       </div>
     </div>

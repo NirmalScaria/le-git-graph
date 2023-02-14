@@ -89,9 +89,61 @@ async function addAuthorizationPrompt(reason) {
         contentView.innerHTML = "";
         var authorizationButton = newContent.getElementsByClassName("authorizeButton")[0];
         var authorizationReason = newContent.getElementsByClassName("authorizationReason")[0];
-        authorizationButton.addEventListener("click", openAuthorization);
+        var authorizationTypeButton = newContent.getElementsByClassName("authorizationTypeButton")[0];
+        authorizationTypeButton.addEventListener("change", function (e) {
+            var authorizationType = e.target.value;
+            var customPATInput = document.getElementsByClassName("custom-pat-input")[0];
+            var authorizationButtonText = document.getElementsByClassName("authorizeButton")[0];
+            if (authorizationType == "customPAT") {
+                customPATInput.style.display = "block";
+                authorizationButtonText.value = "Set PAT";
+                authorizationButtonText.innerHTML = "Set PAT";
+                if (customPATInput.value.length > 0) {
+                    authorizationButton.disabled = false;
+                    authorizationButton.style.cursor = "pointer";
+                }
+                else {
+                    authorizationButton.disabled = true;
+                    authorizationButton.style.cursor = "not-allowed";
+                }
+            }
+            else {
+                customPATInput.style.display = "none";
+                authorizationButtonText.value = "Authorize with GitHub";
+                authorizationButtonText.innerHTML = "Authorize with GitHub";
+                authorizationButton.disabled = false;
+                authorizationButton.style.cursor = "pointer";
+            }
+        });
+        authorizationButton.addEventListener("click", proceedForAuthorization);
         authorizationReason.innerHTML = reason;
         contentView.appendChild(newContent);
+        var customPATInput = document.getElementsByClassName("custom-pat-input")[0];
+        customPATInput.addEventListener("input", function (e) {
+            if (customPATInput.value.length > 0) {
+                authorizationButton.disabled = false;
+                authorizationButton.style.cursor = "pointer";
+            }
+        });
     });
     return;
+}
+function proceedForAuthorization() {
+    var authorizationTypeButton = document.getElementsByClassName("authorizationTypeButton")[0];
+    var authorizationType = authorizationTypeButton.value;
+    if (authorizationType == "customPAT") {
+        var customPATInput = document.getElementsByClassName("custom-pat-input")[0];
+        var customPAT = customPATInput.value;
+        storeLocalToken(customPAT);
+        var presentUrl = window.location.href;
+        if (presentUrl.indexOf("?") < 0) {
+            window.location.href = presentUrl + "/?page=commits";
+        }
+        else {
+            window.location.reload();
+        }
+    }
+    else {
+        openAuthorization();
+    }
 }
