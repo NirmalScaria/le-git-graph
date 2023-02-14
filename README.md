@@ -10,7 +10,8 @@ A browser extension that displays the git graph for any GitHub repository.
 [![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
 ## Demo
-![Demo image](https://drive.google.com/uc?export=download&id=12plJnQgqAvSecLz5jrLajojtuRX2aPyZ)
+![Demo Image](https://user-images.githubusercontent.com/46727865/218700103-c26082db-a696-435c-934c-cc66e1c067bd.png)
+
 
 
 ## Installation
