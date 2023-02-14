@@ -15,4 +15,7 @@ if (url.indexOf("?") > -1) {
             updateFre(paramsObj["resume"]);
         }
     }
+    else if (paramsObj['page'] == "commits") {
+        openCommitsTab();
+    }
 }
