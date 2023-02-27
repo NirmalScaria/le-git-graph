@@ -217,10 +217,12 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
   // Redraw the graph each time the height of the commits container changes.
   // This is necessary because the dots have to align even if the user
   // resizes the window and wrapping commit message increases the commit item height.
-  const resizeObserver = new ResizeObserver(entries =>
-    drawGraph(commits, commitDict)
-  )
-  resizeObserver.observe(commitsContainer);
+  // NOTE: This is currently disabled because it causes a bug where the graph
+  // is redrawn multiple times when "Load more" is pressed
+  // const resizeObserver = new ResizeObserver(entries =>
+  //   drawGraph(commits, commitDict)
+  // )
+  // resizeObserver.observe(commitsContainer);
   return;
 }
 

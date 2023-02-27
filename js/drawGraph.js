@@ -128,23 +128,16 @@ async function hideCard() {
 
 // Draws a commit dot (point) on the graph
 // Also the hidden commit dots for hover effect
-async function drawCommit(container, commit) {
-  let thisCommitItem = document.querySelectorAll('[circlesha="' + commit.oid + '"]')[0];
+function drawCommit(commit) {
+  var toAppend = ""
+  var cx = commit.cx;
+  var cy = commit.cy;
   if (commit.isHead) {
-    container.innerHTML += '<circle class = "commitHeadDot" cx="' + thisCommitItem.getAttribute("cx") + '" cy="' + thisCommitItem.getAttribute("cy") + '" r="7" stroke="' + commit.color + '" fill = "#00000000" circlesha = "' + commit.oid + '"/>';
+    toAppend += '<circle class = "commitHeadDot" cx="' + cx + '" cy="' + cy + '" r="7" stroke="' + commit.color + '" fill = "#00000000" circlesha = "' + commit.oid + '"/>';
   }
-  container.innerHTML += '<circle class = "commitDot" cx="' + thisCommitItem.getAttribute("cx") + '" cy="' + thisCommitItem.getAttribute("cy") + '" r="4" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
-  container.innerHTML += '<circle class = "commitDotHidden" cx="' + thisCommitItem.getAttribute("cx") + '" cy="' + thisCommitItem.getAttribute("cy") + '" r="19" fill="#ffffff00" circlesha = "' + commit.oid + '"/>';
-  // DOM updates acts pseudo-asynchronously, due to delay in repainting DOM. 
-  // So, a hack has to be done to make the flow synchronous.
-  // Here we wait for next frame to be repainted, before executing further commands.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      let commitDotHidden = document.querySelectorAll('[circlesha="' + commit.oid + '"][class="commitDotHidden"]')[0];
-      commitDotHidden.addEventListener("mouseover", onHoveringCommit);
-      commitDotHidden.addEventListener("mouseout", onHoverRemove);
-    });
-  });
+  toAppend += '<circle class = "commitDot" cx="' + cx + '" cy="' + cy + '" r="4" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
+  toAppend += '<circle class = "commitDotHidden" cx="' + cx + '" cy="' + cy + '" r="19" fill="#ffffff00" circlesha = "' + commit.oid + '"/>';
+  return (toAppend);
 }
 
 function onHoveringCommit(e) {
@@ -272,6 +265,8 @@ async function drawGraph(commits, commitDict) {
     yPos += (thisCommitItem.offsetHeight - 1) / 2;
     // Drawing the commits dots. (This is more of a dummy and will be redrawn so that lines appear below circles)
     // The purpose of this first set of circles is to easily query the position of the commit dot.
+    commits[i].cx = 30 + (commitXIndex * 14);
+    commits[i].cy = yPos;
     commitsGraphContainer.innerHTML += '<circle cx="' + (30 + (commitXIndex * 14)) + '" cy="' + yPos + '" r="1" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
     yPos += thisCommitItem.offsetHeight / 2;
   }
@@ -314,10 +309,24 @@ async function drawGraph(commits, commitDict) {
   }
 
   var yPos = 0;
+  var finalToAppend = "";
   // Redrawing actual commit dots which will be visible
   for (var commit of commits) {
-    await drawCommit(commitsGraphContainer, commit);
+    finalToAppend += drawCommit(commit);
   }
+  commitsGraphContainer.innerHTML += finalToAppend;
+  // DOM updates acts pseudo-asynchronously, due to delay in repainting DOM. 
+  // So, a hack has to be done to make the flow synchronous.
+  // Here we wait for next frame to be repainted, before executing further commands.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      for (var commit of commits) {
+        let commitDotHidden = document.querySelectorAll('[circlesha="' + commit.oid + '"][class="commitDotHidden"]')[0];
+        commitDotHidden.addEventListener("mouseover", onHoveringCommit);
+        commitDotHidden.addEventListener("mouseout", onHoverRemove);
+      }
+    });
+  });
 }
 
 // Get the vertical and horizontal position (center)
