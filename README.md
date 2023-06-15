@@ -30,6 +30,20 @@ For Mozilla Firefox:
 After installation, open any GitHub repository and a new 'Commits' tab will be visible.
 
 Open the commits tab and follow the prompt to authenticate with your GitHub account.
+
+## Setup for Private Repos owned by an Organization
+
+Access to private repositories owned by an organization is restricted by default. To access the commits graph for such repositories, you need to follow the following steps.
+
+1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens) 
+2. Create a Personal Access Token (PAT)  with the following scopes -
+    - repo |  Full control of private repositories
+3. Go back to the commits tab of a repo owned by the organization.
+4. From the dropdown for "Authorize with GitHub", select "Custom Personal Access Token".
+5. Enter the PAT and click on "Add PAT".
+
+(Full access to repo is required to fetch the commits graph, because there is no read only access level for GitHub OAuth scopes as of now.)
+
 ## Tech Stack
 
 **Client:** JavaScript, Manifest V3
