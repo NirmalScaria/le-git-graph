@@ -11,7 +11,7 @@ const parseDate = dateString => {
 };
 
 async function sortCommits(branches, heads) {
-    var branchNames = [];
+    var branchNames = {};
     var commitsObject = {};
 
     // The branches array contains the name of branch as well as
@@ -49,12 +49,17 @@ async function sortCommits(branches, heads) {
         var brancesInThisCommit = commit.branches;
         if (brancesInThisCommit != undefined) {
             brancesInThisCommit.forEach(thisBranch => {
-                if (!branchNames.includes(thisBranch)) {
-                    branchNames.push(thisBranch);
-                }
+                // if (!branchNames.includes(thisBranch)) {
+                    // branchNames.push(thisBranch);
+                // }
+                branchNames[thisBranch] = "";
             });
         }
     });
+
+    for(var branch of branches){
+        branchNames[branch.name] = branch.target.history.edges[0].node.oid;
+    }
 
     console.log("--COMMITS FOR THIS PAGE ARE--");
     console.log(commitsObject.slice(0, 10));

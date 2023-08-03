@@ -20,6 +20,7 @@
         "js/addAuthorizationPrompt.js",
         "js/authorisation/oauth2.js",
         "js/fetchCommits.js",
+        "js/fetchFilteredCommits.js",
         "js/showCommits.js",
         "js/sortCommits.js",
         "js/setBranchOptions.js",

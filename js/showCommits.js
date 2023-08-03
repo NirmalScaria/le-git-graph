@@ -207,7 +207,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
 
   // Display the branches filter dropdown button with default value only (All branches)
   await loadBranchesButton();
-  setBranchOptions(branchNames, branchNames);
+  setBranchOptions(branchNames, Object.keys(branchNames));
   contentView.appendChild(commitsOutsideContainer);
 
   addNextPageButton(commits, branchNames, allCommits, heads, pageNo);
