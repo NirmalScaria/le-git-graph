@@ -210,7 +210,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
   setBranchOptions(branchNames, Object.keys(branchNames), allBranches);
   contentView.appendChild(commitsOutsideContainer);
 
-  addNextPageButton(commits, branchNames, allCommits, heads, pageNo);
+  addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches);
 
   drawGraph(commits, commitDict);
 
@@ -248,14 +248,13 @@ function relativeTime(date) {
   return (output);
 }
 
-function addNextPageButton(commits, branchNames, allCommits, heads, pageNo) {
+function addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches) {
   var newerButton = document.getElementById("newerButton");
   var olderButton = document.getElementById("olderButton");
   if (commits.length >= 10) {
     olderButton.setAttribute("aria-disabled", "false");
     olderButton.addEventListener("click", function () {
-      // fetchFurther(commits, branchNames, allCommits, branches, heads, pageNo);
-      fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames);
+      fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames, allBranches);
     });
   }
 }
