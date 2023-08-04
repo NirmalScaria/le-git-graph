@@ -4,18 +4,19 @@
       justify-content: space-between;">
       <div style="display: flex">
         <details class="details-reset details-overlay mr-0 mb-0 " id="branch-select-menu">
-          <summary class="btn css-truncate" data-hotkey="w" title="Switch branches or tags">
+          <summary id="branch-select-menu-button" class="btn css-truncate" data-hotkey="w"
+            title="Switch branches or tags">
             <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
               data-view-component="true" class="octicon octicon-git-branch">
               <path fill-rule="evenodd"
                 d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z">
               </path>
             </svg>
-            <span class="css-truncate-target" data-menu-button="">All branches</span>
+            <span class="css-truncate-target" data-menu-button="" id="branches-dropdown-button">All branches</span>
             <span class="dropdown-caret"></span>
           </summary>
           <div class="SelectMenu">
-            <div class="SelectMenu-modal">
+            <div class="SelectMenu-modal" id="branches-selection-menu">
               <header class="SelectMenu-header">
                 <span class="SelectMenu-title">Select branches to show</span>
                 <button class="SelectMenu-closeButton" type="button" data-toggle-for="branch-select-menu"><svg
@@ -73,7 +74,12 @@
                         <span hidden="{{ isNotDefault }}" class="Label Label--secondary flex-self-start">default</span>
                       </a>
                     </template>
-                    <footer class="SelectMenu-footer"><a aria-disabled="true">Show selected branches</a>
+                    <footer class="SelectMenu-footer">
+                      <a class="Button--primary Button--medium Button btn-block mb-2"
+                        data-toggle-for="branch-select-menu" id="branch-filter-button" style="justify-content: center;">
+                        <span class="Button-label"><span class="d-none d-md-block">Show selected branches</span>
+                          <span class="d-block d-md-none">Apply</span></span>
+                      </a>
                     </footer>
                   </ref-selector>
                 </div>
@@ -81,8 +87,8 @@
             </div>
           </div>
         </details>
-        <img src="https://github.com/NirmalScaria/NirmalScaria.github.io/raw/master/assets/prompt.png" height="32px" class="ml-3" id="promptImage"
-          style="border-radius: 5px; display: none; cursor: pointer;">
+        <img src="https://github.com/NirmalScaria/NirmalScaria.github.io/raw/master/assets/prompt.png" height="32px"
+          class="ml-3" id="promptImage" style="border-radius: 5px; display: none; cursor: pointer;">
       </div>
       <div id="legendContainer" style="display: none;">
         <summary class="btn css-truncate ml-2" value="" style=" pointer-events: none !important;" id="branchButton">

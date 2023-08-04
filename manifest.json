@@ -1,5 +1,5 @@
 {
-  "version": "1.1.5",
+  "version": "1.2.0",
   "name": "Le Git Graph - Commits Graph for GitHub",
   "description": "A browser extension that displays the git graph for any GitHub repository.",
   "manifest_version": 3,
@@ -20,6 +20,7 @@
         "js/addAuthorizationPrompt.js",
         "js/authorisation/oauth2.js",
         "js/fetchCommits.js",
+        "js/fetchFilteredCommits.js",
         "js/showCommits.js",
         "js/sortCommits.js",
         "js/setBranchOptions.js",

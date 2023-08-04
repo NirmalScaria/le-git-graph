@@ -5,7 +5,7 @@
 
 // The idea is to fetch the last 20 commits in the history
 // of each of the last 10 commits that are displayed.
-async function fetchFurther(commits, allCommits, heads, pageNo, branchNames) {
+async function fetchFurther(commits, allCommits, heads, pageNo, branchNames, allBranches) {
   // commits array just contains the last 10 commits so that their 
   // 10 levels of history can be fetched.
 
@@ -119,6 +119,6 @@ async function fetchFurther(commits, allCommits, heads, pageNo, branchNames) {
   });
   pageNo += 1;
   var commitsToShow = (allCommits.slice(0, 10 * pageNo));
-  await showCommits(commitsToShow, branchNames, allCommits, heads, pageNo);
+  await showCommits(commitsToShow, branchNames, allCommits, heads, pageNo, allBranches);
   showLegend(heads);
 }
