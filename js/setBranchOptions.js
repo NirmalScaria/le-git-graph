@@ -1,6 +1,7 @@
 function setBranchOptions(branches, selectedBranchNames, allBranches) {
     var branchesContainer = document.getElementById("branches-list-parent");
     var existingChild = branchesContainer.children[0];
+    var branchesDropdownButton = document.getElementById("branches-dropdown-button");
 
     var branchNames = new Set()
     for (var branch in allBranches) {
@@ -11,6 +12,12 @@ function setBranchOptions(branches, selectedBranchNames, allBranches) {
         var newChild = existingChild.cloneNode(true);
         newChild.children[1].innerHTML = branch;
         newChild.setAttribute("branch-name", branch);
+        if(selectedBranchNames.includes(branch)){
+            newChild.setAttribute("aria-checked", "true");
+        }
+        else{
+            newChild.setAttribute("aria-checked", "false");
+        }
         newChild.addEventListener("click", () => {
             var thisItem = document.querySelector(`[branch-name="${branch}"]`);
 
@@ -33,6 +40,15 @@ function setBranchOptions(branches, selectedBranchNames, allBranches) {
         branchesContainer.appendChild(newChild);
     });
 
+    if (branchNames.size == selectedBranchNames.length) {
+        branchesContainer.children[0].setAttribute("aria-checked", "true");
+        branchesDropdownButton.innerHTML = "All Branches";
+    }
+    else {
+        branchesContainer.children[0].setAttribute("aria-checked", "false");
+        branchesDropdownButton.innerHTML = "Select Branches";
+    }
+    
     // Action for the "All branches" button
     branchesContainer.children[0].addEventListener("click", () => {
         if (branchesContainer.children[0].getAttribute("aria-checked") == "true") {
