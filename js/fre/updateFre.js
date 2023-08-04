@@ -10,52 +10,46 @@ async function updateFre(resume) {
 async function updateFreStep1() {
     createOverlay();
     clearToolTip();
-    var secondCommitDot = document.getElementsByClassName("commitDot")[1];
-    var secondsha = secondCommitDot.attributes.circlesha.value;
-    await hoverOnCommit(secondsha);
-    var hovercard = document.getElementById("head-indication-section").parentElement.parentElement.parentElement.parentElement;
-    focusOnItem(hovercard, [70, 10, 10, 10]);
+    var branchSelectButton = document.getElementById("branch-select-menu-button");
+    var branchesSelectionMenu = document.getElementById("branches-selection-menu");
+    branchSelectButton.click();
+    focusOnItem(branchesSelectionMenu, [10, 40, 10, 10]);
     showToolTip(
-        hovercard,
+        branchesSelectionMenu,
         "left-top",
-        "Welcome to Le Git Graph 1.1.1",
-        "Hover on any commit to see details ✨",
-        "Now you can put your mouse pointer on any commit dot and it opens this tooltip which contains detailed information about that commit",
-        ["Continue [1/2]"],
+        "Welcome to Le Git Graph 1.2.0",
+        "Now you can apply filters to branches ✨",
+        "You can select which branches to show in the graph by selecting the branch names in the branches selection menu",
+        ["Continue"],
         ["btn-primary"],
-        [nextFrom3]
+        [nextFrom1]
     );
-    function nextFrom3() {
-        removeHoverFrom(secondCommitDot);
+    function nextFrom1() {
+        var branchSelectButton = document.getElementById("branch-select-menu-button");
+        branchSelectButton.click();
         updateFreStep2();
     }
-
 }
-function updateFreStep2() {
+
+async function updateFreStep2() {
     clearToolTip();
-    var starButton = document.getElementsByClassName("starring-container d-flex")[0];
-    var clickStarButton = starButton.querySelectorAll(".rounded-left-2")[1];
-    console.log(clickStarButton);
-    focusOnItem(starButton, 5, step3withStar);
-
+    createOverlay();
+    focusOnItem(null, [0, 0, 0, 0]);
     showToolTip(
-        starButton,
-        "top-right",
-        "",
-        "Please consider starring this repository!",
-        "This is the project repository of Le Git Graph extension. If you like it so far, please consider starring it!",
-        ["Previous", "Do not star", "Star and Finish"],
+        document,
+        "cover",
+        "Please rate on Chrome Web Store",
+        "Enjoying the extension so far? ✨",
+        "Please rate the extension on Chrome Web Store. It will take less than a minute, but will help me reach more people.",
+        ["Previous", "Maybe later", "Rate on Chrome Web Store"],
         ["btn-secondary", "btn-secondary", "btn-primary"],
-        [updateFreStep1, step3withoutStar, step3withStar]
-    );
-
-    function step3withoutStar() {
+        [updateFreStep1, finishFre, openChromeWebstore]
+    )
+    function openChromeWebstore() {
+        window.open("https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff/reviews", "_blank");
         clearToolTip();
     }
-    function step3withStar() {
-        if (starButton.classList.contains("on") == false) {
-            clickStarButton.click();
-        }
+    function finishFre() {
         clearToolTip();
     }
 }

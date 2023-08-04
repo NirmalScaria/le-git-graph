@@ -33,7 +33,7 @@ try {
         else if (details.reason == "update") {
             // TODO: [URGENT] Remove this part with next version release.
             // Else every version update will trigger an FRE.
-            // freTab = await chrome.tabs.create({ url: "https://www.github.com/NirmalScaria/le-git-graph/?fre=true&reason=" + details.reason });
+            freTab = await chrome.tabs.create({ url: "https://www.github.com/NirmalScaria/le-git-graph/?fre=true&reason=" + details.reason });
         }
     });
 }
