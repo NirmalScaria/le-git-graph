@@ -142,14 +142,16 @@ async function fetchCommits() {
     if (await fetchCommitsPage(repoOwner, repoName, "NONE")) {
         console.log("--FETCHED BRANCHES--");
         console.log("--COST : '" + APIcost + "'--");
+        var allBranchesObject = {}
         branches = branches.map(branch => {
             heads.push({
                 name: branch.name,
                 oid: branch.target.history.edges[0].node.oid,
             });
+            allBranchesObject[branch.name] = branch.target.history.edges[0].node.oid;
             branch.target.history.edges[0].node.isHead = true;
             return branch;
         })
-        await sortCommits(branches, heads);
+        await sortCommits(branches, heads, allBranchesObject);
     }
 }

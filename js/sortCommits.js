@@ -10,9 +10,10 @@ const parseDate = dateString => {
     return new Date(Date.UTC(+b[0], +b[1] - 1, +b[2], +b[3] + hrOffset, +b[4] + minOffset, +b[5], +b[6] || 0));
 };
 
-async function sortCommits(branches, heads) {
+async function sortCommits(branches, heads, allBranches) {
     var branchNames = {};
     var commitsObject = {};
+    var allBranchNames = {};
 
     // The branches array contains the name of branch as well as
     // the commit history (latest 10 per branch) on the branch
@@ -50,19 +51,30 @@ async function sortCommits(branches, heads) {
         if (brancesInThisCommit != undefined) {
             brancesInThisCommit.forEach(thisBranch => {
                 // if (!branchNames.includes(thisBranch)) {
-                    // branchNames.push(thisBranch);
+                // branchNames.push(thisBranch);
                 // }
                 branchNames[thisBranch] = "";
+                allBranchNames[thisBranch] = "";
             });
         }
     });
 
-    for(var branch of branches){
+    for (var branch of branches) {
         branchNames[branch.name] = branch.target.history.edges[0].node.oid;
+    }
+    // TODO: This is hacky. The variable allBranches is not standardised throughout project.
+    // Sometimes it is array, sometimes it is object. Fix this at the source instead of here.
+    if (typeof allBranches == "array") {
+        for (var branch of allBranches) {
+            allBranchNames[branch.name] = branch.target.history.edges[0].node.oid;
+        }
+    }
+    else {
+        allBranchNames = allBranches;
     }
 
     console.log("--COMMITS FOR THIS PAGE ARE--");
     console.log(commitsObject.slice(0, 10));
-    await showCommits(commitsObject.slice(0, 10), branchNames, commits, heads, 1);
+    await showCommits(commitsObject.slice(0, 10), branchNames, commits, heads, 1, allBranchNames);
     showLegend(heads);
 }

@@ -1,9 +1,9 @@
-function setBranchOptions(branches, selectedBranchNames) {
+function setBranchOptions(branches, selectedBranchNames, allBranches) {
     var branchesContainer = document.getElementById("branches-list-parent");
     var existingChild = branchesContainer.children[0];
 
-    var branchNames =new Set()
-    for (var branch in branches) {
+    var branchNames = new Set()
+    for (var branch in allBranches) {
         var branchname = branch;
         branchNames.add(branchname);
     }
@@ -59,13 +59,13 @@ function setBranchOptions(branches, selectedBranchNames) {
 
     var branchFilterButton = document.getElementById("branch-filter-button");
     var selectedBranchCommitIds = []
-    
+
     branchFilterButton.addEventListener("click", () => {
         selectedBranchCommitIds = [];
         for (var branch of selectedBranchNames) {
-            selectedBranchCommitIds.push(branches[branch]);
+            selectedBranchCommitIds.push(allBranches[branch]);
         }
         showCommitsLoading();
-        fetchFilteredCommits(selectedBranchNames, selectedBranchCommitIds);
+        fetchFilteredCommits(selectedBranchNames, selectedBranchCommitIds, allBranches);
     });
 }

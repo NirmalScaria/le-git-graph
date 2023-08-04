@@ -1,6 +1,6 @@
 
 
-async function fetchFilteredCommits(selectedBranchNames, selectedBranches) {
+async function fetchFilteredCommits(selectedBranchNames, selectedBranches, allBranches) {
     var branches = [];
     // Recurcively call this function unti all the branches are fetched
     // (GitHub API has a limit of 100 branches per request)
@@ -156,9 +156,11 @@ async function fetchFilteredCommits(selectedBranchNames, selectedBranches) {
             branch.target.history.edges[0].node.isHead = true;
             return branch;
         })
-        await sortCommits(branches, heads);
+        await sortCommits(branches, heads, allBranches);
     }
-    console.log("Fetch failure");
+    else {
+        console.log("Fetch failure");
+    }
 }
 
 // Branch names of git allows a lot of flexibiliity in variable naming

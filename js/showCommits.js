@@ -144,7 +144,7 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
   return ([commits, allCommits]);
 }
 
-async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
+async function showCommits(commits, branchNames, allCommits, heads, pageNo, allBranches) {
   var presentUrl = window.location.href;
   var repoOwner = presentUrl.split('/')[3];
   var repoName = presentUrl.split('/')[4];
@@ -207,7 +207,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo) {
 
   // Display the branches filter dropdown button with default value only (All branches)
   await loadBranchesButton();
-  setBranchOptions(branchNames, Object.keys(branchNames));
+  setBranchOptions(branchNames, Object.keys(branchNames), allBranches);
   contentView.appendChild(commitsOutsideContainer);
 
   addNextPageButton(commits, branchNames, allCommits, heads, pageNo);
