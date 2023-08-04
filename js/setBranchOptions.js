@@ -1,12 +1,23 @@
-function setBranchOptions(branches, selectedBranchNames) {
+function setBranchOptions(branches, selectedBranchNames, allBranches) {
     var branchesContainer = document.getElementById("branches-list-parent");
     var existingChild = branchesContainer.children[0];
+    var branchesDropdownButton = document.getElementById("branches-dropdown-button");
 
-    // Add each branch to the dropdown list.
-    Array.from(branches).forEach((branch) => {
+    var branchNames = new Set()
+    for (var branch in allBranches) {
+        var branchname = branch;
+        branchNames.add(branchname);
+    }
+    Array.from(branchNames).forEach((branch) => {
         var newChild = existingChild.cloneNode(true);
         newChild.children[1].innerHTML = branch;
         newChild.setAttribute("branch-name", branch);
+        if(selectedBranchNames.includes(branch)){
+            newChild.setAttribute("aria-checked", "true");
+        }
+        else{
+            newChild.setAttribute("aria-checked", "false");
+        }
         newChild.addEventListener("click", () => {
             var thisItem = document.querySelector(`[branch-name="${branch}"]`);
 
@@ -29,6 +40,15 @@ function setBranchOptions(branches, selectedBranchNames) {
         branchesContainer.appendChild(newChild);
     });
 
+    if (branchNames.size == selectedBranchNames.length) {
+        branchesContainer.children[0].setAttribute("aria-checked", "true");
+        branchesDropdownButton.innerHTML = "All Branches";
+    }
+    else {
+        branchesContainer.children[0].setAttribute("aria-checked", "false");
+        branchesDropdownButton.innerHTML = "Select Branches";
+    }
+    
     // Action for the "All branches" button
     branchesContainer.children[0].addEventListener("click", () => {
         if (branchesContainer.children[0].getAttribute("aria-checked") == "true") {
@@ -51,5 +71,17 @@ function setBranchOptions(branches, selectedBranchNames) {
         }
     });
     var sizedContainer = document.getElementById("branches-sized-container");
-    sizedContainer.style.height = (35 * branches.length + 45) + "px";
+    sizedContainer.style.height = (35 * branchNames.size + 25) + "px";
+
+    var branchFilterButton = document.getElementById("branch-filter-button");
+    var selectedBranchCommitIds = []
+
+    branchFilterButton.addEventListener("click", () => {
+        selectedBranchCommitIds = [];
+        for (var branch of selectedBranchNames) {
+            selectedBranchCommitIds.push(allBranches[branch]);
+        }
+        showCommitsLoading();
+        fetchFilteredCommits(selectedBranchNames, selectedBranchCommitIds, allBranches);
+    });
 }
