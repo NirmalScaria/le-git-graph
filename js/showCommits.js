@@ -80,6 +80,9 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
                     login
                     avatarUrl
                   }
+                },
+                statusCheckRollup {
+                  state
                 }
               }
             }`;
@@ -118,6 +121,7 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
     commits[i].additions = commitDetails['commit' + i].additions;
     commits[i].deletions = commitDetails['commit' + i].deletions;
     commits[i].author = commitDetails['commit' + i].author.name;
+    commits[i].statusCheckRollup = commitDetails['commit' + i].statusCheckRollup?.state;
     if (commitDetails['commit' + i].author.user != null) {
       commits[i].authorAvatar = commitDetails['commit' + i].author.user.avatarUrl;
       commits[i].authorLogin = commitDetails['commit' + i].author.user.login;
@@ -138,6 +142,7 @@ async function getCommitDetails(repoOwner, repoName, commits, allCommits) {
         target.authorLogin = commit.authorLogin;
         target.hasUserData = commit.hasUserData;
         target.parents = commit.parents;
+        target.statusCheckRollup = commit.statusCheckRollup;
       }
     }
   }
@@ -191,6 +196,13 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
       newCommitItem.querySelector("#commitTreeLink").setAttribute("href", "/" + repoOwner + "/" + repoName + "/tree/" + commit.oid);
       newCommitItem.querySelector("#commitLink").innerHTML = commit.oid.substring(0, 7);
       newCommitItem.querySelector("#statusDetails").setAttribute("data-deferred-details-content-url", "/" + repoOwner + "/" + repoName + "/commit/" + commit.oid + "/status-details");
+      if (commit.statusCheckRollup == "SUCCESS") {
+        newCommitItem.querySelector("#statusDetails .commit-status-failure").remove();
+      } else if (commit.statusCheckRollup == "FAILURE") {
+        newCommitItem.querySelector("#statusDetails .commit-status-success").remove();
+      } else {
+        newCommitItem.querySelector("#statusDetails").remove();
+      }
       newCommitItem.querySelector("#viewAllCommits").innerHTML = commit.authorLogin;
       newCommitItem.querySelector("#relativeTime").innerText = relativeTime(commit.committedDate);
       if (commit.hasUserData) {
