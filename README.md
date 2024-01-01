@@ -5,7 +5,7 @@
 A browser extension that displays the git graph for any GitHub repository.
 
 [![Version](https://img.shields.io/badge/License-MIT-yellow)]()
-[![Version](https://img.shields.io/badge/Version-1.2.5-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Version-1.2.7-yellowgreen)]()
 [![Version](https://img.shields.io/badge/Chrome_CI/CD-Success-green)]()
 [![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
