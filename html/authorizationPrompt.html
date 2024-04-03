@@ -1,4 +1,4 @@
-<div class="Box Box--responsive text-center rounded-2 border color-border-muted">
+<div class="Box Box--responsive text-center rounded-2 border color-border-muted mt-3">
   <div class="position-relative">
     <div class="col-9 mx-auto py-4">
       <h1 class="mt-9 h4" id="authorizationTitle">
@@ -7,23 +7,105 @@
       <p class="mb-3 authorizationReason" style="margin-bottom:10px;" id="authorizationDescription">
         GitHub repo access is required to fetch the commits information.
       </p>
-      <input type="text" class="custom-pat-input form-control input-monospace input color-bg-subtle mb-4" data-autoselect=""
-        value="" aria-label="" placeholder="Enter PAT" style="display:none; width: 100%;">
+      <input type="text" class="custom-pat-input form-control input-monospace input color-bg-subtle mb-4"
+        data-autoselect="" value="" aria-label="" placeholder="Enter PAT" style="display:none; width: 100%;">
       <button class="btn btn-primary mb-9 authorizationButton authorizationButtonText" style="display: none;"
         id="authorizationStatusButton" value="Authorize with GitHub">
         Authorize with GitHub
       </button>
-      <div class="splitbutton mb-9 authorizationButton" id="authorizationButton">
-        <input type="button" value="Authorize with GitHub" class="authorizeButton" />
-        <select id="authorizationTypeButton" class="authorizationTypeButton">
-          <option value="privateAndPublic" hidden>---Authorize with GitHub-</option>
-          <option value="privateAndPublic">Private and public repositories</option>
-          <option value="privateOnly">Public repositories only</option>
-          <option value="customPAT">Custom Personal Access Token</option>
-        </select>
+      <div data-view-component="true" class="BtnGroup py-4" id="authorizationButton">
+        <button icon="" id="authorize-button"
+          data-hydro-click-hmac="82b28aa3d29c8c664eac00c1a1e0d5b17a7e23e717be0e95da1c9af4f3d2c640"
+          data-view-component="true"
+          class="btn-sm btn btn-primary BtnGroup-item authorizeButton"
+          aria-describedby="tooltip-5a8243e8-1420-49e5-93ea-f94b5a52d7a1">
+          Authorize with Le Git Graph
+          <tool-tip id="tooltip-5a8243e8-1420-49e5-93ea-f94b5a52d7a1" for="authorize-button" popover="manual"
+            data-direction="s" data-type="description" data-view-component="true"
+            class="position-absolute sr-only authorize-button-text" role="tooltip"
+            style="--tool-tip-position-top: 194px; --tool-tip-position-left: 358.4453125px;">Authorize
+            the extension with your GitHub Account</tool-tip>
+        </button>
+        <details group_item="true" id="my-forks-menu-518486100" data-view-component="true"
+          class="details-reset details-overlay BtnGroup-parent d-inline-block position-relative">
+          <summary aria-label="Choose access level" data-view-component="true"
+            class="btn-sm btn btn-primary BtnGroup-item px-2 float-none" aria-haspopup="menu" role="button"> <svg
+              aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true"
+              class="octicon octicon-triangle-down">
+              <path
+                d="m4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z">
+              </path>
+            </svg>
+          </summary>
+          <details-menu class="SelectMenu right-0"
+            role="menu" data-focus-trap="suspended"><span class="sentinel" tabindex="0" aria-hidden="true"></span>
+            <div class="SelectMenu-modal">
+              <button class="SelectMenu-closeButton position-absolute right-0 m-2" type="button" aria-label="Close menu"
+                data-toggle-for="my-forks-menu-518486100">
+                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                  data-view-component="true" class="octicon octicon-x">
+                  <path
+                    d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z">
+                  </path>
+                </svg>
+              </button>
+              <div id="filter-menu-388b83" class="d-flex flex-column flex-1 overflow-hidden">
+                <div class="SelectMenu-list">
+
+                  <header class="SelectMenu-header">
+                    <h3 class="SelectMenu-title">Choose access level</h3>
+                    <button class="SelectMenu-closeButton" type="button" aria-label="Close menu"
+                      data-toggle-for="my-forks-menu-518486100">
+                      <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                        data-view-component="true" class="octicon octicon-x">
+                        <path
+                          d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z">
+                        </path>
+                      </svg>
+                    </button>
+                  </header>
+
+                  <footer class="SelectMenu-footer p-0 position-sticky">
+                    <button
+                      data-hydro-click-hmac="464585542e58a711b0e17796653555f3b14cd55747d3fe5445ba57107a1c70a8"
+                      data-ga-click="Give access to Private and Public Repositories"
+                      role="menuitem" data-view-component="true"
+                      class="SelectMenu-item btn rounded-0 border-bottom-0 text-normal f6 private-and-public-button">
+                      Private and public repositories
+                    </button>
+                  </footer>
+                  <footer class="SelectMenu-footer p-0 position-sticky">
+                    <button
+                     data-hydro-click-hmac="464585542e58a711b0e17796653555f3b14cd55747d3fe5445ba57107a1c70a8"
+                      data-ga-click="Give access to Public Repositories only"
+                      role="menuitem" data-view-component="true"
+                      class="SelectMenu-item btn rounded-0 border-bottom-0 text-normal f6 public-only-button">
+                      Public repositories only
+                    </button>
+                  </footer>
+                  <footer class="SelectMenu-footer p-0 position-sticky">
+                    <button
+                      data-hydro-click-hmac="464585542e58a711b0e17796653555f3b14cd55747d3fe5445ba57107a1c70a8"
+                      data-ga-click="Give access using Custom Personal Access Token"
+                      role="menuitem" data-view-component="true"
+                      class="SelectMenu-item btn rounded-0 border-bottom-0 text-normal f6 custom-pat-button">
+                      Custom Personal Access Token
+                    </button>
+                  </footer>
+
+                </div>
+
+              </div>
+            </div>
+            <span class="sentinel" tabindex="0" aria-hidden="true"></span>
+          </details-menu>
+        </details>
       </div>
+      <input type="hidden" id="authorizationType" value="privateAndPublic" class="authorizationType">
       <p class="mb-3 organisationAuthTip" style="margin-bottom:10px; color: gray" id="organisationAuthTip">
-        Repo owned by an organisation? Follow the steps <a href = "https://github.com/NirmalScaria/le-git-graph/tree/main#setup-for-private-repos-owned-by-an-organization" target="_blank">here</a> to authorize.
+        Repo owned by an organisation? Follow the steps <a
+          href="https://github.com/NirmalScaria/le-git-graph/tree/main#setup-for-private-repos-owned-by-an-organization"
+          target="_blank">here</a> to authorize.
       </p>
     </div>
   </div>
