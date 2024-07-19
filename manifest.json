@@ -37,6 +37,7 @@
     },
     {
       "matches": [
+        "*://*.scaria.dev/github-tree-graph/authorize*",
         "*://*.scaria.dev/github-tree-graph/authorize/*"
       ],
       "js": [
