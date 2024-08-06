@@ -146,7 +146,8 @@ async function fetchFilteredCommits(selectedBranchNames, selectedBranches, allBr
     if (await fetchCommitsPageFiltered(repoOwner, repoName, "NONE")) {
         console.log("--FETCHED BRANCHES--");
         console.log("--COST : '" + APIcost + "'--");
-        branches = branches.map(branch => {
+        branches = branches.map(branchOriginal => {
+            var branch = JSON.parse(JSON.stringify(branchOriginal));
             heads.push({
                 name: branch.name,
                 oid: branch.history.edges[0].node.oid,

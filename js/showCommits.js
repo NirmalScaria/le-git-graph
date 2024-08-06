@@ -242,7 +242,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
 // Like "1 day ago", "2 weeks ago", "3 months ago"
 function relativeTime(date) {
   var now = new Date().getTime();
-  const difference = (now - date.getTime()) / 1000;
+  const difference = (now - (new Date(date)).getTime()) / 1000;
   let output = ``;
   if (difference < 10) {
     output = `just now`;
@@ -255,7 +255,7 @@ function relativeTime(date) {
   } else if (difference < 2620800) {
     output = `${Math.floor(difference / 86400) > 1 ? (Math.floor(difference / 86400) + ' days ago') : 'yesterday'}`;
   } else {
-    output = 'on ' + date.toLocaleDateString();
+    output = 'on ' + (new Date(date)).toLocaleDateString();
   }
   return (output);
 }
