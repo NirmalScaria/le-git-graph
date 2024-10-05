@@ -87,6 +87,6 @@ async function sortCommits(branches, heads, allBranches) {
         showLegend(heads);
     }
     else{
-        console.log("Page Changed before rendering");
+        console.log("PAGE CHANGED BEFORE COMMITS RENDER");
     }
 }
