@@ -209,6 +209,7 @@ var commitDictGlobal;
 
 // Draws the graph into the graphSvg element. (Where the graph is supposed to be drawn)
 async function drawGraph(commits, commitDict) {
+  commitDictGlobal = commitDict;
   // Taking  the heights of the actual commit listings, so that the
   // commit dots (points) can be placed in the correct vertical position.
   var commitsContainer = document.getElementById("commits-container");
