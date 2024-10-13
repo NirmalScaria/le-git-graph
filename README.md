@@ -38,6 +38,8 @@ Access to private repositories owned by an organization is restricted by default
 1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens) 
 2. Create a Personal Access Token (PAT)  with the following scopes -
     - repo |  Full control of private repositories
+  > For a more secure option, use a Fine-Grained token (beta) with the following scopes - 
+  > - repo |  Read access to code, commit statuses, and metadata
 3. Go back to the commits tab of a repo owned by the organization.
 4. From the dropdown for "Authorize with GitHub", select "Custom Personal Access Token".
 5. Enter the PAT and click on "Add PAT".
