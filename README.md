@@ -5,7 +5,7 @@
 A browser extension that displays the git graph for any GitHub repository.
 
 [![Version](https://img.shields.io/badge/License-MIT-yellow)]()
-[![Version](https://img.shields.io/badge/Version-1.2.8-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Version-1.3.3-yellowgreen)]()
 [![Version](https://img.shields.io/badge/Chrome_CI/CD-Success-green)]()
 [![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
@@ -31,6 +31,18 @@ After installation, open any GitHub repository and a new 'Commits' tab will be v
 
 Open the commits tab and follow the prompt to authenticate with your GitHub account.
 
+## Why does it need write access
+
+The extension asks for permission in the level
+`repo - read and write`
+
+Le Git Graph requires only read access to public or private repositories.
+
+The reason is only because there is no `repo - read only` access level supported by Github OAuth. 
+(You can read the discussion here https://github.com/orgs/community/discussions/7891 )
+
+Even though access is requested for read and write, the extension only uses it for read operations, as you can see in the source code.
+
 ## Setup for Private Repos owned by an Organization
 
 Access to private repositories owned by an organization is restricted by default. To access the commits graph for such repositories, you need to follow the following steps.
@@ -38,6 +50,8 @@ Access to private repositories owned by an organization is restricted by default
 1. Go to [https://github.com/settings/tokens](https://github.com/settings/tokens) 
 2. Create a Personal Access Token (PAT)  with the following scopes -
     - repo |  Full control of private repositories
+  > For a more secure option, use a Fine-Grained token (beta) with the following scopes - 
+  > - repo |  Read access to code, commit statuses, and metadata
 3. Go back to the commits tab of a repo owned by the organization.
 4. From the dropdown for "Authorize with GitHub", select "Custom Personal Access Token".
 5. Enter the PAT and click on "Add PAT".

@@ -20,7 +20,7 @@ jobs:
           name: chrome-release
           path: chrome-release.zip
       - name: Upload and Release
-        uses: mnao305/chrome-extension-upload@3.0.0
+        uses: mnao305/chrome-extension-upload@v5.0.0
         with:
           file-path: chrome-release.zip
           extension-id: ${{ secrets.CWS_EXTENSION_ID }}
