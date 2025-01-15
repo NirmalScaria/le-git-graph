@@ -31,6 +31,18 @@ After installation, open any GitHub repository and a new 'Commits' tab will be v
 
 Open the commits tab and follow the prompt to authenticate with your GitHub account.
 
+## Why does it need write access
+
+The extension asks for permission in the level
+`repo - read and write`
+
+Le Git Graph requires only read access to public or private repositories.
+
+The reason is only because there is no `repo - read only` access level supported by Github OAuth. 
+(You can read the discussion here https://github.com/orgs/community/discussions/7891 )
+
+Even though access is requested for read and write, the extension only uses it for read operations, as you can see in the source code.
+
 ## Setup for Private Repos owned by an Organization
 
 Access to private repositories owned by an organization is restricted by default. To access the commits graph for such repositories, you need to follow the following steps.
