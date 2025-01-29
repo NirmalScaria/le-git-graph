@@ -3,9 +3,9 @@
 
 function installFre(resume) {
     const observer = new MutationObserver((mutations, obs) => {
-      var commitsTabButton = document.getElementById("commits-tab");
-      if (commitsTabButton) {
-        obs.disconnect(); // Stop observing once the button is found
+      const commitsButton = document.getElementById("commits-tab");
+      if (commitsButton) {
+        obs.disconnect();
         openCommitsTab();
         if (resume == "true") {
           createOverlay();
@@ -21,18 +21,20 @@ function installFre(resume) {
 async function installFreStep1() {
     createOverlay();
     clearToolTip();
-    var commitButton = document.getElementById("commits-tab");
-    focusOnItem(commitButton, 10);
-    showToolTip(
-        commitButton,
-        "top-left",
-        "",
-        "Notice the new tab added to GitHub?",
-        "Open this tab from any repository and it will give you this page, where you can find the git graph, and much more!",
-        ["Continue [1/3]"],
-        ["btn-primary"],
-        [installFreStep2]
-    );
+    window.onload = () => {
+        var commitsButton = document.getElementById("commits-tab");
+        focusOnItem(commitsButton, 10);
+        showToolTip(
+            commitsButton,
+            "top-left",
+            "",
+            "Notice the new tab added to GitHub?",
+            "Open this tab from any repository and it will give you this page, where you can find the git graph, and much more!",
+            ["Continue [1/3]"],
+            ["btn-primary"],
+            [installFreStep2]
+        );
+    }
 }
 
 function installFreStep2() {

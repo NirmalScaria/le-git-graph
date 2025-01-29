@@ -23,11 +23,11 @@ function onMutation() {
       pathsToExclude.includes(windowPathArray[1]) == false &&
       windowPathArray[2]
     ) {
+      if (isCommitsTabOpen) return;
       mo.disconnect();
       addCommitsButton();
       observer();
     }
-    if (isCommitsTabOpen) return;
   }
 
   addCommitsButtonToUI();

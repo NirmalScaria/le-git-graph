@@ -157,7 +157,8 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
   var contentView =
     document.getElementsByClassName("clearfix")[0] ||
     document.getElementsByClassName("PageLayout")[0] ||
-    document.getElementsByClassName("repository-content")[0];
+    document.getElementsByClassName("repository-content")[0] ||
+    document.getElementsByTagName("react-app")[0];
 
   var commitsContainerDummy = document.createElement("div");
 
