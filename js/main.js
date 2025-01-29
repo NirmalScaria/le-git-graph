@@ -19,7 +19,6 @@ let prevURL = window.location.href;
 function onMutation() {
   const currentURL = window.location.href;
   function addCommitsButtonToUI() {
-    if (isCommitsTabOpen) return;
     if (
       pathsToExclude.includes(windowPathArray[1]) == false &&
       windowPathArray[2]
@@ -28,6 +27,7 @@ function onMutation() {
       addCommitsButton();
       observer();
     }
+    if (isCommitsTabOpen) return;
   }
 
   addCommitsButtonToUI();

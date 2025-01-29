@@ -2,13 +2,20 @@
 // Make necessary changes to this file to change the FRE.
 
 function installFre(resume) {
-    openCommitsTab();
-    if (resume == "true") {
-        createOverlay();
-        installFreStep2();
-    } else {
-        installFreStep1();
-    }
+    const observer = new MutationObserver((mutations, obs) => {
+      var commitsTabButton = document.getElementById("commits-tab");
+      if (commitsTabButton) {
+        obs.disconnect(); // Stop observing once the button is found
+        openCommitsTab();
+        if (resume == "true") {
+          createOverlay();
+          installFreStep2();
+        } else {
+          installFreStep1();
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 async function installFreStep1() {
