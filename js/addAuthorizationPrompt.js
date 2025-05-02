@@ -144,6 +144,7 @@ function proceedForAuthorization() {
         var customPATInput = document.getElementsByClassName("custom-pat-input")[0];
         var customPAT = customPATInput.value;
         storeLocalToken(customPAT);
+        storeLocalUserName("");
         var presentUrl = window.location.href;
         if (presentUrl.indexOf("?") < 0) {
             window.location.href = presentUrl + "/?page=commits";
