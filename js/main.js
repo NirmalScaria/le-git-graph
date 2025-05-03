@@ -11,6 +11,36 @@ var windowUrlLink = window.location.href;
 var windowUrl = new URL(windowUrlLink);
 var windowPath = windowUrl.pathname;
 var windowPathArray = windowPath.split("/");
-if (pathsToExclude.includes(windowPathArray[1]) == false) {
-    addCommitsButton();
+const mo = new MutationObserver(onMutation);
+observer();
+
+let prevURL = window.location.href;
+
+function onMutation() {
+  const currentURL = window.location.href;
+  function addCommitsButtonToUI() {
+    if (
+      pathsToExclude.includes(windowPathArray[1]) == false &&
+      windowPathArray[2]
+    ) {
+      if (isCommitsTabOpen) return;
+      mo.disconnect();
+      addCommitsButton();
+      observer();
+    }
+  }
+
+  addCommitsButtonToUI();
+
+  if (currentURL !== prevURL) {
+    prevURL = currentURL;
+    addCommitsButtonToUI();
+  }
+}
+
+function observer() {
+  mo.observe(document, {
+    childList: true,
+    subtree: true,
+  });
 }
