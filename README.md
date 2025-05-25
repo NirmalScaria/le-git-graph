@@ -74,7 +74,7 @@ Access to private repositories owned by an organization is restricted by default
 - Option to specify access level (public only or private too) ✓
 - Hover on the commit dot to see details ✓
 - Option to add custom PAT ✓
-- Filter the commits based on branch - Pending
+- Filter the commits based on branch ✓
 
 ## Contact
 
