@@ -40,3 +40,48 @@
   margin: 0 0.2rem;
   color: #6BA4F8;
 }
+
+/* Auto-load functionality styles - responsive to GitHub theme */
+#auto-load-indicator {
+  background-color: var(--color-canvas-default, #ffffff);
+  border-color: var(--color-border-default, #d0d7de);
+  color: var(--color-fg-muted, #656d76);
+}
+
+#end-of-commits-message {
+  background-color: var(--color-canvas-default, #ffffff);
+  border-color: var(--color-border-default, #d0d7de);
+  color: var(--color-fg-muted, #656d76);
+}
+
+#end-of-commits-message .success-icon {
+  color: var(--color-success-fg, #1a7f37) !important;
+}
+
+/* Dark mode specific overrides */
+[data-color-mode="dark"] #auto-load-indicator,
+[data-dark-theme] #auto-load-indicator,
+.dark #auto-load-indicator {
+  background-color: #0d1117;
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+[data-color-mode="dark"] #end-of-commits-message,
+[data-dark-theme] #end-of-commits-message,
+.dark #end-of-commits-message {
+  background-color: #0d1117;
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+[data-color-mode="dark"] #end-of-commits-message .success-icon,
+[data-dark-theme] #end-of-commits-message .success-icon,
+.dark #end-of-commits-message .success-icon {
+  color: #3fb950 !important;
+}
+
+/* Hide the default pagination container when auto-load is active */
+.auto-load-active .paginate-container {
+  display: none !important;
+}

@@ -261,12 +261,12 @@ function relativeTime(date) {
 }
 
 function addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches) {
-  var newerButton = document.getElementById("newerButton");
-  var olderButton = document.getElementById("olderButton");
+  // Hide the "Load More" button since we're using auto-load
+  hideLoadMoreButton();
+  
+  // Store parameters for auto-loading and initialize auto-load functionality
   if (commits.length >= 10) {
-    olderButton.setAttribute("aria-disabled", "false");
-    olderButton.addEventListener("click", function () {
-      fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames, allBranches);
-    });
+    storeAutoLoadParams(commits, branchNames, allCommits, heads, pageNo, allBranches);
+    initializeAutoLoad();
   }
 }
