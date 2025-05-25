@@ -51,6 +51,10 @@ function addCommitsButton() {
         // Deselect the commits tab.
         // Navigation would be handled automatically by the original GitHub code.
         isCommitsTabOpen = false;
+        
+        // Disable auto-load functionality when closing commits tab
+        disableAutoLoad();
+        
         var commitsTabButton = document.getElementById("commits-tab");
         commitsTabButton.addEventListener("click", openCommitsTab);
         newButtonChild.removeAttribute("aria-current");

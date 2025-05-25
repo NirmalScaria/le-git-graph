@@ -27,6 +27,7 @@
         "js/loadBranchesButton.js",
         "js/addCommitsButton.js",
         "js/openCommitsTab.js",
+        "js/autoLoad.js",
         "js/main.js",
         "js/fre/helper.js",
         "js/fre/updateFre.js",
