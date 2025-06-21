@@ -2,30 +2,39 @@
 // Make necessary changes to this file to change the FRE.
 
 function installFre(resume) {
-    openCommitsTab();
-    if (resume == "true") {
-        createOverlay();
-        installFreStep2();
-    } else {
-        installFreStep1();
-    }
+    const observer = new MutationObserver((mutations, obs) => {
+      const commitsButton = document.getElementById("commits-tab");
+      if (commitsButton) {
+        obs.disconnect();
+        openCommitsTab();
+        if (resume == "true") {
+          createOverlay();
+          installFreStep2();
+        } else {
+          installFreStep1();
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 async function installFreStep1() {
     createOverlay();
     clearToolTip();
-    var commitButton = document.getElementById("commits-tab");
-    focusOnItem(commitButton, 10);
-    showToolTip(
-        commitButton,
-        "top-left",
-        "",
-        "Notice the new tab added to GitHub?",
-        "Open this tab from any repository and it will give you this page, where you can find the git graph, and much more!",
-        ["Continue [1/3]"],
-        ["btn-primary"],
-        [installFreStep2]
-    );
+    window.onload = () => {
+        var commitsButton = document.getElementById("commits-tab");
+        focusOnItem(commitsButton, 10);
+        showToolTip(
+            commitsButton,
+            "top-left",
+            "",
+            "Notice the new tab added to GitHub?",
+            "Open this tab from any repository and it will give you this page, where you can find the git graph, and much more!",
+            ["Continue [1/3]"],
+            ["btn-primary"],
+            [installFreStep2]
+        );
+    }
 }
 
 function installFreStep2() {
