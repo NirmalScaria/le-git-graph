@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Git Graph</title>
+  <style>
+    #graph-container {
+      display: flex;
+    }
+    #graphSvg {
+      width: 200px;
+      min-width: 200px;
+    }
+    .commit-item {
+      height: 50px; /* Corresponds to yPos logic */
+      border-bottom: 1px solid #eee;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Git Graph Visualization</h1>
+
+<div id="graph-container">
+  <svg id="graphSvg"></svg>
+  <div id="commits-container">
+    <!-- Commit items will be added here -->
+  </div>
+</div>
+
+<script src="git-graph.js"></script>
+<script>
+  // 1. Prepare sample commit data
+  const heads = [
+      { oid: 'c6', name: 'main' },
+      { oid: 'c4', name: 'feature-a' }
+  ];
+
+  let commits = [
+    { oid: 'c6', messageHeadlineHTML: 'Merge branch feature-a', parents: [{ node: { oid: 'c5' } }, { node: { oid: 'c4' } }], isHead: true },
+    { oid: 'c5', messageHeadlineHTML: 'Update main', parents: [{ node: { oid: 'c3' } }] },
+    { oid: 'c4', messageHeadlineHTML: 'Add new feature', parents: [{ node: { oid: 'c2' } }], isHead: true },
+    { oid: 'c2', messageHeadlineHTML: 'Work on feature-a', parents: [{ node: { oid: 'c1' } }] },
+    { oid: 'c3', messageHeadlineHTML: 'Initial commit on main', parents: [{ node: { oid: 'c1' } }] },
+    { oid: 'c1', messageHeadlineHTML: 'Root commit', parents: [] }
+  ];
+
+  // Create dummy commit items for alignment
+  const commitsContainer = document.getElementById('commits-container');
+  commits.forEach(commit => {
+    const commitItem = document.createElement('div');
+    commitItem.className = 'commit-item';
+    commitItem.setAttribute('commitsha', commit.oid);
+    commitItem.innerText = commit.messageHeadlineHTML;
+    commitsContainer.appendChild(commitItem);
+  });
+
+  // 2. Assign colors and positions
+  const [coloredCommits, commitDict] = assignColors(commits, heads);
+
+  // 3. Draw the graph
+  drawGraph(coloredCommits, commitDict);
+</script>
+
+</body>
+</html>
