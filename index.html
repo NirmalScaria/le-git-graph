@@ -39,7 +39,10 @@
   ];
 
   let commits = [
-    { oid: 'c6', messageHeadlineHTML: 'Merge branch feature-a', parents: [{ node: { oid: 'c5' } }, { node: { oid: 'c4' } }], isHead: true },
+    //{ oid: 'c6', messageHeadlineHTML: 'Merge branch feature-a', parents: [{ node: { oid: 'c5' } }, { node: { oid: 'c4' } }], isHead: true },
+     { oid: 'c8', messageHeadlineHTML: 'Update main', parents: [{ node: { oid: 'c5' } }] },
+    { oid: 'c7', messageHeadlineHTML: 'Update main', parents: [{ node: { oid: 'c6' } }] },
+    { oid: 'c6', messageHeadlineHTML: 'Update main', parents: [{ node: { oid: 'c5' } }] },
     { oid: 'c5', messageHeadlineHTML: 'Update main', parents: [{ node: { oid: 'c3' } }] },
     { oid: 'c4', messageHeadlineHTML: 'Add new feature', parents: [{ node: { oid: 'c2' } }], isHead: true },
     { oid: 'c2', messageHeadlineHTML: 'Work on feature-a', parents: [{ node: { oid: 'c1' } }] },

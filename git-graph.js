@@ -10,7 +10,7 @@ function assignColors(commits, heads) {
     commitDict[commit.oid] = commit
   }
 
-  const colors = ["#fd7f6f", "#beb9db", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#fdcce5", "#8bd3c7"];
+  const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", "#C0C0C0", "#808080", "#800000"];
   var unassignedColors = [...colors];
 
   var commitIndex = 0;
@@ -145,6 +145,7 @@ async function drawGraph(commits, commitDict) {
     }
   }
 
+  /*
   // Curve for maintaining continuity of lines
   for (var thisLineIndex = 0; thisLineIndex < commits.length; thisLineIndex++) {
     for (var i = 0; i < (commits.length - 1); i++) {
@@ -160,6 +161,7 @@ async function drawGraph(commits, commitDict) {
       }
     }
   }
+  */
 
   // Clear dummy circles and draw final graph
   commitsGraphContainer.innerHTML = "";
@@ -187,6 +189,7 @@ async function drawGraph(commits, commitDict) {
     }
   }
 
+  /*
   // Re-draw continuity lines
   for (var thisLineIndex = 0; thisLineIndex < commits.length; thisLineIndex++) {
     for (var i = 0; i < (commits.length - 1); i++) {
@@ -199,6 +202,7 @@ async function drawGraph(commits, commitDict) {
        }
     }
   }
+  */
 
 
   var finalToAppend = "";
