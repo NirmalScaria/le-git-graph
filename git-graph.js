@@ -41,9 +41,12 @@ function assignColors(commits, heads) {
 var maxX = 100;
 
 async function drawCurve(container, startx, starty, endx, endy, color) {
-  var firstLineEndY = starty + ((endy - starty - 40) / 2);
+  var firstLineEndY = endy - 30;
   var secondLineStartY = firstLineEndY + 40;
-  container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + firstLineEndY + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 40) + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
+  container.innerHTML += '<path d = "M ' + startx + ' ' + starty 
+  + ' L ' + startx + ' ' + firstLineEndY 
+  + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 10) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 10) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) 
+  + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="3" fill = "#00000000"/>';
 }
 
 async function drawDottedLine(container, startx, starty, color) {
