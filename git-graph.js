@@ -1,44 +1,38 @@
-// color assignment function from showCommits.js
 function assignColors(commits, heads) {
-  var headOids = new Set();
-  for (var head of heads) {
-    headOids.add(head.oid);
-  }
-  var commitDict = {}
-  for (var commit of commits) {
-    commit.color = undefined;
-    commitDict[commit.oid] = commit
-  }
+    const colors = ["#D32F2F", "#388E3C", "#1976D2", "#F57C00", "#7B1FA2", "#00796B", "#C2185B", "#5D4037", "#455A64", "#AFB42B"];
+    const commitDict = {};
 
-  const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", "#C0C0C0", "#808080", "#800000"];
-  var unassignedColors = [...colors];
+    for (const commit of commits) {
+        commit.lane = undefined;
+        commit.color = undefined;
+        commitDict[commit.oid] = commit;
+    }
 
-  var commitIndex = 0;
-  for (var commit of commits) {
-    var commitsha = commit.oid
-    commit = commitDict[commitsha];
-    if (commit.color == null || headOids.has(commitsha)) {
-      if (unassignedColors.length === 0) {
-        unassignedColors = [...colors];
-      }
-      commit.color = unassignedColors.pop();
-      commit.lineIndex = commitIndex;
+    let laneCounter = 0;
+    const assignedLanes = {};
+    const laneColors = {};
+
+    for (const commit of commits) {
+        if (assignedLanes[commit.oid] === undefined) {
+            assignedLanes[commit.oid] = laneCounter++;
+        }
+        commit.lane = assignedLanes[commit.oid];
+
+        if (laneColors[commit.lane] === undefined) {
+            laneColors[commit.lane] = colors[commit.lane % colors.length];
+        }
+        commit.color = laneColors[commit.lane];
+
+        if (commit.parents.length > 0) {
+            const firstParentOid = commit.parents[0].node.oid;
+            if (assignedLanes[firstParentOid] === undefined) {
+                assignedLanes[firstParentOid] = commit.lane;
+            }
+        }
     }
-    commitIndex += 1;
-    if (commit.parents.length > 0) {
-      const parentOid = commit.parents[0].node.oid;
-      if (commitDict[parentOid] && commitDict[parentOid].color == null) {
-        commitDict[parentOid].color = commit.color;
-        commitDict[parentOid].lineIndex = commit.lineIndex;
-      }
-    }
-  }
-  return ([commits, commitDict]);
+    
+    return [commits, commitDict];
 }
-
-
-// Core drawing functions from drawGraph.js
-var maxX = 100;
 
 async function drawCurve(container, startx, starty, endx, endy, color) {
   var firstLineEndY = endy - 30;
@@ -55,168 +49,83 @@ async function drawDottedLine(container, startx, starty, color) {
 }
 
 function drawCommit(commit) {
-  var toAppend = ""
-  var cx = commit.cx;
-  var cy = commit.cy;
-  if (commit.isHead) {
-    toAppend += '<circle class = "commitHeadDot" cx="' + cx + '" cy="' + cy + '" r="7" stroke="' + commit.color + '" fill = "#00000000" circlesha = "' + commit.oid + '"/>';
-  }
-  toAppend += '<circle class = "commitDot" cx="' + cx + '" cy="' + cy + '" r="4" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
-  return (toAppend);
+    const { cx, cy, color, oid, isHead } = commit;
+    let toAppend = '';
+    if (isHead) {
+        toAppend += `<circle class="commitHeadDot" cx="${cx}" cy="${cy}" r="7" stroke="${color}" fill="none" stroke-width="2" circlesha="${oid}"/>`;
+    }
+    toAppend += `<circle class="commitDot" cx="${cx}" cy="${cy}" r="4" fill="${color}" circlesha="${oid}"/>`;
+    return toAppend;
 }
 
 async function drawGraph(commits, commitDict) {
-  var commitsContainer = document.getElementById("commits-container");
-  var commitsGraphContainer = document.getElementById("graphSvg");
+    const commitsContainer = document.getElementById("commits-container");
+    const commitsGraphContainer = document.getElementById("graphSvg");
+    let maxX = 100;
 
-  commitsGraphContainer.innerHTML = "";
-  var yPos = 0;
+    const indexArraySets = Array.from({ length: commits.length }, () => new Set());
+    const commitIndexMap = new Map(commits.map((c, i) => [c.oid, i]));
 
-  var indexArray = Array.from(Array(commits.length), () => new Array(0));
-  var lineColors = Array.from('#000000', () => undefined);
-  for (var commit of commits) {
-    lineColors[commit.lineIndex] = commit.color;
-  }
-  for (var line = 0; line < commits.length; line++) {
-    var lineBeginning = 100;
-    var lineEnding = 0;
-    for (var commitIndex = 0; commitIndex < commits.length; commitIndex++) {
-      var commit = commits[commitIndex];
-      var foundLineInParents = false;
-      for (var parent of commit.parents) {
-        var parentItem = commitDict[parent.node.oid];
-        if (parentItem != undefined && parentItem.lineIndex == line) {
-          foundLineInParents = true;
+    for (let i = 0; i < commits.length; i++) {
+        const commit = commits[i];
+        indexArraySets[i].add(commit.lane);
+        for (const parentRef of commit.parents) {
+            const parentOid = parentRef.node.oid;
+            const parentIndex = commitIndexMap.get(parentOid);
+            if (parentIndex !== undefined) {
+                const laneForPath = commit.lane;
+                for (let j = i + 1; j <= parentIndex; j++) {
+                    indexArraySets[j].add(laneForPath);
+                }
+            }
         }
-      }
-      if (commit.lineIndex == line || foundLineInParents) {
-        lineBeginning = Math.min(lineBeginning, commitIndex);
-        lineEnding = Math.max(lineEnding, commitIndex);
-      }
     }
-    for (var i = lineBeginning; i < lineEnding; i++) {
-      indexArray[i + 1].push(line);
+    const indexArray = indexArraySets.map(laneSet => Array.from(laneSet).sort((a, b) => a - b));
+
+    const commitElements = Array.from(commitsContainer.children);
+    const commitElementHeight = commitElements.length > 0 ? commitElements[0].offsetHeight : 50;
+    commitsGraphContainer.style.height = `${commits.length * commitElementHeight}px`;
+
+    for (let i = 0; i < commits.length; i++) {
+        const commit = commits[i];
+        const yPos = (i * commitElementHeight) + (commitElementHeight / 2);
+        
+        let commitXIndex = indexArray[i].indexOf(commit.lane);
+        if (commitXIndex === -1) {
+             commitXIndex = indexArray[i].length;
+        }
+        
+        commit.cx = 30 + (commitXIndex * 14);
+        commit.cy = yPos;
+        maxX = Math.max(maxX, commit.cx);
     }
-  }
+    
+    commitsGraphContainer.innerHTML = "";
 
-  // Simplified yPos calculation
-  const commitElements = Array.from(commitsContainer.children);
-  const commitElementHeight = commitElements.length > 0 ? commitElements[0].offsetHeight : 50;
-
-  commitsGraphContainer.style.height = (commitElements.length * commitElementHeight) + 'px';
-
-
-  for (var i = 0; i < commits.length; i++) {
-    var commit = commits[i];
-    var commitXIndex = indexArray[i].indexOf(commit.lineIndex);
-    if (commitXIndex == -1) {
-      commitXIndex = indexArray[i].length;
+    for (const commit of commits) {
+        for (const parentRef of commit.parents) {
+            const parent = commitDict[parentRef.node.oid];
+            if (parent) {
+                // ==========================================================
+                //  THE FINAL FIX IS HERE:
+                //  The target 'x' coordinate (nextx) MUST be the parent's
+                //  actual calculated 'cx' coordinate, not a theoretical one.
+                // ==========================================================
+                const nextx = parent.cx;
+                const nexty = parent.cy;
+                
+                drawCurve(commitsGraphContainer, commit.cx, commit.cy, nextx, nexty, commit.color);
+            }
+        }
     }
 
-    yPos += commitElementHeight / 2;
-
-    commits[i].cx = 30 + (commitXIndex * 14);
-    commits[i].cy = yPos;
-    // This is a dummy circle to get coordinates, it will be cleared later.
-    commitsGraphContainer.innerHTML += '<circle cx="' + commits[i].cx + '" cy="' + yPos + '" r="1" fill="' + commit.color + '" circlesha = "' + commit.oid + '"/>';
-
-    yPos += commitElementHeight / 2;
-  }
-
-  // Curve for connecting existing commits
-  for (var i = 0; i < (commits.length - 1); i++) {
-    var commit = commits[i];
-    var hasVisibleParents = false;
-    for (var parentItem of commit.parents) {
-      var parent = commitDict[parentItem.node.oid];
-      var thisCircle = commitsGraphContainer.querySelector('[circlesha="' + commit.oid + '"]');
-      var thisx = thisCircle.cx.baseVal.value;
-      var thisy = thisCircle.cy.baseVal.value;
-
-      if (parent != undefined) {
-        hasVisibleParents = true;
-        var nextx = 30 + (14 * (indexArray[i + 1].indexOf(parent.lineIndex)));
-        var nexty = commitsGraphContainer.querySelector('[circlesha="' + commits[i + 1].oid + '"]').cy.baseVal.value;
-        drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[parent.lineIndex]);
-      }
+    let finalCommitsToAppend = "";
+    for (const commit of commits) {
+        finalCommitsToAppend += drawCommit(commit);
     }
-    if (!hasVisibleParents && commit.parents.length > 0) {
-      var thisCircle = commitsGraphContainer.querySelector('[circlesha="' + commit.oid + '"]');
-      var thisx = thisCircle.cx.baseVal.value;
-      var thisy = thisCircle.cy.baseVal.value;
-      drawDottedLine(commitsGraphContainer, thisx, thisy, lineColors[commit.lineIndex]);
+    commitsGraphContainer.innerHTML += finalCommitsToAppend;
+
+    if (maxX > 100) {
+        commitsGraphContainer.style.width = `${maxX + 20}px`;
     }
-  }
-
-  /*
-  // Curve for maintaining continuity of lines
-  for (var thisLineIndex = 0; thisLineIndex < commits.length; thisLineIndex++) {
-    for (var i = 0; i < (commits.length - 1); i++) {
-      if (indexArray[i].includes(thisLineIndex) && indexArray[i + 1].includes(thisLineIndex)) {
-        var thisCircle = commitsGraphContainer.querySelector('[circlesha="' + commits[i].oid + '"]');
-        var nextCircle = commitsGraphContainer.querySelector('[circlesha="' + commits[i+1].oid + '"]');
-        var thisx = 30 + (14 * (indexArray[i].indexOf(thisLineIndex)));
-        var thisy = thisCircle.cy.baseVal.value;
-        var nextx = 30 + (14 * (indexArray[i + 1].indexOf(thisLineIndex)));
-        var nexty = nextCircle.cy.baseVal.value;
-        drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[thisLineIndex]);
-        maxX = Math.max(thisx,maxX);
-      }
-    }
-  }
-  */
-
-  // Clear dummy circles and draw final graph
-  commitsGraphContainer.innerHTML = "";
-
-  // Re-draw curves
-  for (var i = 0; i < (commits.length - 1); i++) {
-    var commit = commits[i];
-    var hasVisibleParents = false;
-    for (var parentItem of commit.parents) {
-      var parent = commitDict[parentItem.node.oid];
-      if (parent != undefined) {
-        hasVisibleParents = true;
-        var thisx = commits[i].cx;
-        var thisy = commits[i].cy;
-        var parentIndexInNextRow = commits.findIndex(c => c.oid === parent.oid);
-        var nextx = 30 + (14 * (indexArray[parentIndexInNextRow].indexOf(parent.lineIndex)));
-        var nexty = commits[parentIndexInNextRow].cy;
-        drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[parent.lineIndex]);
-      }
-    }
-    if (!hasVisibleParents && commit.parents.length > 0) {
-        var thisx = commits[i].cx;
-        var thisy = commits[i].cy;
-        drawDottedLine(commitsGraphContainer, thisx, thisy, lineColors[commit.lineIndex]);
-    }
-  }
-
-  /*
-  // Re-draw continuity lines
-  for (var thisLineIndex = 0; thisLineIndex < commits.length; thisLineIndex++) {
-    for (var i = 0; i < (commits.length - 1); i++) {
-       if (indexArray[i].includes(thisLineIndex) && indexArray[i + 1].includes(thisLineIndex)) {
-          var thisx = 30 + (14 * (indexArray[i].indexOf(thisLineIndex)));
-          var thisy = commits[i].cy;
-          var nextx = 30 + (14 * (indexArray[i + 1].indexOf(thisLineIndex)));
-          var nexty = commits[i+1].cy;
-          drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[thisLineIndex]);
-       }
-    }
-  }
-  */
-
-
-  var finalToAppend = "";
-  for (var commit of commits) {
-    finalToAppend += drawCommit(commit);
-  }
-  commitsGraphContainer.innerHTML += finalToAppend;
-
-  if(maxX > 100){
-    maxX = Math.min(maxX,198)
-    var svgContainer = document.querySelector('#graphSvg');
-    svgContainer.style.width = maxX + 20 + 'px';
-  }
 }
