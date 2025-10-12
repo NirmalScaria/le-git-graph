@@ -31,7 +31,7 @@
   </div>
 </div>
 
-<script src="git-graph.js"></script>
+<script src="git-graph.js?v=final_correct_layout"></script>
 <script>
   // 1. Prepare sample commit data
   const heads = [
@@ -39,24 +39,23 @@
   ];
 
   let commits = [
-    { oid: 'c12', messageHeadlineHTML: '8-12 Update main', parents: [{ node: { oid: 'c8' } }], group: 'base', color: 'blue' },
-    { oid: 'c11', messageHeadlineHTML: '10-11 Update main', parents: [{ node: { oid: 'c10' } }], group: 'base', color: 'blue' },
-    { oid: 'c10', messageHeadlineHTML: '4-10 Update main', parents: [{ node: { oid: 'c4' } }], group: 'base', color: 'blue' },
-    { oid: 'c9', messageHeadlineHTML: '3-9 Update main', parents: [{ node: { oid: 'c3' } }], group: 'hotfix', color: 'red' },
-    { oid: 'c8', messageHeadlineHTML: '5-8 Update main', parents: [{ node: { oid: 'c5' } }], group: 'hotfix', color: 'red' },
-    { oid: 'c7', messageHeadlineHTML: '6-7 Update main', parents: [{ node: { oid: 'c6' } }], group: 'hotfix', color: 'red' },
-    { oid: 'c6', messageHeadlineHTML: '5-6 Update main', parents: [{ node: { oid: 'c5' } }], group: 'hotfix', color: 'red' },
-    { oid: 'c5', messageHeadlineHTML: '3-5 Update main', parents: [{ node: { oid: 'c3' } }], group: 'hotfix', color: 'red' },
-    { oid: 'c10', messageHeadlineHTML: '4-10 Update main', parents: [{ node: { oid: 'c4' } }], group: 'base', color: 'blue' },
-    { oid: 'c4', messageHeadlineHTML: '2-4 Add new feature', parents: [{ node: { oid: 'c2' } }], group: 'base', color: 'blue' , isHead: true},
-    { oid: 'c3', messageHeadlineHTML: '1-3 Work on feature-a', parents: [{ node: { oid: 'c1' } }], group: 'release', color: 'blue' },
+    { oid: 'c1', messageHeadlineHTML: '1 Root commit', parents: [], group: 'base', color: 'blue' },
     { oid: 'c2', messageHeadlineHTML: '1-2 Initial commit on main', parents: [{ node: { oid: 'c1' } }], group: 'base', color: 'red' },
-    { oid: 'c1', messageHeadlineHTML: '1 Root commit', parents: [], group: 'base', color: 'blue' }
+    { oid: 'c3', messageHeadlineHTML: '1-3 Work on feature-a', parents: [{ node: { oid: 'c1' } }], group: 'release', color: 'blue' },
+    { oid: 'c4', messageHeadlineHTML: '2-4 Add new feature', parents: [{ node: { oid: 'c2' } }], group: 'base', color: 'blue', isHead: true },
+    { oid: 'c5', messageHeadlineHTML: '3-5 Update main', parents: [{ node: { oid: 'c3' } }], group: 'hotfix', color: 'red' },
+    { oid: 'c6', messageHeadlineHTML: '5-6 Update main', parents: [{ node: { oid: 'c5' } }], group: 'hotfix', color: 'red' },
+    { oid: 'c7', messageHeadlineHTML: '6-7 Update main', parents: [{ node: { oid: 'c6' } }], group: 'hotfix', color: 'red' },
+    { oid: 'c8', messageHeadlineHTML: '[2,7]-8Update main', parents: [{ node: { oid: 'c2' } },{ node: { oid: 'c7' } }], group: 'hotfix', color: 'red' },
+    { oid: 'c9', messageHeadlineHTML: '3-9 Update main', parents: [{ node: { oid: 'c3' } }], group: 'hotfix', color: 'red' },
+    { oid: 'c10', messageHeadlineHTML: '4-10 Update main', parents: [{ node: { oid: 'c4' } }], group: 'base', color: 'blue' },
+    { oid: 'c11', messageHeadlineHTML: '10-11 Update main', parents: [{ node: { oid: 'c10' } }], group: 'base', color: 'blue' },
+    { oid: 'c12', messageHeadlineHTML: '8-12 Update main', parents: [{ node: { oid: 'c8' } }], group: 'base', color: 'blue' },
+    { oid: 'c13', messageHeadlineHTML: '4-13 Update main', parents: [{ node: { oid: 'c4' } }], group: 'base', color: 'blue' }
   ];
 
-  // Create dummy commit items for alignment
   const commitsContainer = document.getElementById('commits-container');
-  commits.forEach(commit => {
+  [...commits].reverse().forEach(commit => {
     const commitItem = document.createElement('div');
     commitItem.className = 'commit-item';
     commitItem.setAttribute('commitsha', commit.oid);
@@ -66,11 +65,18 @@
     commitsContainer.appendChild(commitItem);
   });
 
-  // 2. Assign colors and positions
-  const [coloredCommits, commitDict] = assignColors(commits, heads);
+  // Ensure the SVG graph height matches the commit list height for perfect alignment
+  const svgGraph = document.getElementById('graphSvg');
+  svgGraph.style.height = `${commitsContainer.offsetHeight}px`;
 
-  // 3. Draw the graph
-  drawGraph(coloredCommits, commitDict);
+  // 2. Generate the entire scene description.
+  const [renderLines, totalRows] = assignColors(commits, heads);
+
+
+
+
+  // 4. Render the scene.
+  drawGraph(renderLines, totalRows, commitsContainer.offsetHeight);
 </script>
 
 </body>

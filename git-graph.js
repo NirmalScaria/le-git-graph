@@ -1,131 +1,214 @@
 function assignColors(commits, heads) {
     const colors = ["#D32F2F", "#388E3C", "#1976D2", "#F57C00", "#7B1FA2", "#00796B", "#C2185B", "#5D4037", "#455A64", "#AFB42B"];
-    const commitDict = {};
-
-    for (const commit of commits) {
-        commit.lane = undefined;
-        commit.color = undefined;
-        commitDict[commit.oid] = commit;
-    }
-
-    let laneCounter = 0;
-    const assignedLanes = {};
-    const laneColors = {};
-
-    for (const commit of commits) {
-        if (assignedLanes[commit.oid] === undefined) {
-            assignedLanes[commit.oid] = laneCounter++;
-        }
-        commit.lane = assignedLanes[commit.oid];
-
-        if (laneColors[commit.lane] === undefined) {
-            laneColors[commit.lane] = colors[commit.lane % colors.length];
-        }
-        commit.color = laneColors[commit.lane];
-
-        if (commit.parents.length > 0) {
-            const firstParentOid = commit.parents[0].node.oid;
-            if (assignedLanes[firstParentOid] === undefined) {
-                assignedLanes[firstParentOid] = commit.lane;
-            }
-        }
-    }
     
-    return [commits, commitDict];
-}
-
-async function drawCurve(container, startx, starty, endx, endy, color) {
-  var firstLineEndY = endy - 30;
-  var secondLineStartY = firstLineEndY + 40;
-  container.innerHTML += '<path d = "M ' + startx + ' ' + starty 
-  + ' L ' + startx + ' ' + firstLineEndY 
-  + ' C ' + startx + ' ' + (parseInt(firstLineEndY) + 10) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 10) + ' , ' + endx + ' ' + (parseInt(firstLineEndY) + 20) 
-  + ' L ' + endx + ' ' + endy + '" stroke="' + color + '" stroke-width="3" fill = "#00000000"/>';
-}
-
-async function drawDottedLine(container, startx, starty, color) {
-    container.innerHTML += '<path d = "M ' + startx + ' ' + starty + ' L ' + startx + ' ' + (starty + 10) + '" stroke="' + color + '" stroke-width="1" fill = "#00000000"/>';
-    container.innerHTML += '<path d = "M ' + startx + ' ' + (starty + 10) + ' L ' + startx + ' ' + (starty + 30) + '" stroke="' + color + '" stroke-width="1" stroke-dasharray="2,2" fill = "#00000000"/>';
-}
-
-function drawCommit(commit) {
-    const { cx, cy, color, oid, isHead } = commit;
-    let toAppend = '';
-    if (isHead) {
-        toAppend += `<circle class="commitHeadDot" cx="${cx}" cy="${cy}" r="7" stroke="${color}" fill="none" stroke-width="2" circlesha="${oid}"/>`;
-    }
-    toAppend += `<circle class="commitDot" cx="${cx}" cy="${cy}" r="4" fill="${color}" circlesha="${oid}"/>`;
-    return toAppend;
-}
-
-async function drawGraph(commits, commitDict) {
-    const commitsContainer = document.getElementById("commits-container");
-    const commitsGraphContainer = document.getElementById("graphSvg");
-    let maxX = 100;
-
-    const indexArraySets = Array.from({ length: commits.length }, () => new Set());
+    const commitDict = {};
     const commitIndexMap = new Map(commits.map((c, i) => [c.oid, i]));
 
-    for (let i = 0; i < commits.length; i++) {
-        const commit = commits[i];
-        indexArraySets[i].add(commit.lane);
-        for (const parentRef of commit.parents) {
-            const parentOid = parentRef.node.oid;
-            const parentIndex = commitIndexMap.get(parentOid);
-            if (parentIndex !== undefined) {
-                const laneForPath = commit.lane;
-                for (let j = i + 1; j <= parentIndex; j++) {
-                    indexArraySets[j].add(laneForPath);
-                }
-            }
-        }
+    for (const commit of commits) {
+        commit.column = undefined;
+        commit.color = undefined;
+        commit.children = [];
+        commit.isHead = heads.some(h => h.oid === commit.oid);
+        commitDict[commit.oid] = commit;
     }
-    const indexArray = indexArraySets.map(laneSet => Array.from(laneSet).sort((a, b) => a - b));
-
-    const commitElements = Array.from(commitsContainer.children);
-    const commitElementHeight = commitElements.length > 0 ? commitElements[0].offsetHeight : 50;
-    commitsGraphContainer.style.height = `${commits.length * commitElementHeight}px`;
-
-    for (let i = 0; i < commits.length; i++) {
-        const commit = commits[i];
-        const yPos = (i * commitElementHeight) + (commitElementHeight / 2);
-        
-        let commitXIndex = indexArray[i].indexOf(commit.lane);
-        if (commitXIndex === -1) {
-             commitXIndex = indexArray[i].length;
-        }
-        
-        commit.cx = 30 + (commitXIndex * 14);
-        commit.cy = yPos;
-        maxX = Math.max(maxX, commit.cx);
-    }
-    
-    commitsGraphContainer.innerHTML = "";
 
     for (const commit of commits) {
         for (const parentRef of commit.parents) {
             const parent = commitDict[parentRef.node.oid];
             if (parent) {
-                // ==========================================================
-                //  THE FINAL FIX IS HERE:
-                //  The target 'x' coordinate (nextx) MUST be the parent's
-                //  actual calculated 'cx' coordinate, not a theoretical one.
-                // ==========================================================
-                const nextx = parent.cx;
-                const nexty = parent.cy;
-                
-                drawCurve(commitsGraphContainer, commit.cx, commit.cy, nextx, nexty, commit.color);
+                parent.children.push(commit.oid);
             }
         }
     }
 
-    let finalCommitsToAppend = "";
-    for (const commit of commits) {
-        finalCommitsToAppend += drawCommit(commit);
-    }
-    commitsGraphContainer.innerHTML += finalCommitsToAppend;
+    const layoutGrid = Array.from({ length: commits.length }, () => new Set());
+    const renderLines = [];
 
-    if (maxX > 100) {
-        commitsGraphContainer.style.width = `${maxX + 20}px`;
+    let nextColorIndex = 0;
+    function getNewColor() {
+        const color = colors[nextColorIndex % colors.length];
+        nextColorIndex++;
+        return color;
     }
+
+    function findAvailableColumn(rowIndex, startColumn = 0) {
+        let col = startColumn;
+        while (layoutGrid[rowIndex].has(col)) { col++; }
+        return col;
+    }
+
+    function findPath(startRow, endRow, startHint = 0) {
+        const path = [];
+        let searchColumn = startHint;
+        for (let r = startRow + 1; r < endRow; r++) {
+            let pathColumn = searchColumn;
+            while (layoutGrid[r].has(pathColumn)) {
+                pathColumn++;
+            }
+            path.push({ row: r, column: pathColumn });
+            searchColumn = 0;
+        }
+        return path;
+    }
+
+    function buildScene(commitOid, startColumn, parentLine) {
+        const commit = commitDict[commitOid];
+        
+        if (commit.column !== undefined) {
+            const parentCommit = parentLine.commit;
+            const parentRow = commitIndexMap.get(parentCommit.oid);
+            const parentCol = parentCommit.column;
+            
+            const mergePathLine = { 
+                color: parentCommit.color, 
+                points: [{ row: parentRow, column: parentCol }] 
+            };
+            
+            const childRow = commitIndexMap.get(commitOid);
+            if (parentRow < childRow) { // Corrected comparison
+                const pathPoints = findPath(parentRow, childRow, parentCol);
+                pathPoints.forEach(p => layoutGrid[p.row].add(p.column));
+                mergePathLine.points.push(...pathPoints);
+            }
+            mergePathLine.points.push({ row: childRow, column: commit.column });
+            renderLines.unshift(mergePathLine);
+            return;
+        }
+
+        const rowIndex = commitIndexMap.get(commitOid);
+        const column = findAvailableColumn(rowIndex, startColumn);
+        
+        commit.column = column;
+        layoutGrid[rowIndex].add(column);
+        
+        let currentLine;
+        if (parentLine && commit.parents.length > 0 && parentLine.commit.oid === commit.parents[0].node.oid) {
+            currentLine = parentLine;
+            commit.color = parentLine.color;
+        } else {
+            const newColor = getNewColor();
+            currentLine = { color: newColor, points: [] };
+            commit.color = newColor;
+            renderLines.unshift(currentLine);
+        }
+        
+        currentLine.commit = commit;
+        
+        const lastPoint = currentLine.points[currentLine.points.length - 1];
+        if (lastPoint) {
+            const parentRow = lastPoint.row;
+            if(parentRow < rowIndex) { // Corrected comparison
+                const intermediatePath = findPath(parentRow, rowIndex, lastPoint.column);
+                intermediatePath.forEach(p => layoutGrid[p.row].add(p.column));
+                currentLine.points.push(...intermediatePath);
+            }
+        }
+        currentLine.points.push({ row: rowIndex, column: column });
+
+        const commitPoint = currentLine.points.find(p => p.row === rowIndex && p.column === column);
+        if (commitPoint) {
+            commitPoint.commit = {
+                oid: commit.oid,
+                isHead: commit.isHead,
+                color: commit.color
+            };
+        }
+        
+        const children = commit.children.map(oid => commitDict[oid])
+            .sort((a, b) => commitIndexMap.get(a.oid) - commitIndexMap.get(b.oid)); // Corrected sort
+
+        if (children.length > 0) {
+            buildScene(children[0].oid, column, currentLine);
+        }
+
+        for (let i = 1; i < children.length; i++) {
+            const childCommit = commitDict[children[i].oid];
+            if (childCommit.column !== undefined) {
+                buildScene(children[i].oid, column + 1, currentLine);
+            } else {
+                const newColor = getNewColor();
+                const branchLine = {
+                    color: newColor,
+                    commit: commit,
+                    points: [{ row: rowIndex, column: column }]
+                };
+                renderLines.unshift(branchLine);
+                buildScene(children[i].oid, column + 1, branchLine);
+            }
+        }
+    }
+
+    const rootNodes = commits.filter(c => c.parents.length === 0);
+    for (const root of rootNodes) {
+        buildScene(root.oid, 0, null);
+    }
+    
+    const totalRows = commits.length;
+    return [renderLines, totalRows];
+}
+
+async function drawGraph(renderLines, totalRows, containerHeight) {
+    const commitsGraphContainer = document.getElementById("graphSvg");
+    const commitElementHeight = containerHeight / totalRows;
+
+    const indexArraySets = Array.from({ length: totalRows }, () => new Set());
+    for (const line of renderLines) {
+        for (const point of line.points) {
+            if (point.row >= 0 && point.row < totalRows) {
+                indexArraySets[point.row].add(point.column);
+            }
+        }
+    }
+    const indexArray = indexArraySets.map(s => Array.from(s).sort((a, b) => a - b));
+
+    function getPixelCoords(row, column) {
+        const y = ((totalRows - 1 - row) * commitElementHeight) + (commitElementHeight / 2); // Flipped Y-axis
+        if (!indexArray[row]) { return { x: 30 + (column * 14), y: y }; }
+        const xIndex = indexArray[row].indexOf(column);
+        if (xIndex === -1) { return { x: 30 + (column * 14), y: y }; }
+        const x = 30 + (xIndex * 14);
+        return { x, y };
+    }
+
+    function drawComplexPath(points, color) {
+        if (points.length < 2) return "";
+        let d = "";
+        const start = getPixelCoords(points[0].row, points[0].column);
+        d += `M ${start.x} ${start.y}`;
+        for (let i = 1; i < points.length; i++) {
+            const curr = getPixelCoords(points[i].row, points[i].column);
+            const prev = getPixelCoords(points[i - 1].row, points[i - 1].column);
+            if (prev.x !== curr.x && prev.y !== curr.y) {
+                d += ` L ${prev.x} ${prev.y - 5}`;
+                d += ` C ${prev.x} ${prev.y - 5}, ${prev.x} ${prev.y - 5}, ${curr.x} ${prev.y-15}`;
+                d += ` L ${curr.x} ${curr.y}`;
+            } else {
+                d += ` L ${curr.x} ${curr.y}`;
+            }
+        }
+        return `<path d="${d}" stroke="${color}" stroke-width="3" fill="none" />`;
+    }
+
+    let svgPaths = "";
+    for (const line of renderLines) {
+        svgPaths += drawComplexPath(line.points, line.color);
+    }
+
+    let svgCommits = "";
+    let maxX = 0;
+    for (const line of renderLines) {
+        for (const point of line.points) {
+            if (point.commit) {
+                const coords = getPixelCoords(point.row, point.column);
+                maxX = Math.max(maxX, coords.x);
+                if (point.commit.isHead) {
+                    svgCommits += `<circle class="commitHeadDot" cx="${coords.x}" cy="${coords.y}" r="7" stroke="${point.commit.color}" fill="none" stroke-width="2" circlesha="${point.commit.oid}"/>`;
+                }
+                svgCommits += `<circle class="commitDot" cx="${coords.x}" cy="${coords.y}" r="4" fill="${point.commit.color}" circlesha="${point.commit.oid}"/>`;
+            }
+        }
+    }
+    
+    commitsGraphContainer.innerHTML = svgPaths + svgCommits;
+    commitsGraphContainer.style.width = `${maxX + 20}px`;
 }
