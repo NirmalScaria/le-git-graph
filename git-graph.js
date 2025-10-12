@@ -2,21 +2,21 @@ function assignColors(commits, heads) {
     const colors = ["#D32F2F", "#388E3C", "#1976D2", "#F57C00", "#7B1FA2", "#00796B", "#C2185B", "#5D4037", "#455A64", "#AFB42B"];
     
     const commitDict = {};
-    const commitIndexMap = new Map(commits.map((c, i) => [c.oid, i]));
+    const commitIndexMap = new Map(commits.map((c, i) => [c.id, i]));
 
     for (const commit of commits) {
         commit.column = undefined;
         commit.color = undefined;
         commit.children = [];
-        commit.isHead = heads.some(h => h.oid === commit.oid);
-        commitDict[commit.oid] = commit;
+        commit.isHead = heads.some(h => h.id === commit.id);
+        commitDict[commit.id] = commit;
     }
 
     for (const commit of commits) {
-        for (const parentRef of commit.parents) {
-            const parent = commitDict[parentRef.node.oid];
+        for (const parentOid of commit.parents) {
+            const parent = commitDict[parentOid];
             if (parent) {
-                parent.children.push(commit.oid);
+                parent.children.push(commit.id);
             }
         }
     }
@@ -51,12 +51,12 @@ function assignColors(commits, heads) {
         return path;
     }
 
-    function buildScene(commitOid, startColumn, parentLine) {
-        const commit = commitDict[commitOid];
+    function buildScene(commitId, startColumn, parentLine) {
+        const commit = commitDict[commitId];
         
         if (commit.column !== undefined) {
             const parentCommit = parentLine.commit;
-            const parentRow = commitIndexMap.get(parentCommit.oid);
+            const parentRow = commitIndexMap.get(parentCommit.id);
             const parentCol = parentCommit.column;
             
             const mergePathLine = { 
@@ -64,7 +64,7 @@ function assignColors(commits, heads) {
                 points: [{ row: parentRow, column: parentCol }] 
             };
             
-            const childRow = commitIndexMap.get(commitOid);
+            const childRow = commitIndexMap.get(commitId);
             if (parentRow < childRow) { // Corrected comparison
                 const pathPoints = findPath(parentRow, childRow, parentCol);
                 pathPoints.forEach(p => layoutGrid[p.row].add(p.column));
@@ -75,14 +75,14 @@ function assignColors(commits, heads) {
             return;
         }
 
-        const rowIndex = commitIndexMap.get(commitOid);
+        const rowIndex = commitIndexMap.get(commitId);
         const column = findAvailableColumn(rowIndex, startColumn);
         
         commit.column = column;
         layoutGrid[rowIndex].add(column);
         
         let currentLine;
-        if (parentLine && commit.parents.length > 0 && parentLine.commit.oid === commit.parents[0].node.oid) {
+        if (parentLine && commit.parents.length > 0 && parentLine.commit.id === commit.parents[0]) {
             currentLine = parentLine;
             commit.color = parentLine.color;
         } else {
@@ -108,23 +108,23 @@ function assignColors(commits, heads) {
         const commitPoint = currentLine.points.find(p => p.row === rowIndex && p.column === column);
         if (commitPoint) {
             commitPoint.commit = {
-                oid: commit.oid,
+                id: commit.id,
                 isHead: commit.isHead,
                 color: commit.color
             };
         }
         
-        const children = commit.children.map(oid => commitDict[oid])
-            .sort((a, b) => commitIndexMap.get(a.oid) - commitIndexMap.get(b.oid)); // Corrected sort
+        const children = commit.children.map(id => commitDict[id])
+            .sort((a, b) => commitIndexMap.get(a.id) - commitIndexMap.get(b.id)); // Corrected sort
 
         if (children.length > 0) {
-            buildScene(children[0].oid, column, currentLine);
+            buildScene(children[0].id, column, currentLine);
         }
 
         for (let i = 1; i < children.length; i++) {
-            const childCommit = commitDict[children[i].oid];
+            const childCommit = commitDict[children[i].id];
             if (childCommit.column !== undefined) {
-                buildScene(children[i].oid, column + 1, currentLine);
+                buildScene(children[i].id, column + 1, currentLine);
             } else {
                 const newColor = getNewColor();
                 const branchLine = {
@@ -133,14 +133,14 @@ function assignColors(commits, heads) {
                     points: [{ row: rowIndex, column: column }]
                 };
                 renderLines.unshift(branchLine);
-                buildScene(children[i].oid, column + 1, branchLine);
+                buildScene(children[i].id, column + 1, branchLine);
             }
         }
     }
 
     const rootNodes = commits.filter(c => c.parents.length === 0);
     for (const root of rootNodes) {
-        buildScene(root.oid, 0, null);
+        buildScene(root.id, 0, null);
     }
     
     const totalRows = commits.length;
@@ -202,9 +202,9 @@ async function drawGraph(renderLines, totalRows, containerHeight) {
                 const coords = getPixelCoords(point.row, point.column);
                 maxX = Math.max(maxX, coords.x);
                 if (point.commit.isHead) {
-                    svgCommits += `<circle class="commitHeadDot" cx="${coords.x}" cy="${coords.y}" r="7" stroke="${point.commit.color}" fill="none" stroke-width="2" circlesha="${point.commit.oid}"/>`;
+                    svgCommits += `<circle class="commitHeadDot" cx="${coords.x}" cy="${coords.y}" r="7" stroke="${point.commit.color}" fill="none" stroke-width="2" circlesha="${point.commit.id}"/>`;
                 }
-                svgCommits += `<circle class="commitDot" cx="${coords.x}" cy="${coords.y}" r="4" fill="${point.commit.color}" circlesha="${point.commit.oid}"/>`;
+                svgCommits += `<circle class="commitDot" cx="${coords.x}" cy="${coords.y}" r="4" fill="${point.commit.color}" circlesha="${point.commit.id}"/>`;
             }
         }
     }
