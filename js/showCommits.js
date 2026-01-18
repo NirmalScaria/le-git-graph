@@ -204,7 +204,7 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
         newCommitItem.querySelector("#statusDetails").remove();
       }
       newCommitItem.querySelector("#viewAllCommits").innerHTML = commit.authorLogin;
-      newCommitItem.querySelector("#relativeTime").innerText = relativeTime(commit.committedDate);
+      newCommitItem.querySelector("#relativeTime").setAttribute("datetime", commit.committedDate.toISOString());
       if (commit.hasUserData) {
         newCommitItem.querySelector("#avatarImage").setAttribute("src", commit.authorAvatar + "&s=40");
         newCommitItem.querySelector("#viewAllCommits").setAttribute("title", "View all commits by " + commit.authorLogin);
@@ -236,28 +236,6 @@ async function showCommits(commits, branchNames, allCommits, heads, pageNo, allB
   // )
   // resizeObserver.observe(commitsContainer);
   return;
-}
-
-// Format the date to a human friendly format
-// Like "1 day ago", "2 weeks ago", "3 months ago"
-function relativeTime(date) {
-  var now = new Date().getTime();
-  const difference = (now - date.getTime()) / 1000;
-  let output = ``;
-  if (difference < 10) {
-    output = `just now`;
-  } else if (difference < 60) {
-    output = `${Math.floor(difference)} seconds ago`;
-  } else if (difference < 3600) {
-    output = `${Math.floor(difference / 60)} minute${Math.floor(difference / 60) > 1 ? 's' : ''} ago`;
-  } else if (difference < 86400) {
-    output = `${Math.floor(difference / 3600)} hour${Math.floor(difference / 3600) > 1 ? 's' : ''} ago`;
-  } else if (difference < 2620800) {
-    output = `${Math.floor(difference / 86400) > 1 ? (Math.floor(difference / 86400) + ' days ago') : 'yesterday'}`;
-  } else {
-    output = 'on ' + date.toLocaleDateString();
-  }
-  return (output);
 }
 
 function addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches) {
