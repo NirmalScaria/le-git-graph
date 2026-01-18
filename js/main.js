@@ -13,25 +13,16 @@ var windowPath = windowUrl.pathname;
 var windowPathArray = windowPath.split("/");
 
 if (pathsToExclude.includes(windowPathArray[1]) == false) {
-    // Wait for navigation bar to be ready before adding button
-    function tryAddCommitsButton() {
-        var navBar = document.querySelector('nav[aria-label="Repository"] ul[role="list"]') ||
-                     document.querySelector('ul[class*="UnderlineItemList"]');
-        if (navBar) {
-            addCommitsButton();
-        }
-    }
-
     // Initial load timing - wait for DOM and next browser paint
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             requestAnimationFrame(function() {
-                setTimeout(tryAddCommitsButton, 200);
+                setTimeout(addCommitsButton, 200);
             });
         });
     } else {
         requestAnimationFrame(function() {
-            setTimeout(tryAddCommitsButton, 200);
+            setTimeout(addCommitsButton, 200);
         });
     }
 
