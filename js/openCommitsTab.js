@@ -1,5 +1,5 @@
 async function openCommitsTab() {
-    isCommitsTabOpen = true;
+    isCommitsTabOpen = false;
     var commitsTabButton = document.getElementById("commits-tab");
     commitsTabButton.removeEventListener("click", openCommitsTab);
 
@@ -8,7 +8,7 @@ async function openCommitsTab() {
     // Find the navigation bar with fallback selectors
     var parentObject = null;
     var selectors = [
-        'nav[aria-label="Repository"] ul[role="list"]',      // Current GitHub (2026+)
+        'nav[aria-label="Repository"] ul',      // Current GitHub (2026+)
         'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
         'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
     ];
@@ -26,35 +26,23 @@ async function openCommitsTab() {
         return;
     }
 
-    var branches = [];
-    var selectedBranchNames = [];
-
-    // Find the Commits tab button
-    var newButton = null;
-    var newButtonChild = null;
-
-    for (var j = 0; j < parentObject.children.length; j++) {
-        var child = parentObject.children[j];
-        if (child && child.children && child.children[0]) {
-            if (child.children[0].id === 'commits-tab') {
-                newButton = child;
-                newButtonChild = child.children[0];
-                break;
-            }
-        }
-    }
-
-    if (!newButton || !newButtonChild) {
-        console.error('[Le Git Graph] Could not find Commits tab button');
-        return;
-    }
+    
 
     // Select the commits tab.
     function setCommitsButtonAsActive() {
-        if (isCommitsTabOpen == false) {
+        if (isCommitsTabOpen) {
+            return;
+        }
+        // Find the Commits tab button
+        var newButtonChild = document.getElementById('commits-tab');
+
+        if (!newButtonChild) {
+            console.error('[Le Git Graph] Could not find Commits tab button');
             return;
         }
         newButtonChild.setAttribute("aria-current", "page");
+        newButtonChild.classList.add("selected");
+        isCommitsTabOpen = true;
 
         // Deselect all the tabs except commits tab.
         Array.from(parentObject.children).forEach((child) => {
@@ -82,7 +70,7 @@ async function openCommitsTab() {
         await addAuthorizationPrompt("GitHub repo access is required to fetch the commits information.");
     }
     else {
-        console.log("Authorization token found: " + authorizationToken);
+        // console.log("Authorization token found: " + authorizationToken);
 
         // Load the commits of all branches and show the default view
         await fetchCommits();
