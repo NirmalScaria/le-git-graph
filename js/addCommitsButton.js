@@ -8,7 +8,7 @@ function addCommitsButton() {
     // Find the navigation bar with fallback selectors
     var parentObject = null;
     var selectors = [
-        'nav[aria-label="Repository"] ul[role="list"]',      // Current GitHub (2026+)
+        'nav[aria-label="Repository"] ul',      // Current GitHub (2026+)
         'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
         'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
     ];
