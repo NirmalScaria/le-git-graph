@@ -5,26 +5,18 @@ function addCommitsButton() {
         return;
     }
 
-    // Find the navigation bar with fallback selectors for GitHub version compatibility
+    // Find the navigation bar with fallback selectors
     var parentObject = null;
     var selectors = [
         'nav[aria-label="Repository"] ul[role="list"]',      // Current GitHub (2026+)
         'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
         'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
-        '.js-responsive-underlinenav ul.UnderlineNav-body',  // Previous GitHub (2025)
-        'ul.UnderlineNav-body',
-        '.UnderlineNav-body',
-        'nav.UnderlineNav ul',
-        '[data-pjax="#js-repo-pjax-container"]'              // Legacy (pre-2025)
     ];
 
     for (var i = 0; i < selectors.length; i++) {
         var element = document.querySelector(selectors[i]);
         if (element) {
-            // Legacy selector requires .children[0]
-            parentObject = (selectors[i] === '[data-pjax="#js-repo-pjax-container"]')
-                ? element.children[0]
-                : element;
+            parentObject = element;
             break;
         }
     }
