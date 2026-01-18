@@ -1,25 +1,53 @@
 async function openCommitsTab() {
     isCommitsTabOpen = true;
-    // Get the commits tab button
     var commitsTabButton = document.getElementById("commits-tab");
     commitsTabButton.removeEventListener("click", openCommitsTab);
 
     showCommitsLoading();
 
+    // Find the navigation bar with fallback selectors
+    var parentObject = null;
+    var selectors = [
+        'nav[aria-label="Repository"] ul',      // Current GitHub (2026+)
+        'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
+        'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
+    ];
 
-    var parentObject = document.querySelector('[data-pjax="#js-repo-pjax-container"]').children[0];
+    for (var i = 0; i < selectors.length; i++) {
+        var element = document.querySelector(selectors[i]);
+        if (element) {
+            parentObject = element;
+            break;
+        }
+    }
 
-    // Contains all the branch objects
+    if (!parentObject) {
+        console.error('[Le Git Graph] Could not find repository navigation bar');
+        return;
+    }
+
     var branches = [];
-
-    // Keeps the SHAs of only those branches which are 
-    // selected by the user
     var selectedBranchNames = [];
 
-    // Copies the "Issues" tab button, and edit it to commits
-    // so that the UI matches even if GitHub choose to change UI
-    var newButton = parentObject.children[1];
-    var newButtonChild = newButton.children[0];
+    // Find the Commits tab button
+    var newButton = null;
+    var newButtonChild = null;
+
+    for (var j = 0; j < parentObject.children.length; j++) {
+        var child = parentObject.children[j];
+        if (child && child.children && child.children[0]) {
+            if (child.children[0].id === 'commits-tab') {
+                newButton = child;
+                newButtonChild = child.children[0];
+                break;
+            }
+        }
+    }
+
+    if (!newButton || !newButtonChild) {
+        console.error('[Le Git Graph] Could not find Commits tab button');
+        return;
+    }
 
     // Select the commits tab.
     function setCommitsButtonAsActive() {

@@ -5,7 +5,7 @@
 A browser extension that displays the git graph for any GitHub repository.
 
 [![Version](https://img.shields.io/badge/License-MIT-yellow)]()
-[![Version](https://img.shields.io/badge/Version-1.3.6-yellowgreen)]()
+[![Version](https://img.shields.io/badge/Version-1.4.0-yellowgreen)]()
 [![Version](https://img.shields.io/badge/Chrome_CI/CD-Success-green)]()
 [![Version](https://img.shields.io/badge/Firefox_CI/CD-Success-green)]()
 
@@ -74,7 +74,7 @@ Access to private repositories owned by an organization is restricted by default
 - Option to specify access level (public only or private too) ✓
 - Hover on the commit dot to see details ✓
 - Option to add custom PAT ✓
-- Filter the commits based on branch - Pending
+- Filter the commits based on branch ✓
 
 ## Contact
 

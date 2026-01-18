@@ -11,6 +11,7 @@ var windowUrlLink = window.location.href;
 var windowUrl = new URL(windowUrlLink);
 var windowPath = windowUrl.pathname;
 var windowPathArray = windowPath.split("/");
+
 if (pathsToExclude.includes(windowPathArray[1]) == false) {
     addCommitsButton();
 }
