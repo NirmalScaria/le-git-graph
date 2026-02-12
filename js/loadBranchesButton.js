@@ -1,5 +1,5 @@
 async function loadBranchesButton() {
-    var contentView = document.getElementsByClassName("clearfix")[0];
+    var contentView = getContentView();
     var branchSelectionHtml = chrome.runtime.getURL('html/branchSelection.html');
     await fetch(branchSelectionHtml).then(response => response.text()).then(branchSelectionHtmlText => {
         var tempDiv = document.createElement('div');
