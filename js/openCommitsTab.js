@@ -30,24 +30,12 @@ async function openCommitsTab() {
     var selectedBranchNames = [];
 
     // Find the Commits tab button
-    var newButton = null;
-    var newButtonChild = null;
-
-    for (var j = 0; j < parentObject.children.length; j++) {
-        var child = parentObject.children[j];
-        if (child && child.children && child.children[0]) {
-            if (child.children[0].id === 'commits-tab') {
-                newButton = child;
-                newButtonChild = child.children[0];
-                break;
-            }
-        }
-    }
-
-    if (!newButton || !newButtonChild) {
+    var newButtonChild = document.getElementById('commits-tab');
+    if (!newButtonChild) {
         console.error('[Le Git Graph] Could not find Commits tab button');
         return;
     }
+    var newButton = newButtonChild.parentElement;
 
     // Select the commits tab.
     function setCommitsButtonAsActive() {
@@ -58,7 +46,7 @@ async function openCommitsTab() {
 
         // Deselect all the tabs except commits tab.
         Array.from(parentObject.children).forEach((child) => {
-            if (child.children[0].id != "commits-tab") {
+            if (child.children[0] && child.children[0].id != "commits-tab") {
                 child.children[0].removeAttribute("aria-current");
                 child.children[0].classList.remove("selected");
             }

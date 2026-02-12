@@ -9,8 +9,8 @@ function addCommitsButton() {
     var parentObject = null;
     var selectors = [
         'nav[aria-label="Repository"] ul',      // Current GitHub (2026+)
-        'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
-        'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
+        'ul[class*="UnderlineItemList"]',        // CSS Modules fallback
+        'nav[class*="LocalNavigation"] ul',      // LocalNavigation fallback
     ];
 
     for (var i = 0; i < selectors.length; i++) {
@@ -22,7 +22,11 @@ function addCommitsButton() {
     }
 
     if (!parentObject) {
-        console.error('[Le Git Graph] Could not find repository navigation bar');
+        return;
+    }
+
+    // Need at least one tab to clone from
+    if (parentObject.children.length === 0) {
         return;
     }
 
@@ -41,7 +45,6 @@ function addCommitsButton() {
     }
 
     if (sourceTabIndex === -1 || !parentObject.children[sourceTabIndex]) {
-        console.error('[Le Git Graph] Could not find a tab to clone');
         return;
     }
 
@@ -49,37 +52,40 @@ function addCommitsButton() {
     var newButtonChild = newButton.children[0];
 
     if (!newButtonChild) {
-        console.error('[Le Git Graph] Cloned tab structure is invalid');
         return;
     }
 
+    // Build the current repo path for data-selected-links
+    var pathParts = window.location.pathname.split("/").filter(Boolean);
+    var repoPath = pathParts.length >= 2 ? "/" + pathParts[0] + "/" + pathParts[1] : "";
+
     // Configure the new Commits tab
     newButtonChild.id = "commits-tab";
-    newButtonChild.setAttribute("aria-disabled", "true");
     newButtonChild.setAttribute("data-tab-item", "commits-tab");
     newButtonChild.removeAttribute("aria-current");
     newButtonChild.classList.remove("selected");
-    newButtonChild.setAttribute("data-selected-links", "repo_commits repo_milestones /NirmalScaria/le-git-graph/commits")
+    newButtonChild.setAttribute("data-selected-links", "repo_commits " + repoPath + "/commits");
     newButtonChild.removeAttribute("href");
+    newButtonChild.style.cursor = "pointer";
     newButtonChild.addEventListener("click", openCommitsTab);
 
     // Add click handler to other tabs to close Commits view
     Array.from(parentObject.children).forEach((child) => {
-        thisChild = child.children[0];
-        thisChild.addEventListener("click", closeCommitsTab);
+        if (child.children[0]) {
+            child.children[0].addEventListener("click", closeCommitsTab);
+        }
     });
 
-    // Update icon
+    // Update icon - use a git-commit style SVG icon
+    // GitHub tab structure: <a> > <span data-component="icon"> > <svg> > <path>...
     try {
-        if (newButtonChild.children[0]) {
-            newButtonChild.children[0].setAttribute("class", "octicon octicon-issue-opened UnderlineNav-octicon d-none d-sm-inline");
-            if (newButtonChild.children[0].children[0]) {
-                newButtonChild.children[0].children[0].setAttribute("d", "M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 110 1.5h-3.32z");
-                newButtonChild.children[0].children[0].setAttribute("fill-rule", "evenodd");
-            }
-            // Remove counter badge from cloned Issues tab
-            if (newButtonChild.children[0].children[1]) {
-                newButtonChild.children[0].removeChild(newButtonChild.children[0].children[1]);
+        var iconSpan = newButtonChild.querySelector('[data-component="icon"]') || newButtonChild.children[0];
+        if (iconSpan) {
+            var svg = iconSpan.querySelector('svg');
+            if (svg) {
+                // Replace the SVG content with a git-commit icon (from Octicons)
+                svg.setAttribute("viewBox", "0 0 16 16");
+                svg.innerHTML = '<path fill-rule="evenodd" d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 110 1.5h-3.32z"></path>';
             }
         }
     } catch (e) {
@@ -88,9 +94,10 @@ function addCommitsButton() {
 
     // Update label
     try {
-        if (newButtonChild.children[1]) {
-            newButtonChild.children[1].setAttribute("data-content", "Commits");
-            newButtonChild.children[1].innerText = "Commits";
+        var textSpan = newButtonChild.querySelector('[data-component="text"]') || newButtonChild.children[1];
+        if (textSpan) {
+            textSpan.setAttribute("data-content", "Commits");
+            textSpan.innerText = "Commits";
         }
     } catch (e) {
         // Label update failed, continue
@@ -98,14 +105,17 @@ function addCommitsButton() {
 
     // Remove count indicator (e.g., "Issues 22")
     try {
-        if (newButtonChild.children[2]) {
+        var counterSpan = newButtonChild.querySelector('[data-component="counter"]');
+        if (counterSpan) {
+            counterSpan.remove();
+        } else if (newButtonChild.children[2]) {
             newButtonChild.removeChild(newButtonChild.children[2]);
         }
     } catch (e) {
         // No counter to remove
     }
 
-    // Insert the Commits tab
+    // Insert the Commits tab after Code (position 1)
     try {
         var insertPosition = parentObject.children[1] || parentObject.children[0];
         if (insertPosition) {
@@ -114,15 +124,15 @@ function addCommitsButton() {
             parentObject.appendChild(newButton);
         }
     } catch (e) {
-        console.error('[Le Git Graph] Failed to insert Commits tab');
         return;
     }
 
     function closeCommitsTab() {
         isCommitsTabOpen = false;
         var commitsTabButton = document.getElementById("commits-tab");
-        commitsTabButton.addEventListener("click", openCommitsTab);
-        newButtonChild.removeAttribute("aria-current");
-        newButtonChild.removeAttribute("data-selected-links");
+        if (commitsTabButton) {
+            commitsTabButton.addEventListener("click", openCommitsTab);
+            commitsTabButton.removeAttribute("aria-current");
+        }
     }
 }
