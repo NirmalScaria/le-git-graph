@@ -1,4 +1,5 @@
 var isCommitsTabOpen = false;
+
 function addCommitsButton() {
     // Prevent duplicate tabs
     if (document.getElementById('commits-tab')) {
@@ -8,7 +9,7 @@ function addCommitsButton() {
     // Find the navigation bar with fallback selectors
     var parentObject = null;
     var selectors = [
-        'nav[aria-label="Repository"] ul',      // Current GitHub (2026+)
+        'nav[aria-label="Repository"] ul',                    // Current GitHub (2026+)
         'ul[class*="UnderlineItemList"]',                     // CSS Modules fallback
         'nav[class*="LocalNavigation"] ul',                   // LocalNavigation fallback
     ];
@@ -69,21 +70,17 @@ function addCommitsButton() {
         thisChild.addEventListener("click", closeCommitsTab);
     });
 
-    // Update icon
+    
+    // Update icon - one level deeper due to span wrapper
+    newButtonChild.children[0].children[0].setAttribute("class", "octicon octicon-git-commit");
+    newButtonChild.children[0].children[0].children[0].setAttribute("d", "M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 110 1.5h-3.32z");
+    newButtonChild.children[0].children[0].children[0].setAttribute("fill-rule", "evenodd");
+
+    // Remove Issues badge
     try {
-        if (newButtonChild.children[0]) {
-            newButtonChild.children[0].setAttribute("class", "octicon octicon-issue-opened UnderlineNav-octicon d-none d-sm-inline");
-            if (newButtonChild.children[0].children[0]) {
-                newButtonChild.children[0].children[0].setAttribute("d", "M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 110 1.5h-3.32z");
-                newButtonChild.children[0].children[0].setAttribute("fill-rule", "evenodd");
-            }
-            // Remove counter badge from cloned Issues tab
-            if (newButtonChild.children[0].children[1]) {
-                newButtonChild.children[0].removeChild(newButtonChild.children[0].children[1]);
-            }
-        }
-    } catch (e) {
-        // Icon update failed, continue with default
+        newButtonChild.children[0].children[0].removeChild(newButtonChild.children[0].children[0].children[1]);
+    } catch {
+        // No badge to remove
     }
 
     // Update label
@@ -117,6 +114,25 @@ function addCommitsButton() {
         console.error('[Le Git Graph] Failed to insert Commits tab');
         return;
     }
+
+    // Watch for DOM changes during initial load and re-add if GitHub removes the tab
+    var observer = new MutationObserver(function() {
+        if (!document.getElementById('commits-tab')) {
+            addCommitsButton();
+        }
+    });
+
+    // Observe document.body with subtree to catch nav replacement
+    observer.observe(document.body, { 
+        childList: true,
+        subtree: true
+    });
+
+    // Stop observing after initial page load completes (5 seconds)
+    setTimeout(function() {
+        observer.disconnect();
+    }, 5000);
+
 
     function closeCommitsTab() {
         isCommitsTabOpen = false;
