@@ -1,6 +1,3 @@
-// Maintaining a global variable storing the width of the svgContainer Element
-var maxX = 100;
-
 // Draws a curve between two given [commit] points
 async function drawCurve(container, startx, starty, endx, endy, color) {
   var firstLineEndY = starty + ((endy - starty - 40) / 2);
@@ -307,9 +304,6 @@ async function drawGraph(commits, commitDict) {
         var nextx = 30 + (14 * (indexArray[i + 1].indexOf(thisLineIndex)));
         var nexty = document.querySelectorAll('[circlesha="' + commits[i + 1].oid + '"]')[0].cy.baseVal.value;
         drawCurve(commitsGraphContainer, thisx, thisy, nextx, nexty, lineColors[thisLineIndex]);
-        // Compairing the last container width to the new lines drawn's X coordinate
-        // Using the larger of the two as the new width for the container
-        maxX = Math.max(thisx,maxX);
       }
     }
   }
@@ -333,15 +327,6 @@ async function drawGraph(commits, commitDict) {
       }
     });
   });
-  // Only updating width when it has crossed the min-width of 100
-  if(maxX > 100){
-    // Providing space for 13 lines at a time
-    // Any more than that can hamper the UI of the screen
-    maxX = Math.min(maxX,198)
-    // Updating the width of the svgContainer Element
-    var svgContainer = document.querySelector('#graphSvg');
-    svgContainer.style.width = maxX;
-  }
 }
 
 // Get the vertical and horizontal position (center)

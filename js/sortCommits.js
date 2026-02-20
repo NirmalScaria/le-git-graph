@@ -75,6 +75,18 @@ async function sortCommits(branches, heads, allBranches) {
 
     console.log("--COMMITS FOR THIS PAGE ARE--");
     console.log(commitsObject.slice(0, 10));
-    await showCommits(commitsObject.slice(0, 10), branchNames, commits, heads, 1, allBranchNames);
-    showLegend(heads);
+    // Getting the Commits button to check the value of aria-current attribute
+    // This determines if the button is underlined or not
+
+    var parentObject = document.querySelector('[data-pjax="#js-repo-pjax-container"]').children[0];
+    var newButton = parentObject.children[1];
+    var newButtonChild = newButton.children[0];
+    // Checking for underline
+    if(newButtonChild.getAttribute("aria-current") == "page"){
+        await showCommits(commitsObject.slice(0, 10), branchNames, commits, heads, 1, allBranchNames);
+        showLegend(heads);
+    }
+    else{
+        console.log("PAGE CHANGED BEFORE COMMITS RENDER");
+    }
 }
