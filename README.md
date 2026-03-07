@@ -20,7 +20,7 @@ Install the extension from the link -
 
 For Google Chrome, Opera, Vivaldi, Brave, and Microsoft Edge:
 
-[https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff](https://chrome.google.com/webstore/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff)
+[https://chromewebstore.google.com/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff](https://chromewebstore.google.com/detail/le-git-graph-commits-grap/joggkdfebigddmaagckekihhfncdobff)
 
 For Mozilla Firefox:
 
