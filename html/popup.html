@@ -4,8 +4,49 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Popup</title>
     <link rel="stylesheet" type="text/css" href="popup.css">
+    <style>
+        .settings-section {
+            padding: 10px 15px;
+            border-top: 1px solid #d0d7de;
+            background: #f6f8fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 13px;
+        }
+        .settings-section label {
+            display: block;
+            margin-bottom: 6px;
+            color: #24292f;
+            font-weight: 600;
+        }
+        .settings-section select {
+            width: 100%;
+            padding: 5px 8px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 13px;
+            color: #24292f;
+        }
+        .settings-saved {
+            color: #1a7f37;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
 </head>
 <img src="../images/popup.png" alt="popup" width="500" id="demoImage" />
+<div class="settings-section">
+    <label for="commitCount">Commits per page</label>
+    <select id="commitCount">
+        <option value="10">10 (default)</option>
+        <option value="20">20</option>
+        <option value="30" selected>30</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+    <div class="settings-saved" id="savedIndicator">Saved</div>
+</div>
 <script type="text/javascript" src="../js/popup.js"></script>
 
 </html>

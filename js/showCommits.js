@@ -320,13 +320,40 @@ function relativeTime(date) {
   return output;
 }
 
-function addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches) {
-  var newerButton = document.getElementById('newerButton');
-  var olderButton = document.getElementById('olderButton');
-  if (commits.length >= 10) {
-    olderButton.setAttribute('aria-disabled', 'false');
-    olderButton.addEventListener('click', function () {
-      fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames, allBranches);
+async function addNextPageButton(commits, branchNames, allCommits, heads, pageNo, allBranches) {
+  var olderButton = document.getElementById("olderButton");
+  var commitsPerPage = await getCommitsPerPage();
+  if (commits.length < commitsPerPage) {
+    // No more commits to load - hide the button entirely
+    olderButton.style.display = "none";
+    return;
+  }
+
+  // Keep the button as a fallback but also set up infinite scroll
+  olderButton.setAttribute("aria-disabled", "false");
+
+  var isLoadingMore = false;
+
+  function loadMore() {
+    if (isLoadingMore) return;
+    isLoadingMore = true;
+    olderButton.setAttribute("aria-disabled", "true");
+    olderButton.textContent = "Loading...";
+    fetchFurther(commits.slice(-10), allCommits, heads, pageNo, branchNames, allBranches).then(function () {
+      isLoadingMore = false;
     });
+  }
+
+  // Manual click still works
+  olderButton.addEventListener("click", loadMore);
+
+  // IntersectionObserver for infinite scroll
+  if ("IntersectionObserver" in window) {
+    var scrollObserver = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting && !isLoadingMore) {
+        loadMore();
+      }
+    }, { rootMargin: "200px" });
+    scrollObserver.observe(olderButton);
   }
 }

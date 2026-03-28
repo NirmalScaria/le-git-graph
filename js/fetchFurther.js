@@ -32,7 +32,8 @@ async function fetchFurther(commits, allCommits, heads, pageNo, branchNames, all
           }
         repository(owner:"`+ repoOwner + `", name: "` + repoName + `") {`;
   var queryContent = queryBeginning;
-  if (commits.length < 10) {
+  var commitsPerPage = await getCommitsPerPage();
+  if (commits.length < commitsPerPage) {
     return (false);
   }
   var lastTenCommits = commits.slice(commits.length - 20, commits.length);
@@ -118,7 +119,7 @@ async function fetchFurther(commits, allCommits, heads, pageNo, branchNames, all
     return b.committedDate - a.committedDate;
   });
   pageNo += 1;
-  var commitsToShow = (allCommits.slice(0, 10 * pageNo));
+  var commitsToShow = (allCommits.slice(0, commitsPerPage * pageNo));
   await showCommits(commitsToShow, branchNames, allCommits, heads, pageNo, allBranches);
   showLegend(heads);
 }
