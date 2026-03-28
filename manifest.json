@@ -19,6 +19,7 @@
         "js/getLocalToken.js",
         "js/addAuthorizationPrompt.js",
         "js/authorisation/oauth2.js",
+        "js/getCommitsPerPage.js",
         "js/fetchCommits.js",
         "js/fetchFilteredCommits.js",
         "js/showCommits.js",
@@ -67,6 +68,9 @@
     "48": "/images/le_git_graph48.png",
     "128": "/images/le_git_graph128.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "background": {
     "service_worker": "js/serviceWorker.js"
   },

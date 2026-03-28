@@ -6,6 +6,7 @@ async function fetchFilteredCommits(selectedBranchNames, selectedBranches, allBr
     // (GitHub API has a limit of 100 branches per request)
 
     var APIcost = 0;
+    var commitsPerPage = await getCommitsPerPage();
 
     // The cost depends on the complexity of query that GitHub will have to do
     // First, fetch the commits with just the time, so that top ones to show can be found
@@ -22,7 +23,7 @@ async function fetchFilteredCommits(selectedBranchNames, selectedBranches, allBr
         if (lastFetched == "NONE") {
             var initialQuery = `
             fragment branch on Commit {
-                        history(first: 10) {
+                        history(first: ` + commitsPerPage + `) {
                           edges {
                             node {
                               ... on Commit {
@@ -66,7 +67,7 @@ async function fetchFilteredCommits(selectedBranchNames, selectedBranches, allBr
                                     name
                                     target {
                                         ... on Commit {
-                                            history(first: 10) {
+                                            history(first: ` + commitsPerPage + `) {
                                                 edges {
                                                     node {
                                                         ... on Commit {

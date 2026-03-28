@@ -1,104 +1,60 @@
 async function fetchCommits() {
     var branches = [];
-    // Recurcively call this function unti all the branches are fetched
+    // Fetch all branches with pagination
     // (GitHub API has a limit of 100 branches per request)
 
     var APIcost = 0;
+    var commitsPerPage = await getCommitsPerPage();
 
-    // The cost depends on the complexity of query that GitHub will have to do
-    // First, fetch the commits with just the time, so that top ones to show can be found
-    // Then request the rest of the details (like parents) of commits in another request.
-    // NOTE : Return true if the request is successful, false otherwise
-    async function fetchCommitsPage(repoOwner, repoName, lastFetched) {
-        if (lastFetched == "NONE") {
-            console.log("--FETCHING COMMITS STARTED--");
-        }
-        else {
-            console.log("--STILL FETCHING... TOO MANY BRANCHES--");
-        }
+    function buildBranchQuery(repoOwner, repoName, cursor) {
+        var afterClause = cursor ? ', after: "' + cursor + '"' : '';
+        return `
+        {
+            repository(owner: "` + repoOwner + '", name: "' + repoName + `") {
+                refs(refPrefix: "refs/heads/", orderBy: {direction: DESC, field: TAG_COMMIT_DATE}, first:100` + afterClause + `) {
+                    edges {
+                        cursor
+                        node {
+                            ... on Ref {
+                                name
+                                target {
+                                    ... on Commit {
+                                        history(first: ` + commitsPerPage + `) {
+                                            edges {
+                                                node {
+                                                    ... on Commit {
+                                                        oid
+                                                        messageHeadlineHTML
+                                                        committedDate
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            rateLimit {
+                limit
+                cost
+                remaining
+                resetAt
+            }
+        }`;
+    }
+
+    async function fetchCommitsPage(repoOwner, repoName, cursor) {
+        console.log(cursor ? "--STILL FETCHING... TOO MANY BRANCHES--" : "--FETCHING COMMITS STARTED--");
         var endpoint = "https://api.github.com/graphql";
-        if (lastFetched == "NONE") {
-            var initialQuery = `
-            {
-                repository(owner: "`+ repoOwner + '", name: "' + repoName + `") {
-                    refs(refPrefix: "refs/heads/", orderBy: {direction: DESC, field: TAG_COMMIT_DATE}, first:100) {
-                        edges {
-                            cursor
-                            node {
-                                ... on Ref {
-                                    name
-                                    target {
-                                        ... on Commit {
-                                            history(first: 10) {
-                                                edges {
-                                                    node {
-                                                        ... on Commit {
-                                                            oid
-                                                            messageHeadlineHTML
-                                                            committedDate
-                                                        }  
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                rateLimit {
-                    limit
-                    cost
-                    remaining
-                    resetAt
-                }
-            }`;
-        }
-        else {
-            var initialQuery = `
-            {
-                repository(owner: "`+ repoOwner + '", name: "' + repoName + `") {
-                    refs(refPrefix: "refs/heads/", orderBy: {direction: DESC, field: TAG_COMMIT_DATE}, first:100, after: "` + lastFetched + `") {
-                        edges {
-                            cursor
-                            node {
-                                ... on Ref {
-                                    name
-                                    target {
-                                        ... on Commit {
-                                            history(first: 10) {
-                                                edges {
-                                                    node {
-                                                        ... on Commit {
-                                                            oid
-                                                            messageHeadlineHTML
-                                                            committedDate
-                                                        }  
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                rateLimit {
-                    limit
-                    cost
-                    remaining
-                    resetAt
-                }
-            }`;
-        }
         var headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + getLocalToken()
         };
         var body = {
-            query: initialQuery
+            query: buildBranchQuery(repoOwner, repoName, cursor)
         };
         var response = await fetch(endpoint, {
             method: "POST",
@@ -121,13 +77,14 @@ async function fetchCommits() {
             var commit = branch.node;
             branches.push(commit);
         });
+        APIcost += data.data.rateLimit.cost;
+
         if (fetchedBranches.length >= 100) {
             var lastFetchedCursor = fetchedBranches[fetchedBranches.length - 1].cursor;
             if (await fetchCommitsPage(repoOwner, repoName, lastFetchedCursor) == false) {
                 return (false);
             };
         }
-        APIcost += data.data.rateLimit.cost;
         return (true);
     }
 
