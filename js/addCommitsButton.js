@@ -67,7 +67,9 @@ function addCommitsButton() {
     // Add click handler to other tabs to close Commits view
     Array.from(parentObject.children).forEach((child) => {
         thisChild = child.children[0];
-        thisChild.addEventListener("click", closeCommitsTab);
+        if(thisChild) {
+            thisChild.addEventListener("click", closeCommitsTab);
+        }
     });
 
     
