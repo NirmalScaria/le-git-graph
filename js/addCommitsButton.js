@@ -124,8 +124,10 @@ function addCommitsButton() {
         }
     });
 
-    // Observe document.body with subtree to catch nav replacement
-    observer.observe(document.body, { 
+    // Observe only the nav container to avoid interfering with
+    // unrelated DOM updates like GitHub's Global Search overlay
+    var observeTarget = parentObject.parentElement || parentObject;
+    observer.observe(observeTarget, { 
         childList: true,
         subtree: true
     });
