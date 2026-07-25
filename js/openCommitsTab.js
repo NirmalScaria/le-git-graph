@@ -58,7 +58,7 @@ async function openCommitsTab() {
 
         // Deselect all the tabs except commits tab.
         Array.from(parentObject.children).forEach((child) => {
-            if (child.children[0].id != "commits-tab") {
+            if (child && child.children[0] && child.children[0].id != "commits-tab") {
                 child.children[0].removeAttribute("aria-current");
                 child.children[0].classList.remove("selected");
             }
