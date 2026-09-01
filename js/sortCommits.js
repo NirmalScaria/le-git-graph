@@ -73,8 +73,9 @@ async function sortCommits(branches, heads, allBranches) {
         allBranchNames = allBranches;
     }
 
-    console.log("--COMMITS FOR THIS PAGE ARE--");
-    console.log(commitsObject.slice(0, 10));
-    await showCommits(commitsObject.slice(0, 10), branchNames, commits, heads, 1, allBranchNames);
+    var commitsPerPage = await getCommitsPerPage();
+    console.log("--COMMITS FOR THIS PAGE ARE-- (" + commitsPerPage + " per page)");
+    console.log(commitsObject.slice(0, commitsPerPage));
+    await showCommits(commitsObject.slice(0, commitsPerPage), branchNames, commits, heads, 1, allBranchNames);
     showLegend(heads);
 }
