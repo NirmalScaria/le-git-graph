@@ -68,7 +68,9 @@
     "128": "/images/le_git_graph128.png"
   },
   "background": {
-    "service_worker": "js/serviceWorker.js"
+    "scripts": [
+      "js/serviceWorker.js"
+    ]
   },
   "web_accessible_resources": [
     {
@@ -87,5 +89,9 @@
         "<all_urls>"
       ]
     }
+  ],
+  "host_permissions": [
+    "*://*.github.com/*",
+    "*://*.scaria.dev/*"
   ]
 }

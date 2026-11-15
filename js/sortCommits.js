@@ -22,13 +22,13 @@ async function sortCommits(branches, heads, allBranches) {
         var branchname = branch.name;
         var thisCommits = branch.target.history.edges;
         for (var thisCommit in thisCommits) {
-            var commit = thisCommits[thisCommit].node;
+            var commit = JSON.parse(JSON.stringify(thisCommits[thisCommit].node));
             if (commit.oid in commitsObject && commitsObject[commit.oid].branches != null) {
                 commitsObject[commit.oid].branches.push(branchname);
             }
             else {
                 commitsObject[commit.oid] = commit
-                commit.branches = [branchname];
+                commit.branches = [branchname]
                 commit.committedDate = parseDate(commit.committedDate);
             }
         }

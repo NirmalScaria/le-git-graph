@@ -85,7 +85,8 @@ async function fetchFurther(commits, allCommits, heads, pageNo, branchNames, all
   for (var newCommitId in newlyFetchedCommits) {
     var newCommit = newlyFetchedCommits[newCommitId];
     var thisCommits = newCommit.history.edges;
-    for (var thisCommit of thisCommits) {
+    for (var thisCommitOriginal of thisCommits) {
+      var thisCommit = JSON.parse(JSON.stringify(thisCommitOriginal));
       thisCommit = thisCommit.node;
       thisCommit.committedDate = parseDate(thisCommit.committedDate);
       allCommits.push(thisCommit);
